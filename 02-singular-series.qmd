@@ -1,0 +1,375 @@
+# The singular series and what dilation does to it {#sec-singular}
+
+Theorem 1.1, as stated in words in @sec-question, says that for almost all moduli $q$ the number of residues $a$ in a long stretch for which a pattern such as $a+q$ and $a+3q$ is entirely prime agrees with the Hardy–Littlewood prediction, up to a small relative error. In this chapter we compute the arithmetic correction in that prediction. This correction factor, the product over small primes described in @sec-question, is called the singular series. We first compute it for a fixed pattern, as Hardy and Littlewood did. We then dilate the pattern by the modulus $q$, which is the paper's setting, and find that the primes dividing $q$ contribute differently from the others. That dependence on the prime factors of $q$ is why the main term of Theorem 1.1 varies from one modulus to the next, and it is the source of most of the technical work in the paper.
+
+## Hardy and Littlewood's local correction
+
+How often are $n+h_1,\ldots,n+h_k$ simultaneously prime, for a fixed **shape** $\mathbf h=(h_1,\ldots,h_k)$ of distinct integers? The naive guess multiplies the $k$ individual probabilities $1/\log n$. Hardy and Littlewood [-@HardyLittlewood1923] corrected this guess prime by prime.
+
+Fix a prime $p$. Once all $n+h_j$ exceed $p$, primality requires that none be divisible by $p$. The forbidden starting residues are $-h_j\bmod p$. If the shifts $h_j$ occupy $\nu_{\mathbf h}(p)$ distinct residue classes modulo $p$, their negatives occupy the same number of classes. A uniformly chosen starting residue avoids them with probability $1-\nu_{\mathbf h}(p)/p$. The independence model would instead predict $(1-1/p)^k$. The ratio
+$$
+S_p(\mathbf h)=\Bigl(1-\frac{\nu_{\mathbf h}(p)}{p}\Bigr)\Bigl(1-\frac1p\Bigr)^{-k}
+$$
+is the **local factor** at $p$, and the **singular series** is the product
+$$
+\mathfrak S(\mathbf h)=\prod_p S_p(\mathbf h).
+$$
+For an admissible shape, the prime tuples conjecture asserts that the number of $n\le x$ with all $n+h_j$ prime is asymptotically $\mathfrak S(\mathbf h)\,x/(\log x)^k$.
+
+Two remarks make the product tractable. First, for $p$ larger than every difference $|h_i-h_j|$, all the $h_j$ are distinct modulo $p$, so $\nu_{\mathbf h}(p)=k$ and $S_p(\mathbf h)=1+O(k^2/p^2)$. The product therefore converges. Second, if some prime $p$ has $\nu_{\mathbf h}(p)=p$, the shape covers every residue class and one of the $n+h_j$ is always divisible by $p$; then $S_p(\mathbf h)=0$ and the pattern occurs at most finitely often. Shapes with $\mathfrak S(\mathbf h)>0$ are called **admissible**. The obstruction can only come from primes $p\le k$, since $k$ numbers cannot cover more than $k$ classes.
+
+::: {.callout-note}
+## Example: twin primes
+For $\mathbf h=(0,2)$ we have $\nu(2)=1$ and $\nu(p)=2$ for odd $p$. Thus $S_2=\frac12\cdot 4=2$ and $S_p=(1-2/p)(1-1/p)^{-2}=1-1/(p-1)^2$ for odd $p$, giving twice the usual twin prime constant, namely $\mathfrak S(0,2)=2\prod_{p>2}\bigl(1-\frac1{(p-1)^2}\bigr)\approx 1.3203$. Twin primes are predicted to be about $32\%$ more common than the independence model suggests, because divisibility by $2$ is not an independent obstruction for $n$ and $n+2$.
+:::
+
+So far the shape has been fixed and the starting point $n$ has varied. The paper's patterns $a+h_jq$ are of the same kind, with starting point $a$ and shape $(qh_1,\ldots,qh_k)$. The shape now depends on $q$, and so does its singular series: the primes dividing $q$ contribute a different local factor from the others. The next section computes it.
+
+## The paper's patterns are dilated shapes
+
+The paper counts starting points $a$ for which $a+h_1q,\ldots,a+h_kq$ are all prime. This is the prime tuples problem for the **dilated shape** $q\mathbf h=(qh_1,\ldots,qh_k)$: the entries are multiples of the modulus. What does dilation do to the local factors?
+
+Consider a prime $p$. If $p\nmid q$, multiplication by $q$ permutes the residue classes modulo $p$, so $\nu_{q\mathbf h}(p)=\nu_{\mathbf h}(p)$ and the local factor is unchanged. If $p\mid q$, every entry $qh_j$ is $0$ modulo $p$, so the dilated shape occupies a single class, $\nu_{q\mathbf h}(p)=1$, and
+$$
+S_p(q\mathbf h)=\Bigl(1-\frac1p\Bigr)^{1-k}=:t_p.
+$$
+The following example shows the collapse at $p=3$ for the pair $\mathbf h=(1,3)$.
+
+::: {.callout-note}
+## Example: the pair $(1,3)$ at the prime $3$
+The shape $\mathbf h=(1,3)$ selects the lifts $a+q$ and $a+3q$. We ask one question: for which starting residues $a\bmod3$ is neither lift divisible by $3$? Here we consider all three residues of $a$ modulo $3$, before imposing any restriction that $a$ be coprime to $q$. We compare $q=5$, where $3\nmid q$, with $q=6$, where $3\mid q$.
+
+For $q=5$ the lifts are $a+5$ and $a+15$.
+
+| $a\bmod3$ | $(a+5)\bmod3$ | $(a+15)\bmod3$ | Neither divisible by $3$? |
+|---:|---:|---:|:---|
+| $0$ | $2$ | $0$ | No |
+| $1$ | $0$ | $1$ | No |
+| $2$ | $1$ | $2$ | Yes |
+
+The two lifts rule out different residues: $a+5$ forbids $a\equiv1$ and $a+15$ forbids $a\equiv0$. One residue in three survives.
+
+For $q=6$ the lifts are $a+6$ and $a+18$, and both are congruent to $a$ modulo $3$.
+
+| $a\bmod3$ | $(a+6)\bmod3$ | $(a+18)\bmod3$ | Neither divisible by $3$? |
+|---:|---:|---:|:---|
+| $0$ | $0$ | $0$ | No |
+| $1$ | $1$ | $1$ | Yes |
+| $2$ | $2$ | $2$ | Yes |
+
+The two restrictions now coincide, and two residues in three survive. This is the collapse: the dilated shape $(6,18)$ occupies a single residue class modulo $3$, whereas $(5,15)$ occupies two, as $(1,3)$ itself does.
+
+The local factor divides the surviving fraction by the independence benchmark $(2/3)^2=4/9$:
+$$
+S_3(5\mathbf h)=\frac{1/3}{4/9}=\frac34,
+\qquad
+S_3(6\mathbf h)=\frac{2/3}{4/9}=\frac32 .
+$$
+The undilated shape has $S_3(\mathbf h)=3/4$ as well, since $3\nmid5$ leaves the local factor unchanged. The value $3/2$ is $t_3=(1-1/3)^{-1}$: when $3\mid q$, every lift is congruent to $a$ modulo $3$, so the pair passes or fails the test together and imposes one restriction instead of two. The same reasoning for a general prime $p\mid q$ gives the formula for $t_p$ above. Other primes impose their own restrictions, so $S_3$ is one factor in the product $\mathfrak S(q\mathbf h)$.
+:::
+
+For the next formulas, assume that the **undilated shape $\mathbf h$ is admissible**, so every $S_p(\mathbf h)$ and $\mathfrak S(\mathbf h)$ is positive. Writing $c_p=t_p/S_p(\mathbf h)-1$, a short calculation gives
+$$
+c_p=\frac{\nu_{\mathbf h}(p)-1}{p-\nu_{\mathbf h}(p)}\ \ge 0,
+\qquad
+\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}=\prod_{p\mid q}(1+c_p)=:f_{\mathbf h}(q).
+$$
+
+::: {.callout-note collapse="true"}
+## Understanding $c_p$ and $f_{\mathbf h}(q)$
+
+Fix the shape $\mathbf h$, and assume it is **admissible**. We are measuring how dilation by $q$ changes its singular series.
+
+The distinction to keep in mind is:
+
+- $c_p$ measures the **proportional increase** in the local factor when $p\mid q$.
+- $1+c_p$ is the **multiplier** giving that increase.
+- $f_{\mathbf h}(q)$ combines the multipliers for all primes dividing $q$.
+
+**Start with one prime $p$.** Write
+$$
+\nu=\nu_{\mathbf h}(p)
+$$
+for the number of distinct residues occupied by the shifts $h_1,\ldots,h_k$ modulo $p$.
+
+Before dilation, those shifts forbid $\nu$ starting residues, leaving
+$$
+p-\nu
+$$
+allowed residues.
+
+If $p\mid q$, all the dilated shifts $qh_j$ become $0$ modulo $p$. They now forbid only the starting residue $a\equiv0$, leaving
+$$
+p-1
+$$
+allowed residues.
+
+Thus the number of allowed starting residues rises from $p-\nu$ to $p-1$.
+
+Both local factors use the same independence benchmark, $(1-1/p)^k$. Consequently, that benchmark cancels when we divide:
+$$
+\frac{S_p(q\mathbf h)}{S_p(\mathbf h)}
+=
+\frac{\displaystyle\frac{(p-1)/p}{(1-1/p)^k}}
+     {\displaystyle\frac{(p-\nu)/p}{(1-1/p)^k}}
+=
+\frac{p-1}{p-\nu}.
+$$
+
+**Now separate the original amount from the increase.** Since
+$$
+p-1=(p-\nu)+(\nu-1),
+$$
+we obtain
+$$
+\frac{p-1}{p-\nu}
+=
+1+\frac{\nu-1}{p-\nu}.
+$$
+This motivates the definition
+$$
+\boxed{c_p=\frac{\nu_{\mathbf h}(p)-1}{p-\nu_{\mathbf h}(p)}.}
+$$
+
+There is a direct interpretation:
+$$
+c_p
+=
+\frac{\text{additional allowed starting residues}}
+     {\text{original allowed starting residues}}.
+$$
+We gain $\nu-1$ allowed residues, starting from $p-\nu$.
+
+For example, $c_p=1$ means a $100\%$ increase, so the multiplier is $1+c_p=2$.
+
+**Why is $c_p\ge0$?** Admissibility gives
+$$
+1\le\nu_{\mathbf h}(p)<p.
+$$
+Therefore the numerator is nonnegative and the denominator is positive.
+
+- If $\nu_{\mathbf h}(p)=1$, there was already only one restriction. Dilation gives no improvement: $c_p=0$.
+- If $\nu_{\mathbf h}(p)>1$, dilation merges several restrictions into one, so $c_p>0$.
+
+**Now combine the primes.** By definition,
+$$
+\mathfrak S(\mathbf h)=\prod_p S_p(\mathbf h).
+$$
+Hence
+$$
+\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}
+=
+\prod_p\frac{S_p(q\mathbf h)}{S_p(\mathbf h)}.
+$$
+
+There are two cases:
+
+- If $p\nmid q$, dilation preserves the number of occupied residues. The local factor is unchanged, so the ratio is $1$.
+- If $p\mid q$, the ratio is $1+c_p$, as we just calculated.
+
+All the unchanged factors cancel, leaving
+$$
+\boxed{
+\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}
+=
+\prod_{p\mid q}(1+c_p)
+=:f_{\mathbf h}(q).
+}
+$$
+The notation $:=f_{\mathbf h}(q)$ simply gives this product a name.
+
+The following table is built from **the undilated shape $\mathbf h=(1,3)$, before choosing $q$**. It tells us what each prime's multiplier would be **if that prime divides $q$**.
+
+| Prime $p$ | Distinct shift residues | $\nu_{\mathbf h}(p)$ | $c_p$ | Multiplier $1+c_p$ |
+|---:|:---|---:|---:|---:|
+| $2$ | $\{1\}$ | $1$ | $0$ | $1$ |
+| $3$ | $\{0,1\}$ | $2$ | $1$ | $2$ |
+| $5$ | $\{1,3\}$ | $2$ | $1/3$ | $4/3$ |
+
+For each row, we do three things: reduce $1$ and $3$ modulo $p$, count the distinct residues, and substitute that count into
+$$
+c_p=\frac{\nu_{\mathbf h}(p)-1}{p-\nu_{\mathbf h}(p)}.
+$$
+
+**For $p=2$:** both shifts have the same residue:
+$$
+1\equiv1\pmod2,\qquad 3\equiv1\pmod2.
+$$
+The set of distinct shift residues is therefore $\{1\}$, so $\nu_{\mathbf h}(2)=1$. Consequently,
+$$
+c_2=\frac{1-1}{2-1}=0,
+\qquad
+1+c_2=1.
+$$
+
+There is already only **one forbidden starting residue**. If $2\mid q$, dilation still leaves one forbidden residue. Its identity changes, but the number of allowed residues does not. Hence there is no increase: the multiplier is $1$.
+
+**For $p=3$:** the shifts occupy two residues:
+$$
+1\equiv1\pmod3,\qquad 3\equiv0\pmod3.
+$$
+Thus the set is $\{0,1\}$, and $\nu_{\mathbf h}(3)=2$. Therefore,
+$$
+c_3=\frac{2-1}{3-2}=1,
+\qquad
+1+c_3=2.
+$$
+
+Before dilation, two starting residues are forbidden, leaving **one allowed residue**. If $3\mid q$, the two restrictions merge into one, leaving **two allowed residues**.
+
+The allowed count doubles, from one to two, so the multiplier is $2$.
+
+**For $p=5$:** the shifts again occupy two residues:
+$$
+1\equiv1\pmod5,\qquad 3\equiv3\pmod5.
+$$
+Thus $\nu_{\mathbf h}(5)=2$, giving
+$$
+c_5=\frac{2-1}{5-2}=\frac13,
+\qquad
+1+c_5=\frac43.
+$$
+
+Before dilation, two starting residues are forbidden, leaving **three allowed residues**. If $5\mid q$, only one is forbidden, leaving **four allowed residues**.
+
+The multiplier is therefore $4/3$: four allowed residues instead of three.
+
+**Now choose $q=6$.** Since
+$$
+6=2\cdot3,
+$$
+we use the multipliers for $p=2$ and $p=3$:
+$$
+f_{\mathbf h}(6)
+=(1+c_2)(1+c_3)
+=1\cdot2
+=2.
+$$
+
+We **do not include the $4/3$ multiplier for $p=5$**, because $5$ does not divide $6$. At every prime not dividing $6$, dilation preserves the number of occupied residues, so the local factor stays unchanged.
+
+This means
+$$
+\boxed{\mathfrak S(6\mathbf h)=2\,\mathfrak S(\mathbf h).}
+$$
+Here the two shapes being compared are
+$$
+\mathbf h=(1,3),
+\qquad
+6\mathbf h=(6,18).
+$$
+
+The entire increase comes from the prime $3$. To see how the numbers $3/4$, $3/2$, and $2$ fit together, recall that the independence benchmark at $3$ is
+$$
+\left(\frac23\right)^2=\frac49.
+$$
+
+For the original shape, one starting residue in three survives:
+$$
+S_3(\mathbf h)=\frac{1/3}{4/9}=\frac34.
+$$
+
+For the dilated shape, two starting residues in three survive:
+$$
+S_3(6\mathbf h)=\frac{2/3}{4/9}=\frac32.
+$$
+
+Their ratio is
+$$
+\frac{S_3(6\mathbf h)}{S_3(\mathbf h)}
+=
+\frac{3/2}{3/4}
+=2
+=1+c_3.
+$$
+
+So **$3/2$ is the new local factor**, while **$2$ is the multiplier that takes the old local factor to the new one**:
+$$
+\underbrace{\frac34}_{\text{old local factor}}
+\;\times\;
+\underbrace{2}_{\text{multiplier}}
+\;=\;
+\underbrace{\frac32}_{\text{new local factor}}.
+$$
+
+For $q=30$, the prime divisors are $2,3,5$, giving
+$$
+f_{\mathbf h}(30)=1\cdot2\cdot\frac43=\frac83.
+$$
+
+Each prime appears **once** in the product. Divisibility by $p$ already collapses all shifts to $0\pmod p$; an additional power of $p$ changes nothing at that prime. For example,
+$$
+f_{\mathbf h}(6)=f_{\mathbf h}(12)=f_{\mathbf h}(18)=2.
+$$
+:::
+
+Since each $c_p\ge0$, the ratio $f_{\mathbf h}(q)$ is at least $1$: dilation never decreases the singular series. @fig-dilation-ratio shows how this multiplier varies with the small prime factors of $q$.
+
+```{python}
+#| label: fig-dilation-ratio
+#| fig-cap: "The dilation ratio $f_{\\mathbf h}(q)=\\mathfrak S(q\\mathbf h)/\\mathfrak S(\\mathbf h)$ for $\\mathbf h=(1,3)$ and $q\\le 60$. Here $c_2=0$ (the shape already occupies one class modulo $2$), $c_3=1$, $c_5=1/3$. A factor $3$ in $q$ contributes a multiplier $2$; factors $3$ and $5$ together contribute $8/3$. Other prime factors may increase the ratio further."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import dilation_ratio, BLUE, RUST, GREY
+h = (1,3); qs = np.arange(1, 61); f = np.array([dilation_ratio(h, int(q)) for q in qs])
+fig, ax = plt.subplots(figsize=(7, 3))
+cols = [RUST if q % 3 == 0 else BLUE for q in qs]
+ax.bar(qs, f, color=cols, width=0.8)
+ax.axhline(1, color=GREY, lw=0.8)
+ax.set_xlabel("$q$"); ax.set_ylabel("$f_h(q)$"); ax.set_xticks(range(0, 61, 6))
+ax.text(61, 2.0, "$3\\mid q$", color=RUST, fontsize=9, va="center")
+plt.tight_layout()
+```
+
+## Shapes that dilation makes admissible
+
+So far we have assumed that the undilated shape $\mathbf h$ is admissible. Dilation can also remove an obstruction from an inadmissible shape, turning a zero singular series into a positive one. The example $\mathbf h=(1,2,3)$ shows how this happens.
+
+Before dilation, this shape describes three consecutive numbers $n+1,n+2,n+3$. Whatever the starting point $n$, at least one is divisible by $2$ and at least one is divisible by $3$. The shift residues explain why:
+
+| Prime $p$ | Residues occupied by $(1,2,3)$ modulo $p$ | $\nu_{\mathbf h}(p)$ |
+|---:|:---|---:|
+| $2$ | $\{0,1\}$ | $2$ |
+| $3$ | $\{0,1,2\}$ | $3$ |
+
+In each row the shape occupies **every residue class**. Adding $n$ merely rearranges those classes, so one of the three numbers must land in class $0$. There is no starting residue that lets all three avoid divisibility by that prime. We call $2$ and $3$ the **obstructing primes** of this shape. At either prime, $1-\nu_{\mathbf h}(p)/p=0$, so the local factor is zero and hence $\mathfrak S(\mathbf h)=0$.
+
+After dilation, the lift indices $1,2,3$ select
+$$
+a+q,\qquad a+2q,\qquad a+3q.
+$$
+Take $q=6$. The shifts $6,12,18$ are all $0$ modulo $2$ and modulo $3$, so all three lifts have the same residue as $a$ at each of these primes. Choosing $a$ coprime to $6$ now lets the entire tuple avoid divisibility by both $2$ and $3$. For example, $a=1$ gives
+$$
+7,\qquad13,\qquad19,
+$$
+which are all prime. The three numbers no longer cover every residue class at the obstructing primes: their residues coincide, leaving room to avoid class $0$.
+
+The same removal of both obstructions occurs whenever $6\mid q$. Conversely, if $2\nmid q$ or $3\nmid q$, multiplication by $q$ merely permutes the classes at that prime, so the shape still occupies every class and that obstruction remains. No prime $p>3$ can obstruct a shape with only three entries, because three entries cannot occupy all $p$ classes. Thus
+$$
+\mathfrak S(q(1,2,3))>0\iff 6\mid q.
+$$
+Admissibility means that no single prime forces a divisibility obstruction for every starting residue. It does not guarantee an all-prime tuple for each eligible $a$: other primes can still divide the lifts for particular choices of $a$.
+
+For a general shape with $k$ entries, the obstructing primes are exactly those for which $\nu_{\mathbf h}(p)=p$. They must satisfy $p\le k$, since $k$ entries cannot cover more than $k$ classes. Collect them in the product
+$$
+d_0(\mathbf h)=\prod_{\substack{p\le k\\ \nu_{\mathbf h}(p)=p}}p.
+$$
+Every obstructing prime must divide $q$ to remove its obstruction; primes that did not obstruct the original shape cannot become obstructions after dilation. Therefore
+$$
+\mathfrak S(q\mathbf h)>0\iff d_0(\mathbf h)\mid q.
+$$
+In words, **dilation makes the shape admissible precisely when $q$ contains every obstructing prime as a factor**. For our example, $d_0(1,2,3)=2\cdot3=6$. If the original shape is already admissible, the product is empty and equals $1$, so every dilation is admissible.
+
+The local factors remain well defined for these shapes, but the earlier ratio
+$$
+f_{\mathbf h}(q)=\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}
+$$
+is unavailable when $\mathfrak S(\mathbf h)=0$: its denominator is zero. We must work with the dilated singular series itself.
+
+When an obstruction remains, the paper's prime-tuple count is exactly zero once $q>k$. Indeed, the lift indices satisfy $h_j\ge1$ and the starting points satisfy $a\ge1$, so every lift $a+h_jq$ exceeds $q$. An obstructing prime $p\le k$ divides at least one lift, and that lift exceeds $p$, so it is composite. This explains why divisibility really prevents primality in the range under consideration.
+
+Theorem 1.1 also covers shapes that become admissible through dilation. Outside its exceptional set of moduli, the prime-tuple estimate holds simultaneously for all shapes and windows in its stated ranges with $\mathfrak S(q\mathbf h)>0$. Treating shapes whose undilated singular series is zero needs a small extra argument, explained in @sec-one-set.
+
+::: {.callout-tip}
+## Where this is in the paper
+The singular series and admissibility are defined at the start of Section 1.1. The local factor $t_p$ is defined at the start of Section 3; the coefficients $c_p$ and the divisor form of $f_{\mathbf h}(q)$ are displays (12) and (13) in Section 3.1. The criterion $d_0(\mathbf h)\mid q$ is display (32).
+:::

@@ -1,0 +1,592 @@
+# The divisor expansion {#sec-divisor}
+
+This chapter explains the central arithmetic step in the paper's proof. As in @sec-second-moment, the original shape $\mathbf h$ is admissible. The problem left over is to evaluate the mixed moment $\mathbb E_w(U_\theta f)$, where $f(q)=f_{\mathbf h}(q)=\prod_{p\mid q}(1+c_p)$ is an arithmetic function of $q$ rather than a linear form.
+
+## A product over primes is a sum over divisors
+
+The distributive law turns $f(q)$ into a sum of simpler divisibility conditions.
+
+For $q=30$, the prime divisors are $2,3,5$, so
+$$
+f(30)=(1+c_2)(1+c_3)(1+c_5).
+$$
+Choose either $1$ or $c_p$ from each parenthesis and multiply the choices. **Each selection of primes identifies a divisor:** $c_3c_5$ corresponds to $d=15$, while choosing $1$ throughout gives the term for $d=1$.
+
+The table lists all eight choices. Its numerical column uses our shape $\mathbf h=(1,3)$, for which $c_2=0$, $c_3=1$ and $c_5=1/3$:
+
+| Chosen primes | Divisor $d$ | Contribution $c(d)$ | Value for $\mathbf h=(1,3)$ |
+|:--|--:|:--|:--:|
+| None | $1$ | $1$ | $1$ |
+| $2$ | $2$ | $c_2$ | $0$ |
+| $3$ | $3$ | $c_3$ | $1$ |
+| $5$ | $5$ | $c_5$ | $1/3$ |
+| $2,3$ | $6$ | $c_2c_3$ | $0$ |
+| $2,5$ | $10$ | $c_2c_5$ | $0$ |
+| $3,5$ | $15$ | $c_3c_5$ | $1/3$ |
+| $2,3,5$ | $30$ | $c_2c_3c_5$ | $0$ |
+
+Every contribution containing $c_2$ vanishes. The four remaining terms give
+$$
+\begin{aligned}
+f(30)&=c(1)+c(3)+c(5)+c(15)\\
+     &=1+1+\frac13+\frac13=\frac83.
+\end{aligned}
+$$
+These are exact arithmetic values. The divisor sum contains the same contributions as the expanded product, now labelled by divisors.
+
+::: {.callout-note collapse="true"}
+## Expanding all eight terms
+Multiplying the first two parentheses gives
+$$
+(1+c_2)(1+c_3)=1+c_2+c_3+c_2c_3.
+$$
+Multiplying this by $1+c_5$ retains those four terms and adds a copy of each multiplied by $c_5$:
+$$
+\begin{aligned}
+(1+c_2)(1+c_3)(1+c_5)
+={}&1+c_2+c_3+c_2c_3\\
+ &+c_5+c_2c_5+c_3c_5+c_2c_3c_5.
+\end{aligned}
+$$
+The corresponding divisors are $1,2,3,6,5,10,15,30$. Reordering them gives the table above. Substituting $c_2=0$, $c_3=1$ and $c_5=1/3$ leaves the terms indexed by $1,3,5,15$, whose sum is $8/3$. Directly evaluating the product gives the same value:
+$$
+(1+0)(1+1)\left(1+\frac13\right)=\frac83.
+$$
+:::
+
+For a general modulus, the product contains each **distinct** prime divisor once. Even if $3^2\mid q$, it still has only one factor $1+c_3$, so the expansion cannot produce $c_3^2$. The divisors obtained by choosing subsets of the prime divisors are therefore **squarefree**: no prime factor occurs twice. Defining
+$$
+c(d)=
+\begin{cases}
+\displaystyle\prod_{p\mid d}c_p,&d\text{ squarefree},\\[4pt]
+0,&d\text{ not squarefree},
+\end{cases}
+$$
+lets us write the identity for every $q$:
+$$
+\boxed{f(q)=\prod_{p\mid q}(1+c_p)=\sum_{d\mid q}c(d).}
+$$
+Here $c(1)=1$, corresponding to choosing $1$ from every parenthesis. A squarefree divisor can also have coefficient zero, as the even divisors in the table show. Once the shape is fixed, every coefficient $c(d)$ is fixed; changing $q$ changes which divisors are included.
+
+We can express that inclusion with the indicator $\mathbf1_{d\mid q}$, which is $1$ when $d$ divides $q$ and $0$ otherwise:
+$$
+f(q)=\sum_{d\ge1}c(d)\,\mathbf1_{d\mid q}.
+$$
+Substituting into the mixed moment and regrouping gives
+$$
+\boxed{
+\mathbb E_w(U_\theta f)
+=\sum_{d\le2Q}c(d)\,
+  \mathbb E_w\bigl(U_\theta\mathbf1_{d\mid q}\bigr).
+}
+$$
+Only $d\le2Q$ can occur because the moduli lie in $(Q,2Q]$. **Initially we take each modulus and list its divisors; after regrouping, we take each divisor and collect the moduli it divides.** The $d=3$ term collects contributions from multiples of $3$, and the $d=15$ term collects contributions from multiples of $15$.
+
+These families overlap deliberately: $q=30$ contributes nonzero terms for $d=1,3,5,15$, with coefficients that add back to $f(30)=8/3$. Each restricted average retains the original denominator $D_Q=\sum_{Q<q\le2Q}q^2$ over all moduli. Thus the frequency of multiples of $d$ remains part of the calculation.
+
+::: {.callout-note collapse="true"}
+## Regrouping the weighted average without changing its normalisation
+Recall that
+$$
+\mathbb E_w F=\frac1{D_Q}\sum_{Q<q\le2Q}q^2F(q).
+$$
+Substitute the divisor expansion into this finite sum:
+$$
+\begin{aligned}
+\mathbb E_w(U_\theta f)
+&=\frac1{D_Q}\sum_{Q<q\le2Q}
+       q^2U_\theta(q)\sum_{d\mid q}c(d)\\
+&=\sum_{d\le2Q}c(d)\left[
+    \frac1{D_Q}\sum_{\substack{Q<q\le2Q\\d\mid q}}
+       q^2U_\theta(q)\right].
+\end{aligned}
+$$
+The quantity in brackets is exactly $\mathbb E_w(U_\theta\mathbf1_{d\mid q})$. The numerator receives contributions only from multiples of $d$, while the denominator is still the total weight over all moduli in the interval. Renormalising by the weight of the multiples alone would give a different average and would lose their frequency unless it were included separately.
+
+Both sums are finite, so exchanging their order is exact. No estimate for the prime count has been used in this regrouping.
+:::
+
+This helps because **multiples of a fixed divisor form a linear family**. Hold $d$ fixed and write
+$$
+q=dn.
+$$
+The prime expressions become $a+h_jq=a+(dh_j)n$, still linear forms in the variables $(a,n)$. For example, $d=3$ turns our pair into
+$$
+a+3n,\qquad a+9n.
+$$
+As $q$ ranges over $(Q,2Q]$, the integer $n$ ranges over $(Q/d,2Q/d]$, and the starting-point range becomes $0<a\le\theta dn$.
+
+The expansion has replaced one weight depending on all the prime divisors of $q$ by a sum of conditions $d\mid q$, each with a fixed coefficient $c(d)$. The following sections apply the Analytic Input when $d$ is small enough and control the contribution of the remaining divisors. Those estimates give the mixed moment its leading term $\theta G$, with the error control needed for the cancellation in @sec-second-moment. Up to this point, the product expansion and the regrouping have been exact.
+
+## Multiples of $d$ are a linear change of variables
+
+We now evaluate $\mathbb E_w(U_\theta\mathbf1_{d\mid q})$ for a fixed small divisor $d$. Writing $q=dn$ enforces divisibility and gives linear forms $a+(dh_j)n$. To apply the Analytic Input, we must also account for the weight in this average.
+
+Recall that $C(q)=C_{\mathbf h}(q;\theta)$, $S=\mathfrak S(\mathbf h)$ and $U_\theta(q)=C(q)/(qS)$. The average $\mathbb E_w$ weights each modulus by $q^2$, so
+$$
+\mathbb E_w\bigl(U_\theta\mathbf1_{d\mid q}\bigr)
+=\frac1{D_QS}\sum_{\substack{Q<q\le2Q\\d\mid q}}q\,C(q).
+$$
+One factor of $q$ cancels against the denominator in $U_\theta$, but **one factor of $q$ remains**. The normalising denominator $D_Q=\sum_{Q<q\le2Q}q^2$ still includes all moduli in the interval.
+
+We reproduce that remaining factor by introducing an integer $b$ with $1\le b\le q=dn$. **Multiplying a contribution by $q$ is the same as adding it $q$ times.** Each of the $dn$ choices of $b$ contributes the same product of von Mangoldt weights, because none of the prime expressions depends on $b$.
+
+For an exact example, take $\mathbf h=(1,3)$, $\theta=1$, $d=3$ and $n=2$, so $q=6$. The starting point $a=1$ gives the primes $7$ and $19$, contributing $(\log7)(\log19)$ to $C(6)$. Letting $b$ run through $1,\ldots,6$ gives
+$$
+\sum_{b=1}^{6}(\log7)(\log19)
+=6(\log7)(\log19),
+$$
+exactly its contribution to $6C(6)$. Here $b$ labels repetitions of a numerical contribution. In the squared count in @sec-second-moment, $b$ was the starting point of a second prime pattern; here **there are still only $k$ prime expressions**, all depending on $n$ and $a$.
+
+::: {.callout-note collapse="true"}
+## Replacing the remaining weight by an extra sum
+Substituting the definition of $U_\theta$ into the weighted average gives
+$$
+\begin{aligned}
+\mathbb E_w\bigl(U_\theta\mathbf1_{d\mid q}\bigr)
+&=\frac1{D_Q}\sum_{\substack{Q<q\le2Q\\d\mid q}}
+    q^2\frac{C(q)}{qS}\\
+&=\frac1{D_QS}\sum_{\substack{Q<q\le2Q\\d\mid q}}qC(q).
+\end{aligned}
+$$
+Now substitute $q=dn$ and expand $C(dn)$:
+$$
+\sum_{\substack{Q<q\le2Q\\d\mid q}}qC(q)
+=\sum_{Q<dn\le2Q}dn
+  \sum_{0<a\le\theta dn}\prod_{j=1}^k\Lambda(a+dh_jn).
+$$
+Since $dn=\sum_{b=1}^{dn}1$, this is exactly
+$$
+\sum_{\substack{Q<dn\le2Q\\
+                0<a\le\theta dn\\
+                0<b\le dn}}
+\prod_{j=1}^k\Lambda(a+dh_jn).
+$$
+The extra sum accounts for the full remaining weight. No approximation has been made, and no primality condition is imposed on $b$.
+:::
+
+The numerator is now a sum of products of $\Lambda$ over three integer variables $(n,a,b)$ in the region
+$$
+\Omega_d=\bigl\{(n,a,b):\ Q<dn\le2Q,\
+                  0<a\le\theta dn,\ 0<b\le dn\bigr\}.
+$$
+This is the form of sum evaluated by @thm-input: a volume times a product of local factors, with a controlled error. The region is convex, and no two forms $a+dh_jn$ have proportional coefficient vectors, because the lift indices are distinct. The fact that the forms do not depend on $b$ is permitted by the theorem.
+
+The coefficient bound explains why we first restrict to small divisors. The permitted lift indices satisfy $h_j\le(\log Q)^B$. For a fixed $M$, taking
+$$
+d\le T:=(\log Q)^M
+\qquad\text{gives}\qquad
+dh_j\le(\log Q)^{B+M}.
+$$
+These coefficients remain polylogarithmic, within the Analytic Input's allowance. In each application, $d$ and the lift indices are fixed coefficients, while $n,a,b$ vary. The theorem's uniformity gives one error bound throughout this permitted family.
+
+The volume is $\theta V_Q/d$, where $V_Q=\frac73Q^3$. The factor $\theta$ records the fraction of starting points being used, and $1/d$ reflects the spacing of the multiples of $d$.
+
+::: {.callout-note collapse="true"}
+## Checking the Analytic Input and computing the volume
+The forms are
+$$
+\psi_j(n,a,b)=a+dh_jn,
+$$
+with coefficient vectors $(dh_j,1,0)$. If two such vectors were proportional, their coefficients of $a$ would force the proportionality factor to be $1$. Their coefficients of $n$ would then give $h_i=h_j$, contrary to distinctness. The system therefore satisfies the theorem's independence condition, with $m=3$ variables and $t=k$ forms.
+
+The inequalities defining $\Omega_d$ are linear, so the region is convex. Since $d\ge1$ and $0\le\theta\le1$, it lies inside $[0,2Q]^3$, and all forms are positive on it. We can thus use an ambient size $N=2Q$ and a coefficient allowance covering $(\log Q)^{B+M}$.
+
+At a fixed real value $n=x$, the allowed $(a,b)$ form a rectangle with side lengths $\theta dx$ and $dx$. Its area is $\theta d^2x^2$. Integrating these areas gives
+$$
+\begin{aligned}
+\operatorname{vol}(\Omega_d)
+&=\int_{Q/d}^{2Q/d}\theta d^2x^2\,dx\\
+&=\frac{\theta}{d}\int_Q^{2Q}y^2\,dy\\
+&=\frac{\theta}{d}\,\frac73Q^3
+=\frac{\theta V_Q}{d}.
+\end{aligned}
+$$
+The substitution in the second line is $y=dx$. Also,
+$$
+D_Q=\sum_{Q<q\le2Q}q^2=V_Q+O(Q^2),
+$$
+so dividing the volume by $D_Q$ gives $\theta/d$ to leading order.
+:::
+
+It remains to identify the arithmetic correction. At each prime $p$, the fixed divisor $d$ determines which local calculation applies:
+
+- If $p\mid d$, then $q=dn$ is forced to be $0$ modulo $p$. Every form reduces to $a$, so the local factor is $t_p$.
+- If $p\nmid d$, multiplication by $d$ permutes the residues modulo $p$. As $n$ runs through its residues, $q=dn$ runs through all residues, giving the average factor $A_p$ from @sec-second-moment. This includes $q\equiv0\pmod p$, which occurs when $n\equiv0\pmod p$.
+
+The unrestricted residue of $b$ leaves these local factors unchanged: every passing choice of $(n,a)$ has all $p$ choices of $b$, and the additional factor $p$ cancels in the residue average.
+
+The full correction is
+$$
+\mathfrak U_d=\prod_{p\mid d}t_p\prod_{p\nmid d}A_p.
+$$
+
+The Analytic Input gives the numerator the leading term $(\theta V_Q/d)\mathfrak U_d$. Dividing by $D_QS$, with $D_Q\sim V_Q$, gives
+$$
+\mathbb E_w\bigl(U_\theta\,\mathbf1_{d\mid q}\bigr)
+=\frac{\theta\,\mathfrak U_d}{d\,\mathfrak S(\mathbf h)}
+ +O\bigl((\log Q)^{-E}\bigr)
+\qquad(d\le T).
+$$
+Once $M$ is fixed, the Analytic Input lets us make the error exponent $E$ as large as needed. We have therefore evaluated each contribution from a small divisor, retaining both its frequency through $1/d$ and its divisibility restrictions through $\mathfrak U_d$. The next section controls the remaining divisors before we combine the contributions to obtain the mixed moment.
+
+## Truncate by the size of the divisor, not by the size of the primes
+
+The preceding section evaluates the contribution of each divisor $d\le T=(\log Q)^M$. We now justify keeping only those contributions by proving that the combined effect of the omitted terms is small. To **truncate** the divisor sum means to write
+$$
+f(q)=f_T(q)+r_T(q),
+$$
+where
+$$
+f_T(q)=\sum_{\substack{d\mid q\\d\le T}}c(d),
+\qquad
+r_T(q)=\sum_{\substack{d\mid q\\d>T}}c(d).
+$$
+The remainder $r_T=f-f_T$ is called the **tail**. We still average over all moduli in $(Q,2Q]$; the cutoff selects which divisor contributions we retain within each $f(q)$.
+
+The size of the whole divisor matters because writing $q=dn$ gives the prime expressions $a+(dh_j)n$. Their coefficients involve $d$ itself. A product of several small primes can already be too large for the coefficient bound we have chosen.
+
+Return to $q=30$ and $\mathbf h=(1,3)$. The nonzero contributions have $d=1,3,5,15$. With a divisor cutoff $T=5$,
+$$
+\begin{aligned}
+f(30)&=1+1+\frac13+\frac13=\frac83,\\
+f_5(30)&=1+1+\frac13=\frac73.
+\end{aligned}
+$$
+The omitted contribution is $r_5(30)=c(15)=1/3$. **Both prime factors of $15$ are at most $5$, but their product exceeds $5$.** A cutoff retaining every prime up to $5$ would keep the factors $1+c_3$ and $1+c_5$, and therefore also their cross-term $c_3c_5=c(15)$. It would retain the full value $8/3$ in this example. The two cutoffs select different terms.
+
+More generally, the product of distinct primes up to $z$ can be as large as the **primorial**
+$$
+P(z):=\prod_{p\le z}p,
+$$
+which grows roughly like $e^z$. Conditioning on $q$ modulo $P(z)$ to handle all these divisibility conditions together introduces coefficients of this size. Keeping them within a fixed power of $\log Q$ would restrict $z$ to $O(\log\log Q)$. A tail estimate decreasing as an inverse power of $z$ would then give only an inverse power of $\log\log Q$, slower than the prescribed inverse powers of $\log Q$ needed in the proof.
+
+A divisor cutoff directly controls the relevant coefficients:
+$$
+d\le T=(\log Q)^M
+\quad\Longrightarrow\quad
+dh_j\le(\log Q)^{B+M}.
+$$
+It discards both large prime divisors and products of smaller primes whose product exceeds $T$. We must bound their combined contribution.
+
+**Rankin's trick extracts a small factor from every omitted term.** Fix $0<\delta<1$. If $d>T$, then $(d/T)^\delta>1$. Multiplying the nonnegative term $c(d)$ by this quantity makes it larger. Applying this to the tail and then adding the remaining nonnegative terms gives
+$$
+r_T(q)\le T^{-\delta}F_\delta(q),
+\qquad
+F_\delta(q):=\prod_{p\mid q}(1+c_pp^\delta).
+$$
+The gain is the explicit factor $T^{-\delta}$. The remaining product has a bounded average square. The proof uses the bound $c_p\ll_k1/p$ together with the small frequency of divisibility by large primes. The calculation below makes this precise.
+
+Consequently, the **root-mean-square size** of the tail satisfies
+$$
+\boxed{
+\|r_T\|_{L^2(w)}
+=\sqrt{\mathbb E_w\bigl(r_T(q)^2\bigr)}
+\ll_{k,\delta}T^{-\delta}.
+}
+$$
+This is control on average over moduli, with the same $q^2$ weights as before. Individual moduli can have larger tails.
+
+This bound gives the logarithmic accuracy needed for the mixed moment. Choose $\delta=1/2$ and $T=(\log Q)^M$. Then
+$$
+\|r_T\|_{L^2(w)}\ll_k(\log Q)^{-M/2}.
+$$
+For any desired exponent $R>0$, taking $M=2R$ makes this at most a constant times $(\log Q)^{-R}$. The coefficients $dh_j$ remain bounded by a fixed power of $\log Q$, so the retained terms are still covered by the Analytic Input.
+
+::: {.callout-note collapse="true"}
+## Rankin's trick
+For every omitted divisor $d>T$, the inequality $1<(d/T)^\delta$ and the nonnegativity of $c(d)$ give
+$$
+\begin{aligned}
+0\le r_T(q)
+&=\sum_{\substack{d\mid q\\d>T}}c(d)\\
+&\le T^{-\delta}\sum_{\substack{d\mid q\\d>T}}c(d)d^\delta\\
+&\le T^{-\delta}\sum_{d\mid q}c(d)d^\delta\\
+&=T^{-\delta}\prod_{p\mid q}(1+c_pp^\delta)
+=T^{-\delta}F_\delta(q).
+\end{aligned}
+$$
+The second inequality adds the terms with $d\le T$. The last equality is the product-to-divisor-sum identity from Section 6.1, now with prime coefficients $c_pp^\delta$.
+
+To bound the average square of $F_\delta$, expand
+$$
+F_\delta(q)^2
+=\prod_{p\mid q}\bigl(1+2c_pp^\delta+c_p^2p^{2\delta}\bigr)
+=\sum_{d\mid q}b_\delta(d).
+$$
+Here $b_\delta(d)$ is nonnegative, supported on squarefree divisors, and multiplicative, with
+$$
+b_\delta(p)=2c_pp^\delta+c_p^2p^{2\delta}.
+$$
+The weighted frequency of multiples obeys $\mathbb E_w\mathbf1_{d\mid q}\ll1/d$ for $d\le2Q$ and is zero for larger $d$. Expanding first and then averaging therefore gives
+$$
+\begin{aligned}
+\mathbb E_wF_\delta(q)^2
+&=\sum_{d\le2Q}b_\delta(d)\,
+     \mathbb E_w\mathbf1_{d\mid q}\\
+&\ll\sum_{d\ge1}\frac{b_\delta(d)}d\\
+&=\prod_p\left(1+\frac{b_\delta(p)}p\right).
+\end{aligned}
+$$
+The factor $1/p$ in the product reflects the frequency of divisibility by $p$. Since $c_p\ll_k1/p$,
+$$
+\frac{b_\delta(p)}p
+\ll_k p^{\delta-2}+p^{2\delta-3}.
+$$
+For $\delta<1$, both exponents are less than $-1$, so the sums of these bounds over primes converge. For example, $\delta=1/2$ gives $p^{-3/2}+p^{-2}$. Thus
+$$
+\mathbb E_wF_\delta(q)^2\ll_{k,\delta}1,
+$$
+uniformly in $Q$ and the admissible shape. This is where the restriction $\delta<1$ enters: the initial pointwise inequality holds for every positive $\delta$, while this convergence argument requires $\delta<1$.
+
+Squaring the pointwise bound and averaging now yields
+$$
+\mathbb E_w r_T(q)^2
+\le T^{-2\delta}\mathbb E_wF_\delta(q)^2
+\ll_{k,\delta}T^{-2\delta}.
+$$
+Taking square roots proves $\|r_T\|_{L^2(w)}\ll_{k,\delta}T^{-\delta}$.
+:::
+
+To see how the tail affects the mixed moment, apply Cauchy--Schwarz:
+$$
+\begin{aligned}
+\left|\mathbb E_w(U_\theta f)-\mathbb E_w(U_\theta f_T)\right|
+&=\left|\mathbb E_w(U_\theta r_T)\right|\\
+&\le\|U_\theta\|_{L^2(w)}\,\|r_T\|_{L^2(w)}\\
+&\ll_{k,\delta}T^{-\delta}.
+\end{aligned}
+$$
+The earlier second-moment estimate bounds $\|U_\theta\|_{L^2(w)}$; Rankin's trick bounds the other factor. Thus the error introduced by omitting the large divisors can be made as small as any prescribed inverse power of $\log Q$.
+
+The preceding section evaluates the retained terms, and this section controls the omitted terms. The next section combines them to evaluate the full mixed moment. @fig-tail illustrates the convergence of the arithmetic partial sums in a finite-prime version of that calculation; the solid curve corresponds to the mixed moment and the dotted curve to the first moment of $f$.
+
+```{python}
+#| label: fig-tail
+#| fig-pos: H
+#| fig-cap: "For $\\mathbf h=(1,3)$: finite-prime versions of the mixed-moment partial sums (solid) and the first-moment partial sums $\\sum_{d\\le T}c(d)/d$ (dotted). Every product is restricted to primes $p\\le3000$, and only divisors composed of these primes are included, up to $T=20000$. The dashed lines are the corresponding finite products $G_{\\le3000}=\\prod_{p\\le3000}(1+(2c_p+c_p^2)/p)$ and $H_{\\le3000}=\\prod_{p\\le3000}(1+c_p/p)$."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import PRIMES, c_p, BLUE, RUST, GREEN
+h = (1,3); P = [int(p) for p in PRIMES if p <= 3000]
+cp = {p: c_p(h,p) for p in P}
+G = np.prod([1 + (2*cp[p] + cp[p]**2)/p for p in P]); Ef = np.prod([1 + cp[p]/p for p in P])
+prodA = np.prod([1 + cp[p]/p for p in P])            # prod_p A_p/S_p
+# squarefree d <= Tmax built from primes with c_p > 0
+Tmax = 20000; terms = {1: 1.0}
+for p in P:
+    if cp[p] == 0 or p > Tmax: continue
+    for d, v in list(terms.items()):
+        if d*p <= Tmax: terms[d*p] = v*cp[p]
+ds = np.array(sorted(terms)); cd = np.array([terms[d] for d in ds])
+def U_over_S(d):
+    r = prodA
+    m = d
+    for p in P:
+        if m % p == 0: r *= (1 + cp[p])/(1 + cp[p]/p)
+    return r
+mixed = np.cumsum(cd*np.array([U_over_S(int(d)) for d in ds])/ds); mean = np.cumsum(cd/ds)
+fig, ax = plt.subplots(figsize=(7, 3.2))
+ax.plot(ds, mixed, color=BLUE, lw=2, label="mixed-moment partial sums"); ax.axhline(G, color=BLUE, ls="--", lw=1, label="$G_{\\leq3000}$")
+ax.plot(ds, mean, color=GREEN, lw=2, ls=":", label="$\\sum_{d\\leq T} c(d)/d$"); ax.axhline(Ef, color=GREEN, ls="--", lw=1, label="$H_{\\leq3000}$")
+ax.set_xscale("log"); ax.set_xlabel("$T$"); ax.legend(frameon=False, fontsize=8, ncol=2)
+plt.tight_layout()
+```
+
+## The Euler product closes
+
+We can now complete the task left open in @sec-second-moment: prove that the mixed moment has the same arithmetic factor $G$ as the two second moments. Recall that $S=\mathfrak S(\mathbf h)$, $U_\theta(q)=C_{\mathbf h}(q;\theta)/(qS)$, and the predicted value of $U_\theta(q)$ is $\theta f(q)$.
+
+The preceding sections reduce the mixed moment to an arithmetic sum:
+$$
+\mathbb E_w(U_\theta f)
+\approx\theta\sum_{d\ge1}\frac{c(d)\,\mathfrak U_d}{dS}.
+$$
+Here $\mathfrak U_d$ is the arithmetic correction for moduli restricted to multiples of $d$. The approximation has controlled errors from the Analytic Input and from the omitted divisors. Our next step is to evaluate the displayed arithmetic sum exactly.
+
+**Each prime contributes according to whether we include it in the divisor $d$.** Only squarefree divisors have nonzero coefficients. For each included prime, $c(d)/d$ supplies $c_p/p$. The correction $\mathfrak U_d/S$ supplies $t_p/S_p$ at included primes and $A_p/S_p$ at omitted primes.
+
+Omitting $p$ from $d$ leaves $q$ unrestricted modulo $p$: the variable $n$ in $q=dn$ may still be divisible by $p$. This gives the average correction $A_p$. Including $p$ in $d$ forces $p\mid q$, giving $t_p$. The two choices therefore contribute:
+
+| Choice for the divisor $d$ | Contribution at $p$ |
+|:--|:--|
+| Omit $p$ | $\displaystyle\frac{A_p}{S_p}=1+\frac{c_p}{p}$ |
+| Include $p$ | $\displaystyle\frac{c_p}{p}\frac{t_p}{S_p}=\frac{c_p(1+c_p)}p$ |
+
+For example, the term indexed by $d=15$ chooses the second row at $3$ and $5$, and the first row at every other prime. Summing over all squarefree $d$ adds together all such finite selections. **The distributive law, read in reverse, turns this sum of choices into a product of their sums:**
+$$
+\begin{aligned}
+\sum_{d\ge1}\frac{c(d)\,\mathfrak U_d}{dS}
+&=\prod_p\left(\frac{A_p}{S_p}
+                 +\frac{c_pt_p}{pS_p}\right)\\
+&=\prod_p\left(1+\frac{2c_p+c_p^2}{p}\right)
+=G.
+\end{aligned}
+$$
+A product with one factor for each prime is called an **Euler product**. The convergence and tail estimates justifying this identity are given in the callout below.
+
+To see why this is the same $G$ as before, return to the second-moment calculation. The local correction divided by $S_p$ is $1$ when $p\nmid q$ and $1+c_p$ when $p\mid q$. Averaging its square over the residues of $q$ modulo $p$ gives
+$$
+\begin{aligned}
+\frac{B_p}{S_p^2}
+&=\left(1-\frac1p\right)1^2+\frac1p(1+c_p)^2\\
+&=1+\frac{2c_p+c_p^2}{p}.
+\end{aligned}
+$$
+This is exactly the factor obtained from the divisor sum. The same calculation gives the local average for $f(q)^2$, whose factor is also $1$ or $(1+c_p)^2$ according to the divisibility of $q$. **The squared count, the mixed moment, and the squared multiplier therefore produce the same arithmetic factor at every prime.**
+
+Our familiar example modulo $3$ makes the match concrete. For $\mathbf h=(1,3)$, we have $S_3=3/4$, $t_3=3/2$, $A_3=1$ and $c_3=1$. Organising the calculation by the choice of divisor, or by the residue of $q$, gives
+$$
+\begin{aligned}
+\text{Divisor expansion:}\quad&
+\underbrace{\frac{A_3}{S_3}}_{3\nmid d}
++\underbrace{\frac{c_3t_3}{3S_3}}_{3\mid d}
+=\frac43+\frac23=2,\\[8pt]
+\text{Second moment:}\quad&
+\underbrace{\frac23}_{3\nmid q}\,1^2
++\underbrace{\frac13}_{3\mid q}\,2^2
+=2.
+\end{aligned}
+$$
+These are two exact arithmetic calculations of the same local factor. The full $G$ multiplies the corresponding factors at all primes.
+
+::: {.callout-note collapse="true"}
+## Factoring the sum and controlling its tail
+For squarefree $d$, combine the definitions of $c(d)$, $\mathfrak U_d$ and $S$:
+$$
+\frac{c(d)\mathfrak U_d}{dS}
+=\prod_{p\nmid d}\frac{A_p}{S_p}
+ \prod_{p\mid d}\frac{c_pt_p}{pS_p}.
+$$
+Extract the fixed baseline
+$$
+H_0:=\prod_p\frac{A_p}{S_p}
+=\prod_p\left(1+\frac{c_p}{p}\right).
+$$
+Then
+$$
+\frac{c(d)\mathfrak U_d}{dS}
+=H_0\prod_{p\mid d}\frac{c_pt_p}{pA_p}.
+$$
+The remaining coefficients are multiplicative and supported on squarefree integers. Summing their products over all squarefree $d$ gives
+$$
+\begin{aligned}
+\sum_{d\ge1}\frac{c(d)\mathfrak U_d}{dS}
+&=H_0\prod_p\left(1+\frac{c_pt_p}{pA_p}\right)\\
+&=\prod_p\left(\frac{A_p}{S_p}
+                  +\frac{c_pt_p}{pS_p}\right).
+\end{aligned}
+$$
+For finitely many prime choices this is the distributive law. The infinite identity follows by convergence: $H_0$ is bounded because $c_p/p\ll_kp^{-2}$, and the remaining prime coefficients satisfy
+$$
+\frac{c_pt_p}{pA_p}
+=\frac{c_p(1+c_p)}{p(1+c_p/p)}
+\ll_k p^{-2}.
+$$
+Multiplying these prime coefficients by $p^\delta$ still gives a convergent prime sum for $0<\delta<1$. Rankin's argument therefore bounds the omitted part of the arithmetic series:
+$$
+\sum_{d>T}\frac{c(d)\mathfrak U_d}{dS}
+\ll_{k,\delta}T^{-\delta}.
+$$
+There are two truncations to remove. This bound replaces the truncated arithmetic series by its full value $G$. The Cauchy--Schwarz estimate in the preceding section replaces $\mathbb E_w(U_\theta f_T)$ by $\mathbb E_w(U_\theta f)$ with an error of the same order. Combining these bounds with the summed analytic error gives
+$$
+\mathbb E_w(U_\theta f)
+=\theta G+O_{k,B,M,R_1,\delta}
+ \bigl(L^{-R_1}+T^{-\delta}\bigr),
+$$
+where $L=\log Q$ and $R_1$ is the chosen exponent for the analytic error after summing over $d\le T$. The cutoff is $T=L^M$, so it grows with $Q$ while staying within the allowed coefficient range.
+:::
+
+This proves the missing mixed-moment estimate. Together with @sec-second-moment, we now have
+$$
+\begin{aligned}
+\mathbb E_wU_\theta^2&\approx\theta^2G,\\
+\mathbb E_w(U_\theta f)&\approx\theta G,\\
+\mathbb E_wf^2&\approx G.
+\end{aligned}
+$$
+The exact identity for the squared prediction error is
+$$
+\mathbb E_w|U_\theta-\theta f|^2
+=\mathbb E_wU_\theta^2
+ -2\theta\,\mathbb E_w(U_\theta f)
+ +\theta^2\mathbb E_wf^2.
+$$
+Substituting the three leading terms produces
+$$
+\theta^2G-2\theta(\theta G)+\theta^2G=0.
+$$
+**The leading arithmetic terms cancel; the errors in their estimates remain.** The mixed moment supplies the middle term with precisely the size needed for that cancellation. Its value has been established by the restricted-count estimates and the divisor calculation above.
+
+The remaining errors can be bounded by any prescribed inverse power of $\log Q$. We first choose a sufficiently large fixed power $T=(\log Q)^M$ to control the tails, then ask the Analytic Input for enough accuracy to handle the sum of the retained terms. This gives
+$$
+\mathbb E_w|U_\theta-\theta f|^2\ll(\log Q)^{-R}
+$$
+for any fixed $R>0$, uniformly in the permitted admissible shapes and in $\theta$.
+
+::: {.callout-note collapse="true"}
+## Tracking the errors and choosing the parameters
+Write the three estimates with their errors:
+$$
+\begin{aligned}
+\mathbb E_wU_\theta^2&=\theta^2G+\varepsilon_1,\\
+\mathbb E_w(U_\theta f)&=\theta G+\varepsilon_2,\\
+\mathbb E_wf^2&=G+\varepsilon_3.
+\end{aligned}
+$$
+Substitution into the exact squared-error identity leaves
+$$
+\mathbb E_w|U_\theta-\theta f|^2
+=\varepsilon_1-2\theta\varepsilon_2+\theta^2\varepsilon_3.
+$$
+The errors can have either sign, but the squared error is nonnegative. Thus
+$$
+0\le\mathbb E_w|U_\theta-\theta f|^2
+\le |\varepsilon_1|+2\theta|\varepsilon_2|
+   +\theta^2|\varepsilon_3|.
+$$
+With $L=\log Q$, the resulting bound is
+$$
+\mathbb E_w|U_\theta-\theta f|^2
+\ll L^{-R_1}+T^{-\delta}+Q^{-1/2}.
+$$
+The first term comes from the analytic estimates, the second from truncation, and the third from averaging the arithmetic multiplier $f^2$. For a desired bound $O(L^{-R})$, take
+$$
+\delta=\frac12,\qquad
+M=2(R+1),\qquad
+R_1=R+1.
+$$
+Then $T^{-\delta}=L^{-(R+1)}$, and $Q^{-1/2}$ is eventually smaller than any fixed inverse power of $L$.
+
+Once $M$ is fixed, choose the Analytic Input's coefficient allowance to cover $B+M$. Its error exponent must also allow for summation over $d\le T$. Since $c(d)\ll_k1$, summing errors of order $L^{-E}$ over at most $T=L^M$ divisors costs at most a factor of $L^M$. For example, $E>R_1+M+2$ suffices. This order of choices keeps every coefficient polylogarithmic and makes the combined error $O(L^{-R})$.
+:::
+
+Finally, return to normalisation by the full singular series. Since
+$$
+\frac{U_\theta(q)}{f(q)}
+=\frac{C_{\mathbf h}(q;\theta)}{q\,\mathfrak S(q\mathbf h)}
+$$
+and $f(q)\ge1$, dividing the discrepancy by $f(q)$ cannot enlarge it:
+$$
+\left|\frac{U_\theta(q)}{f(q)}-\theta\right|
+=\frac{|U_\theta(q)-\theta f(q)|}{f(q)}
+\le |U_\theta(q)-\theta f(q)|.
+$$
+We obtain
+$$
+\boxed{
+\mathbb E_w\left|
+\frac{C_{\mathbf h}(q;\theta)}{q\,\mathfrak S(q\mathbf h)}-\theta
+\right|^2\ll(\log Q)^{-R}.
+}
+$$
+The target is $\theta$, and is $1$ when the whole starting-point interval is used. The small mean-square error implies accuracy for most moduli by Section 5.1; the comparability of the weights transfers this conclusion to the uniform average. These are still von Mangoldt weighted counts. @sec-one-set constructs the common exceptional set and removes the prime-power contributions and logarithmic weights to recover the prime-tuple count.
+
+::: {.callout-important}
+## The idea in one sentence
+Averaging the prime count against an arithmetic weight $f(q)$ is hard, but $f$ is a nonnegative weighted sum of divisibility indicators, and averaging a prime count along multiples of a fixed small $d$ is another linear-equations problem. The resulting Euler product is the same $G$ that governs the second moment, so the leading terms of the mean-square error cancel exactly.
+:::
+
+::: {.callout-tip}
+## Where this is in the paper
+Section 3 is this chapter. Lemma 3.1 is the tail bound and the second moment of $f$; Proposition 3.2 proves the prime-count mean-square estimate using the mixed-moment computation. The dummy-variable body is display (24), the local factor $\mathfrak U_d$ is just below it, and the Euler identity is display (27). Remark 3.3 explains why the truncation is by divisor size.
+:::

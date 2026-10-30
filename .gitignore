@@ -1,0 +1,13 @@
+# Quarto build output and caches
+/_book/
+/.quarto/
+/_freeze/
+*_files/
+*.quarto_ipynb
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store

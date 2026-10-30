@@ -1,0 +1,464 @@
+# The Poisson limit theorem for prime lifts {#sec-poisson}
+
+This chapter proves the paper's second main theorem, the **Poisson limit theorem for prime lifts** (@thm-poisson). Leung [-@Leung2025] proved the Poisson point-process limit for primes in a progression assuming a uniform $q$-variant of the Hardy–Littlewood conjecture, and derived the scalar Poisson and least-prime laws under the same hypothesis [-@Leung2026]. @thm-main supplies the prime-tuple estimates that take the place of that hypothesis, at the price of an exceptional set of moduli.
+
+## Factorial moments count tuples
+
+Chapter 7 counts occurrences of a fixed prime pattern as the starting point varies. We now use those counts to describe the distribution of prime points in observation intervals. **The connection is to count ordered selections of distinct prime points, then average over the starting residue.**
+
+Fix $q$ and choose $a$ uniformly from the residues in $J\subseteq(0,q]$ that are coprime to $q$. Their number is $R_q(J)$; we assume it is positive. For each $a$, the configuration $\Xi_{q,a}$ places a point at $h/\ell_q$ whenever $h\ge1$ and $a+hq$ is prime. Its distribution as $a$ varies is $\operatorname{Law}_{q,J}$. The modulus stays fixed; the random choice is the starting residue.
+
+There are two kinds of intervals to keep separate:
+
+| Interval | What it selects |
+|:---|:---|
+| $J$ | The starting residues $a$ over which we average |
+| $I_i$ | The rescaled lift positions $h/\ell_q$ observed within each progression |
+
+We take the observation intervals to be bounded and disjoint.
+
+**The falling factorial counts selections without repeating a point.** If an interval contains $x$ points, there are $x$ choices for the first point, $x-1$ for a different second point, and so on. Thus
+$$
+(x)_r=x(x-1)\cdots(x-r+1)
+$$
+counts the ordered selections of $r$ distinct points.
+
+For an exact example, take $q=30$ and $a=7$. The first three lift indices give the primes $37,67,97$. The observation interval $I=(0,3/\ell_{30}]$ contains precisely those first three lift positions, so $\Xi_{30,7}(I)=3$. It supplies six ordered pairs of distinct lift indices:
+$$
+(1,2),\ (1,3),\ (2,1),\ (2,3),\ (3,1),\ (3,2).
+$$
+This is $(3)_2=3\cdot2=6$. The ordinary square $3^2=9$ would also count $(1,1),(2,2),(3,3)$, each of which repeats a point. Falling factorials select exactly the distinct lift indices required by the prime-tuple theorem.
+
+A **factorial moment** is the average number of these selections: count them for each sampled residue $a$, then average over those residues.
+
+A **mixed factorial moment** considers several intervals together. For example, if $X_1$ and $X_2$ are the counts in two disjoint intervals, the number of ways to select two distinct points from the first and one from the second is
+$$
+(X_1)_2(X_2)_1=X_1(X_1-1)X_2.
+$$
+We multiply because each choice from the first interval can be combined with each choice from the second. In general, the list $\mathbf k=(k_1,\ldots,k_s)$ records how many points to select from each $I_i$, and $H_{\mathbf I,\mathbf k}$ is the average number of those selections. Disjointness makes points from different intervals distinct; the falling factorials ensure distinctness within each interval.
+
+Record a selection by its lift indices $\mathbf h=(h_j^{(i)})$, with $h_j^{(i)}/\ell_q\in I_i$. We call such an array a **configuration** of selected indices. It has $K=\sum_i k_i$ entries. Other primes may also lie in the intervals: the selection need not include every prime present. If $K=0$, the moment is simply $1$; for the counting identity below, take $K\ge1$.
+
+**We can count the same selections in the opposite order.** Imagine a table whose rows are the sampled starting residues $a$ and whose columns are the permitted ordered configurations $\mathbf h$. A cell is $1$ if all its selected lifts are prime, and $0$ otherwise.
+
+- Adding by rows counts the selections available at each $a$. Averaging these row totals gives the mixed factorial moment.
+- Adding by columns fixes $\mathbf h$ and counts the starting points where its prime pattern occurs. Each column total is the prime-tuple count $N_{\mathbf h}(q;J)$.
+
+Both procedures add the same entries. Hence
+$$
+\boxed{
+H_{\mathbf I,\mathbf k}(\operatorname{Law}_{q,J})
+=\frac1{R_q(J)}\sum_{\mathbf h}N_{\mathbf h}(q;J).
+}
+$$
+The sum runs over all ordered configurations of distinct positive lift indices with the required interval memberships. There is no extra coprimality restriction inside $N_{\mathbf h}$: if $a$ shares a factor with $q$, every $a+hq$ shares that factor and exceeds $q$, so it cannot be prime. The denominator remains $R_q(J)$ because those are the residues over which the empirical law averages.
+
+**A mixed factorial moment has become a sum of prime-tuple counts that Chapter 7 can estimate.** @fig-config draws one selected configuration.
+
+```{python}
+#| label: fig-config
+#| fig-cap: "A configuration contributing to $H_{\\mathbf I,\\mathbf k}$ with $\\mathbf I=([0,1],(1.5,2.5])$ and $\\mathbf k=(2,1)$: two distinct lift indices in the first interval and one in the second, all with $a+hq$ prime. Sum over all such configurations and all sampled $a$, then divide by $R_q(J)$ to obtain the factorial moment."
+import matplotlib.pyplot as plt
+from helpers import SLATE, BLUE, RUST, GREY
+fig, ax = plt.subplots(figsize=(7, 1.6)); ax.set_xlim(-0.1, 3.2); ax.set_ylim(-0.7, 1.0); ax.axis("off")
+ax.plot([0, 3.1], [0, 0], color=GREY, lw=1)
+for (u, v, lab) in [(0, 1, "$I_1=[0,1]$"), (1.5, 2.5, "$I_2=(1.5,2.5]$")]:
+    ax.plot([u, v], [0, 0], color=BLUE, lw=5, alpha=0.3); ax.text((u+v)/2, 0.55, lab, ha="center", fontsize=9, color=BLUE)
+for x, lab in [(0.3, "$h^{(1)}_1$"), (0.8, "$h^{(1)}_2$"), (2.1, "$h^{(2)}_1$")]:
+    ax.scatter([x], [0], s=60, color=RUST, zorder=3); ax.text(x, -0.45, lab, ha="center", fontsize=9, color=SLATE)
+ax.text(3.1, -0.1, "$m/\\ell_q$", fontsize=9, color=GREY, va="top")
+plt.tight_layout()
+```
+
+::: {.callout-note collapse="true"}
+## Counting by starting residue or by lift indices
+
+For a law $\mu$ on point configurations, the formal definition is
+$$
+H_{\mathbf I,\mathbf k}(\mu)
+=\int\prod_{i=1}^s\bigl(\xi(I_i)\bigr)_{k_i}\,d\mu(\xi).
+$$
+Here $\xi(I_i)$ is the number of points in $I_i$, and the integral averages the number of ordered selections over configurations with law $\mu$. We use $(x)_0=1$; if $r>x$, then $(x)_r=0$. The processes considered here have distinct points.
+
+Let $\mathcal A_q(J)=\{a\in J\cap\mathbb Z:\gcd(a,q)=1\}$, so $|\mathcal A_q(J)|=R_q(J)$. Let $\mathcal H_q$ be the finite collection of labelled arrays $\mathbf h=(h_j^{(i)})$ of distinct positive integers with $h_j^{(i)}/\ell_q\in I_i$. For a fixed $a$, put $X_i(a)=\Xi_{q,a}(I_i)$. Expanding the falling factorials as counts of selections gives the exact identity
+$$
+\prod_{i=1}^s\bigl(X_i(a)\bigr)_{k_i}
+=\sum_{\mathbf h\in\mathcal H_q}
+\prod_{i=1}^s\prod_{j=1}^{k_i}
+\mathbf 1_{\{a+qh_j^{(i)}\ \mathrm{prime}\}}.
+$$
+Each array is ordered within its interval group, and the groups are labelled by $i$. This is why there are no factors such as $1/k_i!$.
+
+Average over $a$ and interchange the two finite sums:
+$$
+\begin{aligned}
+&H_{\mathbf I,\mathbf k}(\operatorname{Law}_{q,J})\\
+&\quad=\frac1{R_q(J)}\sum_{a\in\mathcal A_q(J)}
+\sum_{\mathbf h\in\mathcal H_q}
+\prod_{i=1}^s\prod_{j=1}^{k_i}
+\mathbf 1_{\{a+qh_j^{(i)}\ \mathrm{prime}\}}\\
+&\quad=\frac1{R_q(J)}\sum_{\mathbf h\in\mathcal H_q}
+\#\{a\in\mathcal A_q(J):a+qh_j^{(i)}\ \text{prime for all }i,j\}.
+\end{aligned}
+$$
+For $K\ge1$, the primality conditions force $\gcd(a,q)=1$: any shared factor would divide a selected lift, which is larger than $q$. The inner count is therefore $N_{\mathbf h}(q;J)$, with the labelled array read as an ordered $K$-tuple. This proves the displayed counting identity for every $q,J$ with $R_q(J)>0$; no asymptotic estimate has yet been used.
+:::
+
+It remains to identify the values we want these moments to approach. In the **unit-rate Poisson process**, the mean count in $I_i$ is its length $|I_i|$. For a Poisson variable $X$ with mean $\lambda$, the average number of ordered selections of $r$ distinct points is
+$$
+\mathbb E(X)_r=\lambda^r.
+$$
+Counts in disjoint intervals are independent for this process, so their factorial moments multiply:
+$$
+H_{\mathbf I,\mathbf k}(\Pi)
+=\prod_{i=1}^s|I_i|^{k_i}
+=:c_{\mathbf I,\mathbf k}.
+$$
+These are the Poisson target values. The counting identity above is exact; the following sections estimate its sum of prime-tuple counts and show that the moments of our empirical law approach these targets.
+
+## Theorem 1.1 evaluates every term at once
+
+Fix the observation intervals $\mathbf I$ and the numbers $\mathbf k$ of points to select, with $K=\sum_i k_i\ge1$. The preceding section expresses their mixed factorial moment as a sum of prime-tuple counts, divided by $R_q(J)$. **We now replace every count in that sum by its prediction from @thm-main.**
+
+All the required lift indices fit within the theorem's range. If the observation intervals lie in $[0,T]$ for a fixed $T$, then every selected index satisfies
+$$
+h\le T\ell_q
+=T\frac{\varphi(q)}q\log q
+\le T\log q.
+$$
+Thus the indices grow at most as a constant times $\log q$. For $Q<q\le2Q$ and sufficiently large $Q$, they all lie below $(\log Q)^2$.
+
+Write $L=\log Q$. Outside the theorem's common exceptional set, every permitted configuration with positive singular series satisfies
+$$
+N_{\mathbf h}(q;J)
+=\mathfrak S(q\mathbf h)\,\mathcal I_{\mathbf h}(q;J)
+\bigl(1+O(L^{-2})\bigr)
+$$
+for every starting-point window $J$ of length at least $q/(\log q)^C$. A configuration with zero singular series has an exactly zero count once $q>K$. **The same good modulus works for every configuration and every permitted window.** The configurations vary with $q$, and their number can grow; the simultaneous conclusion proved in Chapter 7 covers them all.
+
+We can now simplify the logarithmic integral. For $t\in J\subseteq(0,q]$,
+$$
+\log(t+h_jq)=\log q+\log(h_j+t/q).
+$$
+Since $1\le h_j\le T\log q$, the added term is at most of order $\log\log q$. Its size relative to $\log q$ tends to zero. Replacing each of the $K$ logarithms by $\log q$ therefore gives
+$$
+N_{\mathbf h}(q;J)
+=\mathfrak S(q\mathbf h)\frac{|J|}{(\log q)^K}
+\left(1+O\left(\frac{\log\log q}{\log q}\right)\right).
+$$
+Here $|J|$ measures the range of starting points, $(\log q)^{-K}$ is the basic density prediction for $K$ primes, and $\mathfrak S(q\mathbf h)$ corrects for their shared divisibility restrictions. Chapter 7 kept the exact integral to retain any prescribed inverse power of the logarithm in the relative error. **For the Poisson limit, an error that tends to zero is enough**, so this simpler expression supplies the accuracy we need.
+
+Adding the counts preserves that relative accuracy. Every predicted count is nonnegative, and every error is bounded by the same small fraction of its prediction. The sum of the errors is therefore bounded by that fraction of the sum of the predictions. Substituting into the counting identity gives
+$$
+H_{\mathbf I,\mathbf k}(\operatorname{Law}_{q,J})=(1+o(1))\frac{|J|}{R_q(J)(\log q)^K}\sum_{\mathbf h}\mathfrak S(q\mathbf h).
+$$
+The factor $|J|/(\log q)^K$ comes outside the sum because it is the same for every configuration. The $o(1)$ denotes a relative error tending to zero, uniformly over the good moduli and their permitted windows.
+
+::: {.callout-note collapse="true"}
+## Choosing the theorem's parameters and adding the errors
+
+Apply @thm-main with tuple size $K$, shape exponent $B=2$, window exponent $C+1$, and accuracy exponent $D=2$. These choices provide the following margins:
+
+- Since $T$ is fixed, $T\log q\le L^2$ for sufficiently large $Q$, so every required shape is covered.
+- The theorem permits windows as short as $q/L^{C+1}$. Our windows satisfy
+  $$
+  |J|\ge\frac q{(\log q)^C}\ge\frac q{L^{C+1}}
+  $$
+  for sufficiently large $Q$, since $\log q=L+O(1)$.
+- The theorem's relative error is $O(L^{-2})$. Simplifying the integral gives the larger error $O(\log\log q/\log q)$, which still tends to zero.
+
+For the summation, put
+$$
+P_{\mathbf h}=\mathfrak S(q\mathbf h)\frac{|J|}{(\log q)^K}\ge0.
+$$
+The estimates above give a common bound
+$$
+\bigl|N_{\mathbf h}(q;J)-P_{\mathbf h}\bigr|
+\le\eta_q P_{\mathbf h},
+\qquad
+\eta_q=O\left(\frac{\log\log q}{\log q}\right).
+$$
+Consequently,
+$$
+\left|\sum_{\mathbf h}N_{\mathbf h}(q;J)
+-\sum_{\mathbf h}P_{\mathbf h}\right|
+\le\eta_q\sum_{\mathbf h}P_{\mathbf h}.
+$$
+The relative error remains bounded by $\eta_q$ even as the number of configurations grows. Terms with zero singular series contribute zero to both sums; if the whole predicted sum is zero, the count sum is exactly zero as well. The theorem has already supplied the common exceptional set, so this summation requires no further exclusions.
+:::
+
+We have reduced the factorial moment to a sum of arithmetic corrections over the permitted configurations. The next section evaluates that sum and shows how the Poisson target values emerge.
+
+## Averaging the singular series: Leung's lemma
+
+The remaining task is to evaluate $\sum_{\mathbf h}\mathfrak S(q\mathbf h)$. **For this average, keep $q$ fixed and vary the configurations of lift indices $\mathbf h$.** Each configuration has its own arithmetic correction. We will count the configurations, find their mean correction, and substitute the resulting sum into the factorial moment.
+
+Write $\alpha_q=\varphi(q)/q$, the fraction of residues coprime to $q$, so that $\ell_q=\alpha_q\log q$. The observation interval $I_i$ contains approximately $\ell_q|I_i|$ available lift positions. For fixed $k_i$, selecting $k_i$ distinct positions in order gives approximately $(\ell_q|I_i|)^{k_i}$ choices. Multiplying across the intervals, the number of configurations is
+$$
+ (1+o(1))\,\alpha_q^K(\log q)^K\prod_i|I_i|^{k_i}.
+$$
+These are choices of positions; the singular series will account for the divisibility restrictions on the corresponding prime patterns.
+
+**The primes dividing $q$ contribute the same correction to every configuration.** If $p\mid q$, all $K$ entries $a+qh_j$ are congruent to $a$ modulo $p$. They all avoid divisibility by $p$ whenever $a\not\equiv0\pmod p$, so there is one shared restriction. The local factor is
+$$
+S_p(q\mathbf h)
+=\frac{1-1/p}{(1-1/p)^K}
+=(1-1/p)^{1-K}.
+$$
+Their combined contribution is $\prod_{p\mid q}(1-1/p)^{1-K}=\alpha_q^{1-K}$. For example, when $q=30$ and $K=2$, the primes $2,3,5$ contribute
+$$
+2\cdot\frac32\cdot\frac54=\frac{15}{4}
+=\frac{30}{\varphi(30)}.
+$$
+This is the exact contribution of those three primes to every pair's singular series. The factors from other primes still vary with the pair.
+
+For undilated shapes, Gallagher's classical averaging result [-@Gallagher1976] gives a mean singular series tending to $1$. Leung's result [-@Leung2025, Proposition 3.1], applied to our configurations, shows that the remaining factors from primes not dividing $q$ average to $1$ in the leading term. Thus the mean of the full singular series is $(1+o(1))\alpha_q^{1-K}$. Establishing this for the whole product over primes is the arithmetic input; the local calculation above explains the factor that survives. For $K=1$, the singular series is identically $1$.
+
+Multiplying the number of configurations by their mean correction gives
+$$
+\begin{aligned}
+&\sum_{\mathbf h}\mathfrak S(q\mathbf h)\\
+&\quad=(1+o(1))
+\underbrace{\alpha_q^K(\log q)^K\prod_i|I_i|^{k_i}}_{\text{number of configurations}}
+\;\underbrace{\alpha_q^{1-K}}_{\text{mean correction}}\\
+&\quad=(1+o(1))\,\alpha_q(\log q)^K\prod_i|I_i|^{k_i}.
+\end{aligned}
+$$
+This estimate holds uniformly as $q\to\infty$, including moduli with many small prime factors.
+
+**Averaging over the starting residues removes the remaining factor $\alpha_q$.** In every permitted window $J$, the number of starting residues coprime to $q$ satisfies $R_q(J)=\alpha_q|J|(1+o(1))$. Substitute the singular-series sum into the formula from the preceding section:
+$$
+\begin{aligned}
+&H_{\mathbf I,\mathbf k}(\operatorname{Law}_{q,J})\\
+&\quad=(1+o(1))\frac{|J|}{R_q(J)(\log q)^K}
+\left[\alpha_q(\log q)^K\prod_i|I_i|^{k_i}\right]\\
+&\quad=(1+o(1))\frac{\alpha_q|J|}{R_q(J)}\prod_i|I_i|^{k_i}
+\longrightarrow\prod_i|I_i|^{k_i}.
+\end{aligned}
+$$
+The powers of $\log q$ cancel, and $\alpha_q|J|/R_q(J)$ tends to $1$. **Each fixed mixed factorial moment therefore approaches its Poisson value**, uniformly over good $q$ and their permitted windows. A fixed finite collection of moments can use the union of its exceptional sets. The error is qualitative $o(1)$: the singular-series mean supplies convergence without a specified rate. The arbitrary inverse-logarithmic bound on the size of the exceptional set remains available.
+
+::: {.callout-note collapse="true"}
+## Applying Leung's proposition and matching the normalisations
+
+Intervals with $k_i=0$ can be omitted, so assume $K\ge1$ and that the remaining intervals have positive length. For $K$ distinct integers forming a set $\mathcal H$, Leung's singular series is
+$$
+\mathfrak S_L(\mathcal H;d)
+=\left(\frac{\varphi(d)}d\right)^{-K}
+\prod_{p\nmid d}\left(1-\frac1p\right)^{-K}
+\left(1-\frac{\#(\mathcal H\bmod p)}p\right).
+$$
+For fixed multiplicities $k_i$, disjoint positive intervals $U_i$, and $(b,d)=1$, his proposition gives
+$$
+\sum_{\substack{x_j^{(i)}\in U_i\cap(b+d\mathbb Z)\\
+                 \text{all entries distinct}}}
+\mathfrak S_L(\{x_j^{(i)}\};d)
+=(1+o(1))\prod_i\left(\frac{|U_i|}{\varphi(d)}\right)^{k_i},
+$$
+provided $\min_i |U_i|/d\to\infty$. The entries are ordered within each interval group. The condition says that the number of available positions in each interval must grow; the modulus $d$ may vary.
+
+Apply the proposition with $d=q$, $b=1$, and $x_j^{(i)}=1+qh_j^{(i)}$. These auxiliary numbers label our configurations in the residue class $1\pmod q$. They are not required to be prime, and the substitution does not fix the sampled starting residue $a$ to $1$.
+
+For $I_i=(u_i,v_i]$, choose
+$$
+U_i=(1+q\ell_q u_i,\,1+q\ell_q v_i];
+$$
+for $I_i=[0,v_i]$, choose $U_i=(1,1+q\ell_q v_i]$, excluding $h=0$. These choices give exactly our configurations. The classical totient bound [-@RosserSchoenfeld1962, Theorem 15] ensures
+$$
+\ell_q\gg\frac{\log q}{\log\log(3q)}\longrightarrow\infty.
+$$
+Moreover,
+$$
+\frac{|U_i|}{q}=\ell_q|I_i|\longrightarrow\infty,
+\qquad
+\frac{|U_i|}{\varphi(q)}=|I_i|\log q.
+$$
+Thus the growth condition holds uniformly as $q\to\infty$. It also justifies the configuration count in the main text: if $n_i=\#\{h\ge1:h/\ell_q\in I_i\}$, the exact count is $\prod_i(n_i)_{k_i}$, and $n_i=\ell_q|I_i|+O(1)\to\infty$.
+
+To compare normalisations, at $p\nmid q$ translation by $1$ leaves the number of occupied residues unchanged. At $p\mid q$, the factor in $\mathfrak S(q\mathbf h)$ is $(1-1/p)^{1-K}$, whereas Leung's normalisation contributes $(1-1/p)^{-K}$. Hence
+$$
+\mathfrak S_L(1+q\mathbf h;q)
+=\alpha_q^{-1}\mathfrak S(q\mathbf h).
+$$
+Multiplying Leung's sum by $\alpha_q$ gives the singular-series sum in the main text, including configurations with zero singular series.
+
+Finally, Möbius inversion gives
+$$
+R_q(J)=\alpha_q|J|+O\bigl(2^{\omega(q)}\bigr),
+$$
+where $\omega(q)$ counts the distinct prime divisors of $q$. Using $2^{\omega(q)}\ll q^{1/2}$, the totient bound above, and $|J|\ge q/(\log q)^C$, the relative error is
+$$
+O_C\!\left(q^{-1/2}(\log q)^C\log\log(3q)\right)=o(1)
+$$
+uniformly over the permitted windows. This estimate and the singular-series average hold for all sufficiently large $q$; they require no further exceptional moduli.
+:::
+
+@fig-leung illustrates the pair average by keeping each modulus fixed and increasing the number $H$ of lift indices. The theorem instead fixes the observation intervals and lets $q\to\infty$, so this experiment illustrates the averaging mechanism without testing that precise limiting regime.
+
+```{python}
+#| label: fig-leung
+#| fig-cap: "Pair singular-series averages for two fixed moduli as $H$ grows. The ordinate is $\\alpha_q H^{-2}\\sum_{1\\le h_1\\ne h_2\\le H}\\mathfrak S(q(h_1,h_2))$, whose leading prediction is $1$. Equivalently take $v=H/\\ell_q$, so the observation interval varies. The Euler products are truncated at $p\\le20000$; all prime divisors of $q$ and all pair differences lie below this cutoff, leaving a relative tail $1+O((20000\\log20000)^{-1})$. The dashed curve $1-\\log H/H$ is a visual reference, not an asserted error bound."
+import numpy as np, matplotlib.pyplot as plt, math
+from helpers import PRIMES, phi, BLUE, RUST, GREY
+def pair_sum_ratio(q, Hs):
+    al = phi(q)/q; P = [int(p) for p in PRIMES if p >= 3]
+    qf = {p for p in P if q % p == 0}
+    q_remaining = q
+    for p in PRIMES:
+        while q_remaining % int(p) == 0:
+            q_remaining //= int(p)
+    assert q_remaining == 1, "Prime divisors of q must lie within the Euler-product cutoff."
+    assert max(Hs) <= int(PRIMES[-1]), "Pair differences must lie below the cutoff."
+    base = np.prod([(1-2/p)/(1-1/p)**2 for p in P if p not in qf]) * np.prod([p/(p-1) for p in qf])
+    Hmax = max(Hs); S = np.zeros(Hmax+1)
+    for d in range(1, Hmax+1):
+        v = base; m = d
+        # The factor at 2 is handled separately below; remove it before
+        # the odd-prime loop so that its final residual is really prime.
+        while m % 2 == 0:
+            m //= 2
+        for p in P:
+            if p*p > m: break
+            if m % p == 0:
+                if p not in qf: v *= (p-1)/(p-2)
+                while m % p == 0: m //= p
+        if m > 2 and m not in qf: v *= (m-1)/(m-2)
+        if q % 2 == 0: v *= 2
+        elif d % 2 == 0: v *= 2
+        else: v = 0.0
+        S[d] = v
+    out = []
+    for H in Hs:
+        d = np.arange(1, H); tot = np.sum(2*(H-d)*S[1:H])
+        out.append(al*tot/H**2)
+    return np.array(out)
+Hs = np.unique(np.geomspace(6, 3000, 60).astype(int))
+fig, ax = plt.subplots(figsize=(7, 3.2))
+for q, col, lab in [(10007, BLUE, "$q=10007$ (prime, $\\alpha_q\\approx1$)"), (30030, RUST, "$q=30030=2\\cdot3\\cdot5\\cdot7\\cdot11\\cdot13$ ($\\alpha_q\\approx0.19$)")]:
+    ax.plot(Hs, pair_sum_ratio(q, Hs), color=col, lw=2, label=lab)
+ax.plot(Hs, 1 - np.log(Hs)/Hs, color=GREY, ls="--", lw=1, label="$1-\\log H/H$")
+ax.axhline(1, color="k", lw=0.8); ax.set_xscale("log"); ax.set_xlabel("$H$ (number of lift indices)"); ax.set_ylabel("sum / leading-order prediction"); ax.set_ylim(0.3, 1.05); ax.legend(frameon=False, fontsize=8, loc="lower right")
+plt.tight_layout()
+```
+
+@fig-counts compares the empirical count distribution in $[0,1]$ with the Poisson distribution of mean $1$, for two starting-point windows at the same finite modulus. The differences visible at this size are consistent with a theorem asserting convergence as $q$ grows. The next section explains how convergence of the factorial moments establishes convergence of the point-process laws.
+
+```{python}
+#| label: fig-counts
+#| fig-cap: "For $q=10007$: the empirical distribution over reduced residues $a$ of the number of prime lifts with $m/\\ell_q\\in[0,1]$, for the full window $J=(0,q]$ and for the first 5% of residues, compared with Poisson(1). The two windows illustrate the two kinds of window addressed by Theorem 1.3. The empirical counts are less dispersed than Poisson at this size. With $\\ell_q\\approx9$, the limited number of lift indices, small-prime correlations, and finite-size prime densities all remain relevant."
+import numpy as np, matplotlib.pyplot as plt, math
+from helpers import sieve, lift_scale, reduced_residues, BLUE, GREEN, RUST
+q = 10007; ell = lift_scale(q); mmax = int(ell)
+isp = sieve(q*(mmax+2)); m = np.arange(1, mmax+1)
+def counts(A):
+    return np.array([isp[a + m*q].sum() for a in A])
+A_full = reduced_residues(q); A_win = reduced_residues(q, 0, q//20)
+cf, cw = counts(A_full), counts(A_win); ks = np.arange(0, 7)
+pf = np.array([(cf == k).mean() for k in ks]); pw = np.array([(cw == k).mean() for k in ks]); pois = np.array([math.exp(-1)/math.factorial(k) for k in ks])
+fig, ax = plt.subplots(figsize=(7, 3.2)); wdt = 0.27
+ax.bar(ks-wdt, pf, wdt, color=BLUE, label=f"all residues ($R_q={len(A_full)}$)"); ax.bar(ks, pw, wdt, color=GREEN, label=f"first 5% of residues ($R_q={len(A_win)}$)"); ax.bar(ks+wdt, pois, wdt, color=RUST, alpha=0.8, label="Poisson(1)")
+ax.set_xlabel("number of prime lifts with $m\\leq\\ell_q$"); ax.set_ylabel("probability"); ax.legend(frameon=False, fontsize=8)
+plt.tight_layout()
+```
+
+## From moments to weak convergence
+
+The preceding section calculated the limiting mixed factorial moments. We now explain why those moments identify the Poisson law, then show how to obtain one small exceptional set for the conclusion. Here weak convergence concerns laws on configurations, as explained in [the probability-language box in Chapter 1](01-question.qmd#configurations-and-laws). **The first step turns moment information into a distribution; the second shows that finitely many tests suffice for any fixed accuracy.**
+
+For a concrete example, fix $q$, sample $a$ uniformly among the coprime residues in $J$, and let
+$$
+X=\Xi_{q,a}([0,1]),\qquad Y=\Xi_{q,a}((1,2]).
+$$
+The Poisson target is a pair of independent counts, each with mean $1$. Under this target law, $\mathbb E_\Pi[(X)_r(Y)_s]=1$ for all nonnegative integers $r,s$. The moment criterion says that, along any sequence of laws for which all these moments approach $1$, the joint count distribution approaches that Poisson pair. For instance, it then gives
+$$
+\Pr(X=0,\ Y=1)\longrightarrow e^{-1}e^{-1}=e^{-2}.
+$$
+This conclusion uses the full collection of mixed moments. Matching the two means alone would leave the probabilities of individual counts undetermined.
+
+Three facts make the moment criterion work:
+
+- **Tightness:** bounded means keep the counts within a bounded range with high probability, so their distributions have possible limits.
+- **Uniform integrability:** bounds on higher moments prevent rare, enormous counts from carrying a substantial part of a lower moment. The limiting distributions therefore inherit the moments we calculated.
+- **Moment determinacy:** the joint law of independent Poisson variables is uniquely specified by its mixed moments. Every possible limit must consequently be that law.
+
+To pass from interval counts to the whole point configuration, assign a nonnegative weight $f(x)$ to each location, with $f$ continuous and zero outside a bounded region. The integral $\int f\,d\xi$ adds the weights of the points present. The **Laplace functional** averages an exponential of this weighted count:
+$$
+L_\mu(f)=\mathbb E_\mu\!\left[e^{-\int f\,d\xi}\right],
+\qquad
+\int f\,d\xi=\sum_{\text{points }x\text{ of }\xi}f(x).
+$$
+The quantity being averaged lies between $0$ and $1$. For weights equal to $u$ on the first interval and $v$ on the second, it becomes $\mathbb E[e^{-uX-vY}]$, whose limit is determined by the joint count distribution. Approximating continuous weights by weights constant on finer finite partitions into intervals extends the conclusion to every $f$ above. Convergence of these Laplace functionals characterises **weak convergence** of the point-process laws [@Kallenberg2017, Theorem 4.11].
+
+::: {.callout-note collapse="true"}
+## Why the moments and weighted counts determine the limit
+
+Let $\mu_n$ be laws with finite moments of every order for counts on bounded intervals. Suppose their mixed factorial moments converge to the Poisson values for every finite disjoint family of bounded intervals with rational endpoints. Falling factorials determine ordinary moments through polynomial identities, such as
+$$
+X^2=(X)_2+X.
+$$
+Thus the ordinary mixed moments of each count vector converge as well.
+
+For a single nonnegative count, Markov's inequality gives
+$$
+\Pr(X>M)\le\frac{\mathbb EX}{M}.
+$$
+A uniform bound on the means makes this probability uniformly small for large $M$. Applying this to every coordinate gives tightness of a fixed count vector. To control the contribution of large values to its moments, use higher moments. For example,
+$$
+\mathbb E\!\left[X\mathbf1_{\{X>M\}}\right]
+\le\frac{\mathbb EX^2}{M}.
+$$
+Analogous bounds using higher powers give uniform integrability of each fixed mixed monomial. Every subsequential limit therefore inherits all the limiting moments. The independent Poisson vector is moment-determinate because its moment generating function is finite near the origin. This identifies every subsequential limit and proves convergence of the count vectors.
+
+For a nonnegative step function $g$ constant on a finite partition into rational intervals, $\int g\,d\xi$ is a linear combination of the interval counts. Their joint convergence gives convergence of $L_{\mu_n}(g)$. To handle a nonnegative continuous compactly supported $f$, choose a rational $R$ with its support in $[0,R]$ and approximate it uniformly by such $g$, also supported there. Then
+$$
+\left|e^{-\int f\,d\xi}-e^{-\int g\,d\xi}\right|
+\le\|f-g\|_\infty\,\xi([0,R]).
+$$
+The first-moment bounds control the expectation of the right-hand side uniformly in $n$. Hence the Laplace functionals converge for all nonnegative continuous compactly supported $f$, giving weak convergence to $\Pi$.
+:::
+
+**To obtain one small exceptional set, we need only finitely many tests at any fixed tolerance.** The moment criterion refers to infinitely many choices of intervals and moment orders. Each fixed test has a small exceptional set, but an infinite union of such sets need not be small.
+
+```{=latex}
+\Needspace{5\baselineskip}
+```
+
+For each fixed tolerance $\varepsilon>0$, the finite-test lemma supplies finitely many moment tests whose sufficiently accurate agreement with the Poisson values guarantees distance less than $\varepsilon$ from $\Pi$. These tests specify intervals and selection orders. Their number stays fixed as $Q$ grows, allowing a finite union of exceptional sets.
+
+::: {.callout-note collapse="true"}
+## The finite-test lemma, and why this proof supplies no rate
+
+List all mixed factorial-moment tests on finite disjoint families of rational intervals as $H_1,H_2,\ldots$, and put $c_j=H_j(\Pi)$. The paper proves that, for every $\varepsilon>0$, there is an integer $n$ such that
+$$
+\max_{1\le j\le n}|H_j(\mu)-c_j|\le\frac1n
+\quad\Longrightarrow\quad
+d_{\mathrm w}(\mu,\Pi)<\varepsilon
+$$
+for every law $\mu$ with finite moments of all orders for counts on bounded intervals. Our empirical laws satisfy this condition: at fixed $q$, a bounded observation interval contains only finitely many possible lift positions, so its count is bounded.
+
+If the lemma failed, we could choose a law $\mu_n$ for each $n$ that passes the first $n$ tests within $1/n$ but remains at distance at least $\varepsilon$ from $\Pi$. Every fixed test would then converge to its Poisson value as $n$ grows. The moment criterion would force $\mu_n$ to converge weakly to $\Pi$, contradicting that distance bound.
+
+This argument gives no formula for $n$ in terms of $\varepsilon$, and the moment limits themselves use a qualitative singular-series mean. The proof therefore supplies no explicit rate for the weak distance. Theorem 1.3 fixes $\varepsilon$ first and gives a quantitative bound of order $Q(\log Q)^{-A}$ on the exceptional set; its implied constants and large-$Q$ thresholds are not asserted effective.
+:::
+
+::: {#thm-poisson}
+## Theorem 1.3 of the paper (Poisson limit theorem for prime lifts)
+Let $d_{\mathrm w}$ be a metric for weak convergence of laws on point configurations, and let $\mathcal J_C(q)$ be the family of windows $J=(u,v]\subseteq(0,q]$ with $|J|\ge q/(\log q)^C$. For every fixed $\varepsilon,A,C>0$,
+$$
+\#\Bigl\{q\in(Q,2Q]:\ \sup_{J\in\mathcal J_C(q)} d_{\mathrm w}(\operatorname{Law}_{q,J},\Pi)>\varepsilon\Bigr\}\ll_{\varepsilon,A,C}Q(\log Q)^{-A}.
+$$
+When $q$ is restricted to primes, the number of exceptions is
+$$
+O_{\varepsilon,A,C}\!\left(\bigl(\pi(2Q)-\pi(Q)\bigr)(\log Q)^{-A}\right).
+$$
+The implied constants may also depend on the chosen metric.
+:::
+
+The supremum over $J$ means that every permitted starting-point window works for the same good modulus; the window may be chosen after the modulus is known. Inside each empirical law, $q$ is fixed and only the starting residue is random. For any fixed desired accuracy $\varepsilon$, the theorem bounds how many moduli can fail by $O(Q/(\log Q)^A)$, with $A$ chosen as large as desired. It gives no prescribed rate for a tolerance that shrinks with $Q$.
+
+**Proof of Theorem 1.3.** Choose $n$ from the finite-test lemma with tolerance $\varepsilon/2$. Apply the preceding section's moment estimate to each of those $n$ tests and discard the union of their exceptional sets. Since $n$ is fixed, the union still has size $O(Q(\log Q)^{-A})$, with a constant that may depend on $\varepsilon$. For sufficiently large $Q$, every remaining modulus passes all $n$ tests within $1/n$, simultaneously for every permitted $J$. The lemma gives distance less than $\varepsilon/2$ for each window, so their supremum is at most $\varepsilon/2<\varepsilon$. For prime moduli, apply the integer-modulus estimate with exponent $A+1$: there are about $Q/\log Q$ primes in $(Q,2Q]$, so the exceptional proportion among them is $O((\log Q)^{-A})$.
+
+::: {.callout-tip}
+## Where this is in the paper
+Section 5. The scale and reduced-residue counts are in Section 5.1; Leung's proposition and Lemma 5.1 are in Section 5.2; Proposition 5.2 is the uniform moment convergence in Section 5.3, with the coprimality observation in its proof; Lemmas 5.3 and 5.4 are the moment criterion and the finite-test lemma in Section 5.4; the proof of Theorem 1.3 closes the section.
+:::

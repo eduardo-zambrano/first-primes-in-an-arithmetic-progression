@@ -1,0 +1,238 @@
+# The prime-tuple theorem {#sec-main-theorem}
+
+@sec-singular computed the arithmetic correction $\mathfrak S(q\mathbf h)$. We now combine it with the prime-density heuristic to build a prediction for the number of prime tuples. Once that prediction is clear, we can state the theorem that describes its accuracy.
+
+## From prime densities to a predicted count {#sec-predicted-count}
+
+Fix a large modulus $q$ and the familiar shape $\mathbf h=(1,3)$, whose lift indices select $a+q$ and $a+3q$. Let $a$ run through the integers $1,\ldots,q$, representing all residue classes modulo $q$. We want to count how many of these starting points make both lifts prime. Write
+$$
+N:=N_{(1,3)}(q;(0,q])
+=\#\{1\le a\le q: a+q\text{ and }a+3q\text{ are both prime}\}.
+$$
+Here $(0,q]$ specifies the interval of starting points being counted.
+
+Chapter 1 sampled only residues coprime to $q$. Here we count successful starting points among all residues, but every noncoprime starting point contributes zero: a common prime factor of $a$ and $q$ divides both lifts, which exceed $q$ and are therefore composite. The probability that a uniformly chosen reduced residue succeeds is $N/\varphi(q)$. In a shorter window, we divide by the number of reduced residues in that window.
+
+The baseline below uses the ordinary prime densities before conditioning on coprimality. The singular series corrects their shared divisibility restrictions, and division by the number of reduced residues gives the conditional probability. For a single lift, the approximate count $q/\log q$ becomes $(q/\log q)/\varphi(q)=1/\ell_q$ after this division, recovering the scale from Chapter 1.
+
+For one starting point $a$, the prime-density heuristic assigns the two lifts probabilities $1/\log(a+q)$ and $1/\log(a+3q)$. Treating primality as independent would give the pair the probability
+$$
+\frac{1}{\log(a+q)\log(a+3q)}.
+$$
+Adding these model probabilities over all the starting points gives the independence model's predicted total count:
+$$
+\sum_{a=1}^{q}\frac{1}{\log(a+q)\log(a+3q)}.
+$$
+The summand changes slowly as $a$ increases, so we use the integral as a smooth approximation to this sum:
+$$
+\mathcal I:=\mathcal I_{(1,3)}(q;(0,q])
+=\int_0^q\frac{dt}{\log(t+q)\log(t+3q)}.
+$$
+The integration variable $t$ runs continuously through the interval of starting points; $q$ remains fixed. The integral adds up the varying prime densities across that interval.
+
+This independence baseline still needs the arithmetic correction from @sec-singular. Multiplying by the singular series gives the Hardy--Littlewood prediction:
+$$
+\underbrace{N}_{\text{actual count}}
+\;\approx\;
+\underbrace{\mathfrak S(q\mathbf h)}_{\text{arithmetic correction}}
+\underbrace{\mathcal I}_{\text{independence baseline}}.
+$$
+
+Both factors depend on $q$: the integral accounts for the sizes of the lifts, while the singular series accounts for their shared divisibility restrictions. So far this is a heuristic prediction; the theorem below specifies the moduli, shapes and intervals for which it is accurate.[^exact-integral]
+
+[^exact-integral]: One might hope to simplify the baseline by freezing both logarithms at $\log q$, replacing $\mathcal I$ by $q/(\log q)^2$. The identity $\log(t+hq)=\log q+\log(h+t/q)$, with $h=1$ or $3$, shows what this omits. The added terms remain bounded as $q$ grows, but vary with $t$. Even for a fixed shape, freezing the logarithms can introduce a relative discrepancy of order $1/\log q$; for lift indices growing like a power of $\log q$, it can be as large as $\log\log q/\log q$. To retain the theorem's arbitrary logarithmic accuracy, we keep the exact integral. In the proof it arises from partial summation (@sec-one-set).
+
+## The centre matters: a numerical look
+
+Dividing the count by the independence baseline leaves the prediction
+$$
+\frac{N}{\mathcal I}\approx\mathfrak S(q\mathbf h).
+$$
+The predicted value of this ratio is the singular series, which changes with the prime factors of $q$. This is what the paper calls the **varying arithmetic centre**. Here, "centre" refers to the value $\mathfrak S(q\mathbf h)$ predicted for the normalised count $N/\mathcal I$ at a given modulus $q$.
+
+For our pair $\mathbf h=(1,3)$ the singular series is positive, so we can also divide by the full prediction:
+$$
+\frac{N}{\mathfrak S(q\mathbf h)\,\mathcal I}\approx1.
+$$
+This second normalisation gives every modulus the same target value, $1$.
+
+@fig-centre compares the counts for many moduli $q$ near $10^5$. Both panels use exactly the same prime counts and, for each modulus, the same integral $\mathcal I$. Only the singular series in the denominator changes. The comparison shows why the prediction needs an arithmetic correction that depends on $q$.
+
+The left panel divides $N$ by $\mathfrak S(\mathbf h)\mathcal I$, using the fixed, undilated singular series. Substituting the full prediction $N\approx\mathfrak S(q\mathbf h)\mathcal I$ into this ratio gives
+$$
+\begin{aligned}
+\frac{N}{\mathfrak S(\mathbf h)\mathcal I}
+&\approx
+\frac{\mathfrak S(q\mathbf h)\mathcal I}
+     {\mathfrak S(\mathbf h)\mathcal I}\\[4pt]
+&=\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}\\[4pt]
+&=f_{\mathbf h}(q).
+\end{aligned}
+$$
+The integral cancels, leaving precisely the dilation multiplier from @sec-singular. For example, when $f_{\mathbf h}(q)=2$, the predicted count is twice the denominator used in the left panel, so a point near $2$ represents close agreement with the full prediction. The factor $3$ in $q$ contributes a multiplier of $2$ and helps explain the separation into two groups; other prime divisors can increase the multiplier further.
+
+The right panel includes the dilation multiplier in its denominator by using $\mathfrak S(q\mathbf h)\mathcal I$. A ratio of $1$ means that the actual count equals the prediction, and a ratio of $1.1$ means that it is $10\%$ above the prediction. Subtracting $1$ gives the relative error:
+$$
+\frac{N}{\mathfrak S(q\mathbf h)\mathcal I}-1
+=\frac{N-\mathfrak S(q\mathbf h)\mathcal I}
+       {\mathfrak S(q\mathbf h)\mathcal I}.
+$$
+This puts the accuracy of the prediction on the same scale for every modulus, even when the predicted counts differ. The points in the right panel cluster around $1$: incorporating the dependence on $q$ accounts for the systematic differences between moduli visible in the left panel.
+
+```{python}
+#| label: fig-centre
+#| fig-cap: "Counts of $a\\in(0,q]$ with $a+q$ and $a+3q$ prime, for the 300 moduli $q$ in $(10^5, 10^5+300]$, divided by the prediction with the undilated singular series (left) and with the dilated one (right). Points are coloured by whether $3\\mid q$. Singular series are approximated by their local products through $p=20000$."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import sieve, singular_series, tuple_count, log_integral, BLUE, RUST
+h = (1,3); Q = 100000; qs = np.arange(Q+1, Q+301)
+isp = sieve(4*(Q+301))
+S_h = singular_series(h)
+raw, cen = [], []
+for q in qs:
+    q = int(q); N = tuple_count(isp, h, q); I = log_integral(h, q)
+    S_qh = singular_series(tuple(hj*q for hj in h))
+    raw.append(N/(S_h*I)); cen.append(N/(S_qh*I))
+raw, cen = np.array(raw), np.array(cen); col = np.where(qs % 3 == 0, RUST, BLUE)
+fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.2), sharey=True)
+for ax, y, ttl in zip(axes, [raw, cen], ["normalised by $S(\\mathbf{h})\\,\\mathcal{I}$", "normalised by $S(q\\mathbf{h})\\,\\mathcal{I}$"]):
+    ax.scatter(qs, y, s=9, c=col); ax.axhline(1, color="k", lw=0.8); ax.set_title(ttl, fontsize=10); ax.set_xlabel("$q$")
+axes[0].set_ylabel("count / prediction")
+plt.tight_layout()
+```
+
+## The statement
+
+We now allow a general shape $\mathbf h$ of distinct positive lift indices and a window $J=(u,v]\subseteq(0,q]$ of starting points. The same count and integral become
+$$
+N_{\mathbf h}(q;J)=\#\{a\in J\cap\mathbb Z: a+h_1q,\ldots,a+h_kq\ \text{all prime}\},
+$$
+
+$$
+\mathcal I_{\mathbf h}(q;J)=\int_u^v\frac{dt}{\prod_{j=1}^k\log(t+h_jq)}.
+$$
+The count includes the integer starting points in $J$, and the integral gives the corresponding independence baseline.
+
+For the theorem, $Q$ is large, $L=\log Q$, and $q$ ranges over the integers in $(Q,2Q]$.
+
+::: {#thm-main}
+## The prime-tuple theorem (Theorem 1.1 of the paper)
+Fix $k\ge1$ and $A,B,C,D>0$. For all large $Q$ there is an exceptional set $\mathcal E(Q)\subseteq(Q,2Q]$ with
+$$
+|\mathcal E(Q)|\ll QL^{-A}
+$$
+such that for every integer $q\in(Q,2Q]\setminus\mathcal E(Q)$, simultaneously for every shape of distinct integers $1\le h_j\le L^B$ with $\mathfrak S(q\mathbf h)>0$ and every window $J\subseteq(0,q]$ with $|J|\ge qL^{-C}$,
+$$
+N_{\mathbf h}(q;J)=\mathfrak S(q\mathbf h)\,\mathcal I_{\mathbf h}(q;J)\,\bigl(1+O(L^{-D})\bigr).
+$$
+If $\mathfrak S(q\mathbf h)=0$ the count is exactly zero for every $q$ in the stated range once $Q>k$.
+:::
+
+The four constants play four separate roles, summarised in @tbl-params.
+
+```{=latex}
+\Needspace{11\baselineskip}
+```
+
+| Constant | Controls | Larger value means |
+|:--:|:--|:--|
+| $A$ | size of the exceptional set, $QL^{-A}$ | fewer bad moduli |
+| $B$ | range of shapes, $h_j\le L^B$ | more patterns covered at once |
+| $C$ | shortest window, $|J|\ge qL^{-C}$ | finer localisation in the starting point |
+| $D$ | relative error, $L^{-D}$ | sharper asymptotic |
+
+: The roles of the parameters in Theorem 1.1. All four may be chosen freely, and the implied constant depends on all of them. {#tbl-params tbl-colwidths="[15, 42, 43]"}
+
+## Why "simultaneously" is the point
+
+A theorem that says "for each fixed shape, almost all $q$ are good" is weaker than it looks. The exceptional set may depend on the shape. If we then want to use the asymptotic for many shapes at once, say all shapes with entries up to $(\log q)^2$, we must take the union of their exceptional sets, and we can only do that if each one is small enough to survive a union over $(\log q)^{2k}$ shapes. The same applies to windows: a different exceptional set for each window would not be very useful when the window is chosen after $q$.
+
+The essential feature of @thm-main is that, for each fixed $k$ and choice of the constants, and every sufficiently large $Q$, there exists a single exceptional set such that, for every modulus outside it, the asymptotic holds simultaneously for every permitted shape and window. The exceptional set may depend on $k$, the constants and $Q$, but not on the particular shape or window chosen. In the Poisson application of @sec-poisson, the shapes range over all configurations of $K$ lift indices up to a multiple of $\log q$, and the windows range over the permitted family.
+
+The proof must keep the exceptional set small while covering a growing collection of patterns and windows. The estimates are uniform across the permitted choices and strong enough to keep the total number of exceptions under control. @sec-one-set explains how these estimates produce the single exceptional set.
+
+## What was already known
+
+It helps to know where @thm-main sits. Earlier work of Balog [-@Balog1990] and Kawada [-@Kawada1993] averages prime tuples over families of shifts. The structured family $q\mathbf h$ retains a common dilation, so it requires its own uniform estimates.
+
+- **One fixed shape, almost all dilations.** The corresponding **von Mangoldt-weighted** asymptotic in a **rectangular averaging range**, with arbitrary logarithmic savings, is already contained in Theorem 1.3 of Matthiesen, Teräväinen and Wang [-@MTW2026]. Their result handles general fixed polynomial patterns and includes the dilation-dependent singular series. Passing to the present moving windows and exact unweighted integral requires the formulation explained here. A qualitative version with error $o(1)$ follows from the Green–Tao–Ziegler theory.
+- **Pairs ($k=2$).** The case of two forms, which is the statement that $a+q$ and $a+3q$ are both prime about as often as predicted for almost all $q$, has classical precedents in the almost-all-difference results of Lavrik [-@Lavrik1960] and Mikawa [-@Mikawa1991], obtained by circle-method arguments. Those classical pair arguments do not by themselves establish the higher-tuple estimates used here; the proof employs higher-order Fourier analysis through its Analytic Input (@sec-engine).
+- **Prime moduli.** Ford, Green, Konyagin and Tao [-@FGKT2016] proved an almost-all version for prime dilations $q$ and a specific family of shapes, as a step in their work on large prime gaps. Their second-moment mechanism is the one the paper generalises (@sec-second-moment).
+
+What is new in @thm-main is the combination: all shapes in a polylogarithmic box and all windows of polylogarithmic relative length, with one exceptional set, with the exact main term, for *integer* moduli where the centre varies with $q$.
+
+```{=latex}
+\clearpage
+```
+
+## An illustration {#sec-tuple-illustration}
+
+@fig-concentration compares actual and predicted prime-tuple counts for several patterns and windows at once. Each column fixes one modulus $q$. The upper panel uses moduli between one and two million; the lower panel uses moduli between ten and twenty million.
+
+At each scale, we sampled 40 integer moduli uniformly without replacement from $(Q,2Q]$ (random seed 20261021). The tables show positions 1, 9, 17, 24, 32 and 40 of each ordered sample.
+
+```{=latex}
+\enlargethispage{\baselineskip}
+\begingroup
+\setlength{\intextsep}{4pt}
+\captionsetup{font=footnotesize,skip=2pt}
+```
+
+```{python}
+#| label: fig-concentration
+#| fig-cap: "Prime-tuple counts at $Q=10^6$ (top) and $Q=10^7$ (bottom), with six moduli shown at each scale. Each cell gives (actual count, predicted count), with the prediction rounded to the nearest integer. Under each pattern label, full interval, first half and second half mean that the integer starting point $a$ ranges over $(0,q]$, $(0,q/2]$ and $(q/2,q]$, respectively. Shading shows the size of the difference as a percentage of the predicted count: darker cells mean larger percentage errors. Both panels use a 0-5% colour scale. Colours and percentages use unrounded predictions. The outlined cell produces the largest of the nine errors in its column, recorded in the final row."
+#| fig-width: 6
+#| fig-height: 6
+#| fig-dpi: 300
+#| fig-alt: "Two stacked tables compare actual and predicted counts at Q equal to one million and ten million. Each pattern label spans a row, followed by a bold Window heading and three data rows. Each column fixes one modulus. A key identifies each pair as actual count followed by predicted count. Shading uses a common zero-to-five-percent error scale. The cell with the largest error in each column is outlined, and its error is recorded in the final row."
+#| fig-pos: H
+#| out-width: 100%
+from figures.prime_tuple_panels.draw_prime_tuple_panels import build_figure
+fig = build_figure()
+```
+
+```{=latex}
+\endgroup
+\Needspace{5\baselineskip}
+```
+
+Each pattern asks for three primes. For example, the label $(1,3,7)$ means that $a+q$, $a+3q$ and $a+7q$ must all be prime. The three data rows under **Window** change the range of starting points $a$: first the whole interval $(0,q]$, then its first half, then its second half. The other two patterns ask the same question with different lift indices.
+
+Now read the first count pair in the upper panel. For $q=1{,}025{,}895$ and the pattern $(1,3,7)$, there are $4{,}127$ successful starting points in the full interval, against a predicted count of $4{,}138$. The difference is about eleven, or $0.26\%$ of the predicted count.
+
+This is how we measure closeness throughout the figure. The **percentage error** is the size of the difference, expressed as a percentage of the prediction:
+$$
+\text{percentage error}
+=\frac{|\text{actual count}-\text{predicted count}|}
+       {\text{predicted count}}\times100\%.
+$$
+It treats a count above the prediction and a count below it in the same way.
+
+Next, read down a column. The modulus stays fixed while the pattern and window change. The final row keeps the largest percentage error among those nine comparisons. For $q=1{,}025{,}895$, this is $3.0\%$, rounded to one decimal place. The outlined cell locates this discrepancy: the pattern $(1,5,11)$ in the second half. The theorem controls all the permitted comparisons for a modulus outside the exceptional set, so the largest error is the relevant summary.
+
+The lower panel shows closer agreement in the displayed sample at the larger scale. Its largest errors per column range from $0.6\%$ to $2.0\%$, compared with $3.0\%$ to $4.8\%$ above.
+
+```{=latex}
+\begingroup
+\titlespacing*{\subsection}{0pt}{0.6em}{0.25em}
+```
+
+### How the counts were computed
+
+The counts are exact, obtained by a prime sieve. The predictions evaluate the theorem's main term, $\mathfrak S(q\mathbf h)\mathcal I_{\mathbf h}(q;J)$, using numerical integration with the varying logarithms retained. All three shapes have size $k=3$ and are admissible. For the arithmetic correction, we compute the undilated singular series from its local factors through $p=10^6$ and apply the exact dilation multiplier $f_{\mathbf h}(q)$. As a stability check, doubling the prime cutoff changes the predictions by about $1.1\times10^{-7}$ in relative terms, well below the discrepancies shown.
+
+### What the example shows
+
+Each column illustrates the theorem's central requirement: simultaneous agreement across several patterns and windows for one fixed modulus. Its largest error summarises all nine comparisons at once. @thm-main extends this control to the entire permitted family, outside a single small exceptional set of moduli, with any prescribed logarithmic accuracy.
+
+```{=latex}
+\enlargethispage{\baselineskip}
+```
+
+::: {.callout-tip}
+## Where this is in the paper
+The paper states Theorem 1.1 and Corollary 1.2 in Section 1.1, alongside the size estimate (3) and the remark on the exact integral; Section 1.3 compares earlier work.
+:::
+
+```{=latex}
+\endgroup
+```

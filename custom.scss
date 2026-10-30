@@ -1,0 +1,46 @@
+/*-- scss:defaults --*/
+
+// Deep slate and parchment palette
+$body-bg: #f8f7f3;
+$navbar-bg: #2f4858;
+$sidebar-bg: #eeeeea;
+$link-color: #1f5f8b;
+$link-hover-color: #143f5e;
+$code-bg: #efeee8;
+$card-bg: #ffffff;
+
+/*-- scss:rules --*/
+
+.navbar {
+  border-bottom: 1px solid #c9d3da;
+  box-shadow: 0 1px 3px rgba(47, 72, 88, 0.10);
+}
+.sidebar { border-right: 1px solid #d8d8d2; }
+.sidebar .sidebar-item .sidebar-item-text { color: #35444e; }
+
+h1, h2, h3, h4, h5, h6 { color: #233b4a; }
+
+.callout { border-radius: 4px; }
+.callout-note { border-left-color: #4f7ea3 !important; }
+.callout-tip { border-left-color: #3f8a6b !important; }
+.callout-important { border-left-color: #a0652d !important; }
+.callout-warning { border-left-color: #9b6a2a !important; }
+
+.table > thead { background-color: #e3e8ec; color: #233b4a; }
+.table-striped > tbody > tr:nth-of-type(odd) > * { background-color: #f1f3f4; }
+
+.quarto-title { border-bottom: 2px solid #b9c7d1; padding-bottom: 1.5rem; }
+.quarto-title .title { color: #233b4a; }
+.quarto-title .subtitle { color: #4a6a80; }
+
+.quarto-title-meta a.btn { background-color: #2f4858; border-color: #2f4858; color: #ffffff; }
+.quarto-title-meta a.btn:hover { background-color: #233b4a; border-color: #233b4a; }
+
+.nav-footer { border-top: 1px solid #c9d3da; }
+
+.quarto-figure img, .cell-output-display img { max-width: 100%; height: auto; }
+
+// Theorem-like blocks
+.theorem, .lemma, .proposition, .corollary, .definition {
+  background: #ffffff; border-left: 4px solid #2f4858; padding: 0.6rem 1rem; margin: 1rem 0;
+}

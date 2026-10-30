@@ -1,0 +1,257 @@
+# The analytic engine: linear equations in primes {#sec-engine}
+
+The main analytic theorem behind the prime-tuple estimates is imported in a single statement, which the paper calls the **Analytic Input**. This chapter explains what the statement says, where it comes from, and why the paper needs the particular form it uses.
+
+## Counting prime values of several linear forms
+
+Let $\psi_1,\ldots,\psi_t$ be linear forms in $m$ integer variables $\mathbf x=(x_1,\ldots,x_m)$, for instance
+$$
+\psi_1(q,a)=a+q,\qquad \psi_2(q,a)=a+3q .
+$$
+Let $\Omega\subseteq[-N,N]^m$ be a convex region. How many integer points $\mathbf x\in\Omega$ make all $t$ forms prime simultaneously?
+
+The analytic theorem first studies a weighted version of this count. Each prime value $p$ receives weight $\log p$. This compensates for the heuristic prime density $1/\log p$, removing the logarithmic density factors that appeared in @sec-main-theorem. The baseline for the weighted count is therefore the volume of the region. We express these weights using the **von Mangoldt function** $\Lambda$.[^von-mangoldt]
+
+[^von-mangoldt]: For positive integers $n$, $\Lambda(n)=\log p$ when $n=p^r$ with $p$ prime and $r\ge1$, and $\Lambda(n)=0$ otherwise. The prime number theorem gives $X^{-1}\sum_{n\le X}\Lambda(n)\to1$ as $X\to\infty$. Besides primes, this function gives nonzero weight to **proper prime powers** $p^r$ with $r\ge2$. @sec-one-set shows that their contribution is negligible for the required estimates and removes it before removing the logarithmic weights.
+
+The predicted weighted sum has the Hardy–Littlewood form: a volume times a product of local factors,
+$$
+\sum_{\mathbf x\in\Omega\cap\mathbb Z^m}\prod_{i=1}^t\Lambda(\psi_i(\mathbf x))
+\;\approx\;\operatorname{vol}(\Omega)\prod_p\beta_p,
+$$
+
+$$
+\beta_p=\frac{1}{p^m}\sum_{\mathbf x\in(\mathbb Z/p\mathbb Z)^m}\ \prod_{i=1}^t\frac{p}{p-1}\mathbf 1_{p\nmid\psi_i(\mathbf x)} .
+$$
+
+The local factor $\beta_p$ is again a ratio: the probability that a random $\mathbf x$ modulo $p$ keeps all forms away from $0$, divided by the independence prediction $(1-1/p)^t$. For the single form $\psi(n)=n$, every $\beta_p=1$, and the statement on an interval is the prime number theorem. The expression itself can force a divisibility obstruction. For $\psi(n)=2n$, every value is divisible by $2$, so the local factor $\beta_2$ is zero.
+
+@sec-one-set removes the logarithmic weights to recover the ordinary prime count and its logarithmic integral.
+
+## Finite complexity
+
+The weighted counting prediction above, a volume times a product of local factors, is not known to hold for every system of linear forms. For $\psi_1(n)=n$ and $\psi_2(n)=n+2$, it would give the twin-prime asymptotic. These affine forms have identical homogeneous parts: after ignoring the constants, their coefficient vectors are proportional. The hypothesis used here is **pairwise linear independence** of the homogeneous coefficient vectors. It excludes this obstruction and gives a system of **finite complexity** in the Green–Tao framework.
+
+The proof needs to show that the predicted count is accurate for most moduli. An average count alone cannot establish this: large overcounts and undercounts may cancel. We therefore estimate the average squared error. Expanding this square introduces two copies of the prime pattern, with starting points $a$ and $b$ and the same dilation $q$. The analytic theorem must handle this larger system of $2k$ forms as well as the original system of $k$ forms.
+
+::: {.callout-note collapse="true"}
+## How squaring produces two copies of the pattern
+
+Take the familiar shape $\mathbf h=(1,3)$, and allow starting points $1\le a\le q$. The weighted count is
+$$
+C(q)=\sum_{a=1}^{q}\Lambda(a+q)\Lambda(a+3q).
+$$
+For each starting point $a$, the summand evaluates the pattern
+$$
+a+q,\qquad a+3q.
+$$
+
+First fix $q$, and square this sum. Squaring means multiplying the sum by another copy of itself:
+$$
+\begin{aligned}
+C(q)^2
+={}&\left(\sum_{a=1}^{q}\Lambda(a+q)\Lambda(a+3q)\right)\\
+&{}\times\left(\sum_{b=1}^{q}\Lambda(b+q)\Lambda(b+3q)\right).
+\end{aligned}
+$$
+We have renamed the summation variable in the second copy $b$. This lets the two starting points range separately: choosing $a$ in the first sum does not determine which $b$ we choose in the second.
+
+Multiplying out gives
+$$
+C(q)^2
+=\sum_{a=1}^{q}\sum_{b=1}^{q}
+\underbrace{\Lambda(a+q)\Lambda(a+3q)}_{\text{starting at }a}
+\;\underbrace{\Lambda(b+q)\Lambda(b+3q)}_{\text{starting at }b}.
+$$
+This is where the **two copies of the prime pattern** appear. Each term now involves four forms:
+$$
+\underbrace{a+q,\quad a+3q}_{\text{first copy}},
+\qquad
+\underbrace{b+q,\quad b+3q}_{\text{second copy}}.
+$$
+Both copies use the same $q$, because we squared the count at that fixed modulus.
+
+For example, take $q=6$, $a=1$, and $b=5$:
+
+| Starting point | First lift | Second lift |
+|:---:|:---:|:---:|
+| $a=1$ | $1+6=7$ | $1+18=19$ |
+| $b=5$ | $5+6=11$ | $5+18=23$ |
+
+The corresponding term in the expanded square is
+$$
+(\log 7)(\log 19)(\log 11)(\log 23).
+$$
+It combines one occurrence of the pattern starting at $1$ with another occurrence starting at $5$.
+
+Every ordered pair $(a,b)$ appears, including $a=b$. We are multiplying sums; we have made no assumption that the two patterns behave independently.
+
+Now average over moduli. Let
+$$
+\mathcal Q=\{q\in\mathbb Z:Q<q\le2Q\},
+$$
+and write $\mathbb E_q$ for the uniform average over this set. For a general shape $\mathbf h=(h_1,\ldots,h_k)$, put
+$$
+C_{\mathbf h}(q)=\sum_{a=1}^{q}\prod_{j=1}^{k}\Lambda(a+h_jq).
+$$
+Then
+$$
+\mathbb E_q C_{\mathbf h}(q)^2
+=\frac1{|\mathcal Q|}
+\sum_{\substack{q\in\mathcal Q\\1\le a,b\le q}}
+\prod_{j=1}^{k}\Lambda(a+h_jq)\Lambda(b+h_jq).
+$$
+The right-hand side is a single sum over **three integer variables, $(q,a,b)$**, involving **$2k$ linear forms**. This is the form of sum that the Analytic Input can evaluate.
+
+Finally, this calculation supplies the squared-count term when we expand the average squared error around a prediction $M(q)$:
+$$
+\begin{aligned}
+\mathbb E_q\bigl(C_{\mathbf h}(q)-M(q)\bigr)^2
+={}&\underbrace{\mathbb E_q C_{\mathbf h}(q)^2}_{\text{two copies of the pattern}}\\
+&{}-2\mathbb E_q\!\bigl(C_{\mathbf h}(q)M(q)\bigr)\\
+&{}+\mathbb E_q M(q)^2.
+\end{aligned}
+$$
+Here the prediction for the full weighted count is $M(q)=q\,\mathfrak S(q\mathbf h)$. All three terms are needed to control the error; @sec-second-moment develops this calculation with the normalisation used in the proof.
+:::
+
+For pairs, the enlarged system can be handled using classical Fourier analysis. Starting with triples, the standard argument uses **higher-order Fourier analysis** [-@GreenTao2010]. The Analytic Input supplies the estimates needed in both cases.
+
+Both systems meet this independence condition. In the original system, the forms $a+h_jq$ have coefficient vectors $(h_j,1)$ in the variables $(q,a)$. No two are proportional because the lift indices $h_j$ are distinct. In the enlarged system, the vectors in $(q,a,b)$ are $(h_j,1,0)$ and $(h_j,0,1)$. Within either copy, distinct lift indices again rule out proportionality; between copies, the different coefficients of $a$ and $b$ rule it out. Thus the theorem's independence hypothesis holds for both systems.
+
+## From qualitative to quantitative
+
+The proof needs a counting theorem with two features: a prescribed bound on the error, and uniformity as the family of shapes grows. This section explains how the Analytic Input supplies both.
+
+Write $E(N)$ for the difference between the weighted count and its prediction $\operatorname{vol}(\Omega)\prod_p\beta_p$. The $m$ integer variables range inside $[-N,N]^m$, so $N^m$ is the natural counting scale. For systems whose coefficients stay bounded as $N$ grows, Green and Tao developed the counting theorem with error $E(N)=o(N^m)$. This means
+$$
+\frac{E(N)}{N^m}\longrightarrow0
+\qquad\text{as }N\longrightarrow\infty.
+$$
+The conclusion is **qualitative**: it says that this ratio tends to zero, without specifying how quickly. For example, an error of size
+$$
+\frac{N^m}{\log\log N}
+$$
+would satisfy it. The proof needs a faster decay of the error relative to $N^m$.
+
+A **quantitative** estimate specifies a rate. The stronger result gives, with the other parameters fixed,
+$$
+|E(N)|\le C_R\frac{N^m}{(\log N)^R}
+$$
+for any fixed $R>0$, once $N$ is sufficiently large. Choosing $R=10$, for example, gives a bound by a constant times $N^m/(\log N)^{10}$. If the proof requires a smaller error bound, we can choose a larger fixed exponent $R$. The constant and the threshold for sufficiently large $N$ may change with that choice.
+
+Compared with the reference scale $N^m$, the bound has a factor $(\log N)^R$ in the denominator. This reduction in the size of the error bound is called a **logarithmic saving**. The saving is **arbitrary** because we can obtain such a bound for any fixed exponent $R>0$.
+
+The bound controls the absolute error on the scale $N^m$. To turn it into a relative error estimate, we must also compare it with the size of the main term $\operatorname{vol}(\Omega)\prod_p\beta_p$.
+
+The sharper rate comes from two advances in the underlying theory. Leng, Sah and Sawhney proved an inverse theorem with quasi-polynomial bounds, and Leng [-@Leng2024] proved an efficient equidistribution theorem for nilsequences. Together these yield the prescribed logarithmic accuracy. This is the same type of error estimate as in Vinogradov's theorem on sums of three primes.
+
+The theorem must also accommodate a growing family of shapes. In a form such as
+$$
+\psi_j(q,a)=a+h_jq,
+$$
+$q$ and $a$ are the variables, while the lift index $h_j$ is a coefficient. A bounded-coefficient theorem covers a fixed shape such as $(1,3)$. Allowing $h_j$ to grow up to a power of $\log N$ admits more shapes and larger lift indices as $N$ grows, even though the number of forms remains fixed. We need the error bound to hold throughout this larger range. Kravitz, Woo and Xu [-@KWX2025, Theorem 3.1] record this variant and explain how it follows from Leng's argument.
+
+::: {#thm-input}
+## Analytic Input
+This is a specialization of Kravitz, Woo and Xu [-@KWX2025, Theorem 3.1].
+
+Fix $m,t$ and $K,R>0$. Let $\psi_1,\ldots,\psi_t$ be nonzero homogeneous integer linear forms in $m$ variables, pairwise linearly independent, with all coefficients at most $(\log N)^K$ in absolute value. Let $\Omega\subseteq[-N,N]^m$ be a convex body on which all forms are positive. Then
+$$
+\sum_{\mathbf x\in\Omega\cap\mathbb Z^m}\prod_{i=1}^t\Lambda(\psi_i(\mathbf x))
+=\operatorname{vol}(\Omega)\prod_p\beta_p+O_{m,t,K,R}\bigl(N^m(\log N)^{-R}\bigr),
+$$
+uniformly in the coefficients and in the body.
+:::
+
+The parameters $K$ and $R$ have separate roles:
+
+| Parameter | What it controls |
+|:---:|:---|
+| $K$ | The allowed coefficient size, at most $(\log N)^K$. |
+| $R$ | The requested error bound, a constant times $N^m/(\log N)^R$. |
+
+**Uniformly in the coefficients and in the body** means that, once $m,t,K,R$ are fixed, one error bound works for every permitted choice of forms and region $\Omega$. Its constant and the threshold for sufficiently large $N$ do not change from one allowed shape or region to another. This uniformity lets the later argument treat many shapes and residue windows together without introducing a separate uncontrolled constant for each choice.
+
+<!-- ::: {.callout-note}
+## A word on provenance
+The Analytic Input, in the form used, is a theorem stated in the Kravitz–Woo–Xu preprint, with its derivation from Leng's work outlined there. The paper relies on that theorem and does not reprove it. This is a dependence on a cited result, not an assumption of an unproved Hardy–Littlewood conjecture, so the paper's conclusions are unconditional in the usual sense. The source is a preprint rather than a refereed paper, and the paper says so. The Poisson argument also uses Leung's singular-series mean and standard point-process results.
+::: -->
+
+## Why polylogarithmic coefficients, twice
+
+The paper applies @thm-input with $m=3$ variables and at most $2k$ forms. Polylogarithmic coefficients are needed in two distinct places.
+
+1. **The shape box.** The forms are $a+h_jq$ with $h_j\le(\log Q)^B$. To cover all shapes in the box with one exceptional set, the estimate must be uniform for coefficients up to $(\log Q)^B$.
+2. **The divisor truncation.** In @sec-divisor the paper restricts $q$ to multiples of a divisor $d\le(\log Q)^M$ by writing $q=dn$; the forms become $a+(dh_j)n$, with coefficients up to $(\log Q)^{B+M}$.
+
+A theorem restricted to bounded coefficients does not directly provide either of these uniform estimates. The polylogarithmic-coefficient formulation is therefore an essential part of the input being cited.
+
+## A worked local factor
+
+The next calculation shows what arithmetic correction remains after averaging over moduli, and why individual moduli can still need different corrections. We use the familiar pair $\mathbf h=(1,3)$, giving the two forms
+$$
+a+q,\qquad a+3q.
+$$
+For this local calculation, both $q$ and $a$ range over all residues modulo $p$. We choose uniformly among the $p^2$ pairs $(q,a)$, count the proportion for which both forms are nonzero modulo $p$, and divide by the independence benchmark $(1-1/p)^2$.
+
+@tbl-beta computes this local factor $\beta_p$ in two ways: by directly counting the surviving residue pairs, and by using the formula
+$$
+\beta_p=S_p(\mathbf h)(1+c_p/p),
+$$
+derived in @sec-second-moment. The agreement checks the formula; the values reveal how averaging affects the arithmetic correction.
+
+```{python}
+#| label: tbl-beta
+#| tbl-cap: "Local factors $\\beta_p$ of the system $(a+q,\ a+3q)$ in the variables $(q,a)$, by direct enumeration of all $p^2$ pairs modulo $p$, compared with the closed form $S_p(\\mathbf h)(1+c_p/p)$."
+from fractions import Fraction as Fr
+from IPython.display import Markdown
+from helpers import nu
+h = (1,3); rows = ["| $p$ | $\\nu_{\\mathbf{h}}(p)$ | $S_p(\\mathbf{h})$ | $c_p$ | $\\beta_p$ by enumeration | $S_p(1+c_p/p)$ |", "|:--:|:--:|:--:|:--:|:--:|:--:|"]
+for p in [2,3,5,7,11]:
+    k = len(h); n = nu(h,p); Sp = (1-Fr(n,p))*Fr(p,p-1)**k; cp = Fr(n-1,p-n)
+    beta = sum(Fr(p,p-1)**k for q in range(p) for a in range(p) if all((a+hj*q)%p for hj in h))/Fr(p*p)
+    rows.append(f"| {p} | {n} | {Sp} | {cp} | {beta} | {Sp*(1+cp/p)} |")
+Markdown("\n".join(rows))
+```
+
+At $p=2$, the two forms always have the same parity, since their difference is $2q$. Whenever $a+q$ is odd, $a+3q$ is odd too. Half of the residue pairs $(q,a)$ make both forms odd, whereas independent parities would give a probability of $(1/2)^2=1/4$. Thus
+$$
+\beta_2=\frac{1/2}{1/4}=2.
+$$
+The pattern passes the parity restriction twice as often as the independence benchmark predicts. This dependence survives averaging over $q$.
+
+For every odd prime $p$, each pair of output residues occurs exactly once as $(q,a)$ ranges modulo $p$. Indeed, subtracting the outputs gives $2q$, which determines $q$ modulo an odd prime; the first output then determines $a$. The proportion with both outputs nonzero is therefore $(1-1/p)^2$, exactly the independence benchmark, so $\beta_p=1$. Consequently,
+$$
+\prod_p\beta_p=2\cdot1\cdot1\cdots=2.
+$$
+The predicted weighted count over $(q,a)$ therefore has an arithmetic factor of $2$ multiplying the volume term.
+
+The same reasoning gives, for any pair of distinct lift indices,
+$$
+\beta_p=\begin{cases}
+1,&p\nmid h_2-h_1,\\
+(1-1/p)^{-1},&p\mid h_2-h_1.
+\end{cases}
+$$
+These are the one-block factors denoted $A_p$ in @sec-second-moment. Averaging the dilations of a fixed pair retains a correction at primes dividing its difference. Gallagher's mean value $1$ [-@Gallagher1976] averages over the shifts themselves. Here the shape $(1,3)$ is fixed, and its difference remains even under every dilation, so the parity correction persists.
+
+An averaged factor of $1$ can also conceal variation between moduli. At $p=3$, recall the two cases from @sec-singular:
+
+| Condition on $q$ | Proportion of residues of $q$ modulo $3$ | Local correction $S_3(q\mathbf h)$ |
+|:---:|:---:|:---:|
+| $3\nmid q$ | $2/3$ | $3/4$ |
+| $3\mid q$ | $1/3$ | $3/2$ |
+
+Averaging these corrections gives
+$$
+\beta_3=\frac23\cdot\frac34+\frac13\cdot\frac32=1.
+$$
+The average is $1$, yet the local correction for a particular $q$ is either $3/4$ or $3/2$.
+
+Our goal is to predict the count accurately for most individual moduli. We must therefore retain the dependence on the prime divisors of $q$, which is exactly what $\mathfrak S(q\mathbf h)$ does. @sec-second-moment develops the second-moment argument around this varying arithmetic centre.
+
+::: {.callout-tip}
+## Where this is in the paper
+The Analytic Input is stated in Section 2, immediately followed by a paragraph on how it specialises Kravitz–Woo–Xu's Theorem 3.1 and on the half-open boundaries of the bodies used. Section 1.3 traces the lineage from Green–Tao through Bienvenu [-@Bienvenu2017] and Leng.
+:::

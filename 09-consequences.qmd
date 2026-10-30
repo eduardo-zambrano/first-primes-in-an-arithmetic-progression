@@ -1,0 +1,249 @@
+# Consequences {#sec-consequences}
+
+The preceding chapters established simultaneous prime-tuple estimates and used them to prove the Poisson limit theorem for prime lifts (@thm-poisson). We can now describe the first primes in a residue class: how many appear in a given range of lift indices, how far apart the first prime lifts lie, and the size of the actual least prime. The arithmetic work makes these conclusions available for almost all integer moduli, including those with many small prime factors.
+
+Throughout this chapter, hold $q$ fixed and choose $a$ uniformly among the coprime residues in a starting window $J$. Probabilities are proportions of these residues. For fixed $C>0$, the permitted windows form $\mathcal J_C(q)$: intervals in $(0,q]$ of length at least $q/(\log q)^C$. The conclusions hold uniformly over these windows. We first construct a single set $\mathcal G$ of moduli along which the limits hold, then extract the count, gap, and least-prime laws.
+
+## One set of good moduli for all tolerances and windows
+
+Chapter 8 supplies good moduli after we choose an accuracy $\varepsilon$, an exceptional-set exponent $A$, and a window exponent $C$. We now organise these conclusions into **one set $\mathcal G$ that supports every fixed accuracy and window exponent**. This is the set along which we can state all the limiting laws in this chapter.
+
+The construction works one range of moduli at a time. Split the integers into the dyadic blocks $(2^j,2^{j+1}]$, whose upper endpoint is twice the lower endpoint. On each block, choose a stage $r$: require distance at most $1/r$ from the Poisson law for every window of length at least $q/(\log q)^r$, and discard the moduli that fail. Larger stages demand better accuracy and cover shorter windows.
+
+Each fixed stage is valid once the moduli are sufficiently large. **We increase the stage only when the blocks are large enough for its guarantee to apply.** The resulting stage $r(j)$ tends to infinity, but its growth need not follow an explicit schedule. This is the diagonal argument in @fig-dyadic. The retained moduli form $\mathcal G$.
+
+For example, suppose we want distance below $0.01$ between the empirical point-process law and the Poisson law, for every window of length at least $q/(\log q)^3$. Eventually $r(j)>100$. The stage then gives distance below $0.01$ and covers even shorter windows, since $r(j)\ge3$. Every fixed accuracy and fixed $C$ is eventually covered in the same way, using the same $\mathcal G$.
+
+The construction discards so few moduli that, for every fixed $A>0$,
+$$
+\#\{q\le x:q\notin\mathcal G\}
+\ll_A\frac{x}{(\log x)^A}.
+$$
+In particular, $\#\{q\le x:q\in\mathcal G\}/x\to1$: the set has **density one**. There can still be infinitely many excluded moduli, but their proportion tends to zero. Corollary 6.1 of the paper gives, for every fixed $C$,
+$$
+\sup_{J\in\mathcal J_C(q)}
+d_{\mathrm w}(\operatorname{Law}_{q,J},\Pi)
+\longrightarrow0
+\qquad(q\to\infty,\ q\in\mathcal G).
+$$
+The unknown stage thresholds leave the convergence rate unspecified. The strong bound on the excluded moduli also implies that $\mathcal G$ contains almost all primes, in proportion to the primes themselves; the last section explains why.
+
+::: {.callout-note collapse="true"}
+## Choosing the stages and bounding all the exclusions
+
+For each integer $r\ge1$, apply @thm-poisson with tolerance $1/r$, window exponent $r$, and exceptional exponent $r+1$. Its exceptional count in block $j$ is at most a constant depending on $r$ times $2^j j^{-(r+1)}$. Choose a threshold $j_r$ large enough to absorb that constant into the extra power of $j$, giving
+$$
+\#\{\text{failures at stage }r\text{ in block }j\}
+\le2^j j^{-r}\qquad(j\ge j_r).
+$$
+Choose the thresholds strictly increasing, with $j_r\ge r$. For $j\ge j_1$, set
+$$
+r(j)=\max\{r:j_r\le j\}.
+$$
+On block $j$, remove only the failures for its chosen stage $r(j)$; retain the finitely many earlier blocks in full. The removed fraction is at most $j^{-r(j)}$. Since every fixed stage eventually becomes available, $r(j)\to\infty$. For fixed $C$, the inclusion $\mathcal J_C(q)\subseteq\mathcal J_{r(j)}(q)$ holds once $r(j)\ge C$, and the distance on retained moduli is at most $1/r(j)\to0$.
+
+To bound the total exclusions up to $x$, fix $A$. On every sufficiently late block, $r(j)\ge A+2$, so at most $2^j j^{-A-2}$ moduli are removed. Let $2^N\le x<2^{N+1}$. Blocks with $j\le N/2$ contain only $O(\sqrt x)$ integers in total. For the later blocks, $j\asymp\log x$ and their lengths sum to $O(x)$, giving $O_A(x/(\log x)^{A+2})$ exclusions. The initial blocks are absorbed into the constant, proving the bound for the same $\mathcal G$ for every $A$.
+:::
+
+```{python}
+#| label: fig-dyadic
+#| fig-cap: "Schematic of the diagonal construction, with shading not to scale. On dyadic block $j$ the theorem is applied with parameter $r(j)$, which increases in steps. The proof arranges an actual removed proportion at most $j^{-r(j)}$; the exaggerated shading only indicates the removal of exceptional moduli."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import SLATE, BLUE, RUST, GREY
+fig, ax = plt.subplots(figsize=(7, 2.4)); ax.set_xlim(0, 12); ax.set_ylim(0, 3); ax.axis("off")
+r_of_j = [1,1,2,2,2,3,3,3,3,4,4,4]
+for j in range(12):
+    ax.add_patch(plt.Rectangle((j, 0.8), 1, 1.2, fc="white", ec=SLATE, lw=1))
+    schematic_width = min(0.85, 1.4/(j+1)**(0.5*r_of_j[j]))
+    ax.add_patch(plt.Rectangle((j+1-schematic_width, 0.8), schematic_width, 1.2, fc=RUST, alpha=0.35, lw=0))
+    ax.text(j+0.5, 2.3, f"$r={r_of_j[j]}$", ha="center", fontsize=8, color=BLUE)
+    ax.text(j+0.5, 0.45, f"$2^{{{j+10}}}$", ha="center", fontsize=7, color=GREY)
+ax.text(6, 2.8, "parameter $r(j)$ used on block $j$", ha="center", fontsize=9, color=BLUE)
+ax.text(6, 0.1, "dyadic blocks; shaded = removed (not to scale)", ha="center", fontsize=9, color=SLATE)
+plt.tight_layout()
+```
+
+## Counts, locations, and gaps
+
+We can now read concrete information from the point-process limit. Fix a good modulus $q$ and sample the starting residue $a$ uniformly among the coprime residues in $J$. The probabilities below describe proportions of these residues, with $q$ held fixed.
+
+**Counts tell us how many prime lifts have appeared by a given rescaled position.** Put $X(t)=\Xi_{q,a}([0,t])$. For every fixed $t>0$ and nonnegative integer $r$,
+$$
+\Pr\{X(t)=r\}\longrightarrow e^{-t}\frac{t^r}{r!}
+\qquad(q\to\infty,\ q\in\mathcal G).
+$$
+For $t=1$, the limiting proportions with no prime lift and with exactly one are both $e^{-1}\approx36.8\%$; the proportion with exactly two is $e^{-1}/2\approx18.4\%$. More generally, counts in any fixed finite collection of disjoint bounded observation intervals approach independent Poisson variables, with means equal to the interval lengths. Corollary 6.2 gives convergence of these count-vector laws in **total variation**: the probabilities of all events concerning that fixed vector become uniformly close to their Poisson predictions.
+
+**The first positive prime lift's location is determined by the absence of earlier points.** Write $M_j=M_j(q,a)$ for the index of the $j$-th positive prime lift and put $M_0=0$. Then
+$$
+\frac{M_1}{\ell_q}>t
+\quad\Longleftrightarrow\quad X(t)=0.
+$$
+The limiting probability is $e^{-t}$, so $M_1/\ell_q$ has an $\operatorname{Exp}(1)$ limit. Equivalently, the proportion of sampled residues reached by a prime lift through index $\lfloor t\ell_q\rfloor$ tends to $1-e^{-t}$.
+
+The first distance and the subsequent gaps are
+$$
+G_j=\frac{M_j-M_{j-1}}{\ell_q},\qquad j\ge1.
+$$
+For any fixed number $r$ of them and thresholds $t_1,\ldots,t_r\ge0$, Corollary 6.3 gives the joint limit
+$$
+\Pr\{G_1\le t_1,\ldots,G_r\le t_r\}
+\longrightarrow\prod_{j=1}^r(1-e^{-t_j}).
+$$
+Thus these successive increments become independent exponentials in the limit. The location of the $j$-th prime lift is their sum,
+$$
+\frac{M_j}{\ell_q}=G_1+\cdots+G_j,
+$$
+which explains its Gamma$(j,1)$ limit. For example, reaching the second prime lift by $t$ means having at least two points in $[0,t]$, so
+$$
+\Pr\{M_2/\ell_q\le t\}
+\longrightarrow1-e^{-t}(1+t).
+$$
+At $t=2$ this gives $1-3e^{-2}\approx59.4\%$: the limiting proportion of sampled residues whose second positive prime lift occurs by index $\lfloor2\ell_q\rfloor$.
+
+All these limits hold uniformly over the permitted starting windows. The location and gap distribution functions also converge uniformly in their thresholds. At any fixed desired accuracy, the paper gives exceptional-set bounds of order $Q/(\log Q)^A$ for these conclusions, with $A$ arbitrary. The proportions are asymptotic predictions; @fig-gaps shows the remaining arithmetic structure at the finite modulus $q=10007$.
+
+::: {.callout-note collapse="true"}
+## Passing from the point process to counts and gaps
+
+The continuous mapping theorem transfers weak convergence to a function of the configuration whenever that function is continuous with probability one under the limiting law. Counting points in a fixed bounded interval is continuous at configurations with no point on its endpoints. The Poisson process has no point at any prescribed endpoint almost surely, so each fixed finite count vector converges in distribution.
+
+These vectors take values in the discrete space $\mathbb N_0^s$, where convergence to a probability law implies convergence in total variation. To see this, choose a finite set carrying almost all the limiting probability. The probabilities of its finitely many count vectors converge individually, and the total probability outside it is small for both laws. This controls the probability difference for every event concerning the vector.
+
+For locations, a typical Poisson configuration is simple (no repeated locations), locally finite, has no point at $0$, and has at least $r$ points for every fixed $r$. Choose a point-free endpoint beyond its $r$-th point and small disjoint neighbourhoods of the first $r$ points. Nearby configurations have one point in each neighbourhood and none in the intervening regions, so the ordered locations, and hence their gaps, vary continuously. For the Poisson process, the distance to the first point and the subsequent gaps are independent $\operatorname{Exp}(1)$ variables, giving the joint gap limit and the Gamma$(j,1)$ location law.
+
+Since these limiting distribution functions are continuous, convergence is uniform in their thresholds: use a finite grid on a large bounded region, monotonicity between grid points, and small tail probabilities outside it. For any prescribed count or distribution-function accuracy, these continuity statements give a sufficient tolerance for the original point-process law. Applying @thm-poisson with that tolerance transfers its exceptional-set bound and its uniformity over $J$. Applying the same statements along $\mathcal G$ gives the limits in the main text.
+:::
+
+```{python}
+#| label: fig-gaps
+#| fig-cap: "For $q=10007$: the distance to the first prime $M_1/\\ell_q$ and the next gap $(M_2-M_1)/\\ell_q$ compared with the $\\operatorname{Exp}(1)$ density, followed by the empirical CDF of the distance to the second prime, $M_2/\\ell_q$, compared with Gamma(2,1). All distances are measured along the rescaled lift axis. All reduced residues have two prime lifts within the computed range. Histogram heights retain the full sample denominator, including values beyond the displayed range. Since $q$ is odd, consecutive prime lifts differ by an even number of steps. In this sample the most common gap between the first two primes is six lift steps, consistent with small-prime divisibility effects. Broad bins of width $6/\\ell_q$ smooth the visible lattice structure."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import sieve, lift_scale, reduced_residues, lift_indices, BLUE, GREEN, RUST
+q = 10007; ell = lift_scale(q); mmax = int(14*ell)
+isp = sieve(q*(mmax+2)); A = reduced_residues(q); L = lift_indices(isp, q, A, mmax)
+assert all(len(l) >= 2 for l in L), "Increase mmax: every sampled residue needs two observed prime lifts."
+g1 = np.array([l[0] for l in L])/ell; g2 = np.array([l[1]-l[0] for l in L])/ell; arr2 = np.array([l[1] for l in L])/ell
+fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.8))
+x = np.linspace(0, 6, 300); bin_width = 6/ell
+gap_bins = np.arange(0, 6+bin_width, bin_width)
+for ax, g, lab, col in zip(axes[:2], [g1, g2], ["distance to\nfirst prime", "gap to\nnext prime"], [BLUE, GREEN]):
+    weights = np.full(len(g), 1/(len(g)*bin_width))
+    ax.hist(g, bins=gap_bins, weights=weights, color=col, alpha=0.75)
+    ax.plot(x, np.exp(-x), color=RUST, lw=1.8); ax.set_title(lab, fontsize=10); ax.set_xlabel("$t$"); ax.set_xlim(0, 6)
+xs = np.sort(arr2); axes[2].step(xs, np.arange(1, len(xs)+1)/len(xs), color=BLUE, where="post", label="empirical"); xx = np.linspace(0, 10, 300)
+axes[2].plot(xx, 1-np.exp(-xx)*(1+xx), color=RUST, lw=1.8, label="Gamma(2,1)"); axes[2].set_title("distance to\nsecond prime", fontsize=10); axes[2].set_xlabel("$t$"); axes[2].legend(frameon=False, fontsize=8); axes[2].set_xlim(0, 10)
+plt.tight_layout()
+```
+
+## The least prime in a residue class
+
+Let $p(q,a)$ be the least prime congruent to $a$ modulo $q$. We now translate the first positive lift into the actual least prime, measuring prime values on the scale
+$$
+q\ell_q=\varphi(q)\log q.
+$$
+The point process begins with lift index $m=1$ and omits the representative $a$ at index $0$. That representative may itself be prime. Two exact examples show the distinction:
+
+| Modulus $q$ | Starting residue $a$ | First positive prime lift | Actual least prime $p(q,a)$ |
+|---:|---:|---:|---:|
+| $30$ | $1$ | $31=1+30$ | $31$ |
+| $30$ | $7$ | $37=7+30$ | $7$ |
+
+**For nonprime representatives, converting a lift index into a prime value adds a small shift.** We have $p(q,a)=a+qM_1(q,a)$, hence
+$$
+\frac{p(q,a)}{\varphi(q)\log q}
+=\frac{M_1(q,a)}{\ell_q}
++\frac{a}{\varphi(q)\log q}.
+$$
+Since $0<a\le q$, the extra term is at most $1/\ell_q$, which tends to zero uniformly in $a$.
+
+**Prime representatives affect a vanishing proportion of the sampled residues.** Their least prime is already $a$, as in the second row of the table. The Brun–Titchmarsh inequality of Montgomery and Vaughan [-@MontgomeryVaughan1973] bounds how many such representatives a permitted window can contain. Compared with the number $R_q(J)$ of sampled coprime residues, their proportion tends to zero uniformly over those windows. Thus both adjustments disappear in the limit: a uniformly small shift for nonprime representatives, and a vanishing fraction of prime representatives.
+
+Combining this with the exponential law of $M_1/\ell_q$ gives Corollary 1.4:
+$$
+\frac{\#\{a\in J:\gcd(a,q)=1,\ p(q,a)\le t\,\varphi(q)\log q\}}{R_q(J)}\longrightarrow1-e^{-t},
+$$
+uniformly in $t\ge0$ and in the permitted starting window, along $q\in\mathcal G$. The corresponding fixed-tolerance exceptional bounds hold as well. **The theorem identifies the proportion of residue classes whose least prime is below each multiple of $\varphi(q)\log q$.** In particular, the limiting proportions below one, two, and three times this scale are approximately $63.2\%$, $86.5\%$, and $95.0\%$.
+
+Erdős [-@Erdos1949] had proved unconditionally that, for each fixed $t>0$, a positive proportion of classes have least prime below $t\varphi(q)\log q$ for every sufficiently large $q$; Granville [-@Granville1989] obtained a related conditional law with a different order of quantifiers. The present paper identifies the limiting proportion for typical moduli.
+
+::: {.callout-note collapse="true"}
+## Why both adjustments are uniformly small
+
+Put $\alpha_q=\varphi(q)/q$. The proportion of sampled residues whose representative is prime is
+$$
+\eta_q(J)=\frac{\#\{a\in J\cap\mathbb P:\gcd(a,q)=1\}}{R_q(J)}.
+$$
+Brun–Titchmarsh bounds the numerator by $O(|J|/\log|J|)$. Since $R_q(J)\asymp\alpha_q|J|$ and $\log|J|\asymp_C\log q$ for the permitted windows,
+$$
+\eta_q(J)\ll_C\frac1{\alpha_q\log q}
+=\frac1{\ell_q}\longrightarrow0
+$$
+uniformly over $J$. The uniform growth of $\ell_q$ was established in Chapter 8.
+
+Write $F_{q,J}(t)$ for the empirical distribution function of $M_1/\ell_q$, and $F^*_{q,J}(t)$ for that of $p(q,a)/(\varphi(q)\log q)$. For nonprime representatives the latter location is shifted to the right by at most $\delta_q=1/\ell_q$. Removing the prime representatives from either count changes a proportion by at most $\eta_q(J)$, giving
+$$
+F_{q,J}(t-\delta_q)-\eta_q(J)
+\le F^*_{q,J}(t)
+\le F_{q,J}(t)+\eta_q(J).
+$$
+Extend the distribution functions by zero on negative arguments. The limiting function $H(t)=1-e^{-t}$ for $t\ge0$, also extended by zero, changes by at most the change in its argument. Therefore
+$$
+\sup_{t\ge0}|F^*_{q,J}(t)-H(t)|
+\le\sup_{t\ge0}|F_{q,J}(t)-H(t)|
++\eta_q(J)+\delta_q.
+$$
+The first term is controlled by the gap corollary; the other two tend to zero uniformly over the windows for all sufficiently large $q$. This transfers both convergence along $\mathcal G$ and the fixed-tolerance exceptional bounds to the actual least prime.
+:::
+
+@fig-least shows actual least primes, including prime representatives $a<q$. Their locations are $(m+a/q)/\ell_q$, so the residue-dependent shift fills bands between the lift-index locations $m/\ell_q$. Across the full window, the graph need not display the lift-index lattice. In the composite example $\ell_q\approx2.4$, so the shift can be as large as about $0.42$, and prime representatives need not yet be a small proportion. Both effects can matter at this size.
+
+```{python}
+#| label: fig-least
+#| fig-cap: "The empirical CDF of the actual least prime $p(q,a)/(\\varphi(q)\\log q)$, including prime representatives below $q$, compared with $1-e^{-t}$. Left: $q=10007$ (prime, $\\ell_q\\approx9.2$), for all residues and for the first 5% of residues. Right: $q=510510=2\\cdot3\\cdots17$ ($\\ell_q\\approx2.4$). The actual locations include the shift $a/(\\varphi(q)\\log q)$ and therefore do not lie on the lift-index lattice $m/\\ell_q$."
+import numpy as np, matplotlib.pyplot as plt, math
+from helpers import sieve, lift_scale, phi, reduced_residues, BLUE, GREEN, RUST
+def least_prime_cdf(q, lo=0, hi=None, tmax=6.0):
+    ell = lift_scale(q); ph = phi(q); mmax = int(tmax*ell)+3
+    isp = sieve(q*(mmax+2)); A = reduced_residues(q, lo, hi); m = np.arange(0, mmax+1)
+    vals = []
+    for a in A:
+        pr = isp[a + m*q]
+        vals.append((a + m[pr][0]*q)/(ph*math.log(q)) if pr.any() else np.inf)
+    return np.sort(np.array(vals))
+fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.0)); t = np.linspace(0, 6, 300)
+for ax, q in zip(axes, [10007, 510510]):
+    v = least_prime_cdf(q); ax.step(v, np.arange(1, len(v)+1)/len(v), where="post", color=BLUE, label="all residues")
+    if q == 10007:
+        w = least_prime_cdf(q, 0, q//20); ax.step(w, np.arange(1, len(w)+1)/len(w), where="post", color=GREEN, label="first 5% of residues")
+    ax.plot(t, 1-np.exp(-t), color=RUST, lw=1.8, label="$1-e^{-t}$"); ax.set_xlim(0, 6); ax.set_title(f"$q={q}$, $\\ell_q\\approx{lift_scale(q):.1f}$", fontsize=10); ax.set_xlabel("$t$"); ax.legend(frameon=False, fontsize=8, loc="lower right")
+axes[0].set_ylabel("proportion with $p(q,a)\\leq t\\varphi(q)\\log q$")
+plt.tight_layout()
+```
+
+The same comparison handles later actual primes. For a nonprime representative, adding $a$ shifts all the rescaled locations by the same vanishing amount, while the gaps between successive primes remain exactly $(M_j-M_{j-1})/\ell_q$ for $j\ge2$. Prime representatives form the negligible fraction already estimated. Thus the exponential and gamma distributional limits also describe actual prime gaps and prime locations on the scale $\varphi(q)\log q$.
+
+## Prime moduli come for free
+
+The integer-modulus theorem already contains the conclusions for prime moduli. Every exceptional prime is among the exceptional integers, so the only adjustment is to compare that count with the smaller number of primes. The separate prime-modulus concentration argument recalled in @sec-second-moment explains the simpler arithmetic of prime steps; the stronger integer result now supplies their count, gap, and least-prime laws together.
+
+There are roughly $Q$ integers in $(Q,2Q]$ and $Q/\log Q$ primes. To leave an exceptional proportion of order $(\log Q)^{-A}$ among the primes, apply the integer theorem with exponent $A+1$. Dividing its exceptional bound by the number of prime moduli gives
+$$
+\begin{aligned}
+&\frac{\#\{\text{exceptional prime moduli in }(Q,2Q]\}}
+{\pi(2Q)-\pi(Q)}
+\\
+&\quad\ll\frac{Q/(\log Q)^{A+1}}{Q/\log Q}
+=\frac1{(\log Q)^A}.
+\end{aligned}
+$$
+**The freedom to choose the exceptional exponent lets us pass to a thinner family of moduli and retain an arbitrarily strong logarithmic bound.** This also explains why the set $\mathcal G$ contains a relative-density-one set of primes: its global exclusion bound can be compared with $\pi(x)\sim x/\log x$ in the same way. Density one among integers alone would not imply that conclusion, since the primes themselves have density zero among integers.
+
+More generally, the argument applies to any family with at least a constant times $Q/(\log Q)^E$ members in every sufficiently large dyadic block, for fixed $E$. Use the integer exceptional exponent $A+E$ and divide by the family's size. Its exceptional proportion is then $O((\log Q)^{-A})$. No equidistribution assumption on the family is needed; the total number of integer exceptions controls all of its exceptions.
+
+The conclusions of this chapter therefore apply both to typical integer moduli and to typical prime moduli. In either setting, the same point-process theorem gives the proportions of residue classes with each prime count, the distributions of the first prime locations and gaps, and the coverage law $1-e^{-t}$ for the least prime on the scale $\varphi(q)\log q$.
+
+::: {.callout-tip}
+## Where this is in the paper
+Section 6. Corollary 6.1 is the density-one set; Corollary 6.2 the joint counts; Corollary 6.3 the prime locations and gaps; Section 6.4 the least prime, including the Brun–Titchmarsh bound (49) and the proof of Corollary 1.4; Section 6.5 the scope and the remark on prime moduli.
+:::

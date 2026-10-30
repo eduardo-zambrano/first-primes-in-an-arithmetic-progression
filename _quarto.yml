@@ -1,0 +1,76 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "The First Primes in an Arithmetic Progression"
+  subtitle: "A reader's companion to *Simultaneous prime-tuple asymptotics and quenched Poisson laws for almost all moduli*"
+  author: "Eduardo Zambrano"
+  date: today
+  downloads: [pdf]
+  chapters:
+    - index.qmd
+    - 01-question.qmd
+    - 02-singular-series.qmd
+    - 03-main-theorem.qmd
+    - 04-engine.qmd
+    - 05-second-moment.qmd
+    - 06-divisor-expansion.qmd
+    - 07-one-exceptional-set.qmd
+    - 08-poisson.qmd
+    - 09-consequences.qmd
+    - 10-scope.qmd
+    - 11-synthesis.qmd
+    - references.qmd
+  appendices:
+    - A-notation.qmd
+    - B-paper-map.qmd
+
+bibliography: references.bib
+
+execute:
+  echo: false
+  warning: false
+
+format:
+  html:
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+    theme:
+      - flatly
+      - custom.scss
+    toc-depth: 3
+    number-sections: true
+    fontsize: 1.05em
+    linestretch: 1.4
+    mainfont: "Palatino, Georgia, serif"
+    fig-width: 7
+    fig-height: 4
+  pdf:
+    documentclass: report
+    papersize: letter
+    geometry:
+      - top=1in
+      - bottom=1in
+      - left=1.25in
+      - right=1.25in
+    fontsize: 11pt
+    mainfont: "TeX Gyre Pagella"
+    sansfont: "TeX Gyre Heros"
+    linestretch: 1.15
+    number-sections: true
+    colorlinks: true
+    linkcolor: NavyBlue
+    urlcolor: NavyBlue
+    fig-width: 6.5
+    fig-height: 3.8
+    include-in-header:
+      text: |
+        \usepackage{xcolor}
+        \usepackage{needspace}
+        \usepackage{titlesec}
+        \titleformat{\section}{\Large\bfseries\sffamily}{\thesection}{1em}{}
+        \titleformat{\subsection}{\large\bfseries\sffamily}{\thesubsection}{1em}{}
+        \titlespacing*{\section}{0pt}{1.5em}{0.75em}
+        \titlespacing*{\subsection}{0pt}{1.25em}{0.5em}

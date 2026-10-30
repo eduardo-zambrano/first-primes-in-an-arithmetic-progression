@@ -1,0 +1,56 @@
+# The scope of the results {#sec-scope}
+
+The paper establishes simultaneous prime-tuple estimates for a growing family of patterns of fixed size, and an unconditional Poisson limit for almost all moduli. Both results hold uniformly over the permitted starting windows. This chapter explains their boundaries and how to interpret them.
+
+## Which moduli are covered? {#no-statement-about-a-prescribed-modulus}
+
+For each fixed choice of parameters, the paper bounds the number of exceptional moduli in $(Q,2Q]$ by $O(Q/(\log Q)^A)$, with any prescribed $A>0$. In the prime-tuple theorem, one exceptional set serves all the permitted patterns and windows. In the Poisson theorem, one set serves all the permitted windows at the chosen tolerance. There is also a single density-one set along which the laws converge, whose complement has size $O_A(x/(\log x)^A)$ up to $x$ for every fixed $A$.
+
+These bounds control how many moduli may fail. They do not guarantee that a prescribed $q$, say $q=10^{12}+39$, lies outside the exceptional set, or that the laws converge along an arbitrary prescribed sequence of moduli. The conclusions concern almost all moduli in the precise sense of those bounds.
+
+## What is quantitative? {#no-rate-for-the-weak-distance}
+
+For any fixed $D,A>0$, the prime-tuple theorem bounds the relative counting error by $O((\log Q)^{-D})$ and the exceptional proportion by $O((\log Q)^{-A})$. The Poisson limit theorem for prime lifts (@thm-poisson) also bounds the exceptional proportion by $O((\log Q)^{-A})$ for any prescribed $A>0$, at each fixed tolerance $\varepsilon$. All implied constants and sufficiently-large thresholds may depend on the fixed parameters.
+
+```{=latex}
+\Needspace{3\baselineskip}
+```
+
+The Poisson theorem does not specify how fast $d_{\mathrm w}(\operatorname{Law}_q,\Pi)$ tends to zero along good moduli. The proof in @sec-poisson gives a uniform $o(1)$ error for each **fixed** mixed factorial moment in Proposition 5.2, and its finite-test lemma gives no explicit dependence of the required tests on $\varepsilon$. Its use of Leung's singular-series mean is also qualitative. A rate for count probabilities or a chosen weak metric would require additional quantitative work on both the singular-series average and the probability argument.
+
+## Fixed tuple size
+
+The number $k$ of primes required by a pattern is fixed before $Q\to\infty$, even though the family of permitted patterns grows. The Poisson consequences describe counts in any fixed collection of bounded intervals, and the locations and gaps of any fixed number of first primes. The paper does not give uniform estimates for growing $k$, or laws for extreme gaps over a growing interval of the rescaled lift axis.
+
+Convergence in distribution does not by itself imply convergence of the mean distance to the first prime, or of its higher moments. A tiny fraction of residues whose first primes lie very far along the rescaled axis could contribute substantially to those moments without affecting the limiting distribution. Tail bounds or uniform integrability would be needed to rule this out. The moment bounds used in @sec-poisson concern counts on bounded intervals, not the distance to the first prime.
+
+## How large is “sufficiently large”? {#ineffective-constants}
+
+The main asymptotic bounds involve *ineffective constants*: the proof does not provide computable bounds for them or for the “sufficiently large” thresholds. This limitation is inherited from Siegel’s theorem through the Analytic Input. The prime-tuple counting error and the exceptional-set sizes have stated logarithmic bounds, but the proof does not supply a numerical scale beyond which a chosen accuracy is guaranteed outside the exceptional set.
+
+<!-- ## Dependence on a preprint
+
+The Analytic Input is quoted from the Kravitz–Woo–Xu preprint, whose Section 3.1 gives a condensed derivation of the growing-coefficient variant from Leng's work. The paper states this plainly in Section 2. This is where its dependence on higher-order Fourier analysis is concentrated. There are other cited inputs: Leung's lattice singular-series mean, the classical totient bound, the point-process convergence criterion, Brun–Titchmarsh, and Dirichlet's theorem. The companion explains how they enter; it does not reprove all of them. -->
+
+## The mode of convergence {#total-variation-versus-weak-convergence}
+
+Weak convergence is the appropriate notion for the point-process and gap limits. It yields the laws for counts, prime locations and gaps developed in @sec-consequences. For the count laws of Corollary 6.2, the discrete state space means that convergence also holds in total variation.
+
+For the full process and the gap laws, total variation would demand something incompatible with these empirical distributions: each has finite support, while its limiting law gives that finite support probability zero. Their total variation distance is therefore $1$, even as the empirical laws converge weakly. This distinction explains the choice of convergence in the theorem.
+
+## Passing from lifts to actual primes {#primes-below-the-modulus}
+
+The limits also describe actual prime locations and gaps, including the least prime, on the scale $\varphi(q)\log q$. @sec-consequences handles the small location shift and the prime representatives omitted by the lift process. The qualifications above apply equally to these actual-prime conclusions.
+
+## Further questions {#open-directions}
+
+The results suggest several possible extensions.
+
+1. **Rates of convergence.** Can quantitative singular-series averaging be combined with finite-moment bounds on count probabilities, for example through Bonferroni inequalities, to obtain a stated decay rate for a chosen weak metric? Effective numerical thresholds would also have to address the ineffectivity of the analytic input.
+2. **Growing ranges and tuple size.** Can the tuple size and the observation interval on the rescaled lift axis grow with $q$, with enough tail control to study extreme gaps?
+3. **Prescribed moduli.** Can new arithmetic input control prescribed sequences of moduli or reduce the exceptional set further? Removing exceptions in full generality would require substantially stronger information about prime tuples.
+
+::: {.callout-tip}
+## Where this is in the paper
+The paragraph after Theorem 1.3, Remark 5.5, and Section 6.5 ("Scope of the conclusions") discuss the limitations. Corollary 6.1 constructs the density-one set; Corollaries 6.2--6.3 describe counts, locations and gaps. The ineffectivity is noted after Corollary 1.4, and the provenance of the Analytic Input is in Section 2. Section 6.4 handles the passage to actual primes.
+:::

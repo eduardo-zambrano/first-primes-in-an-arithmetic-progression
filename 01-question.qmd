@@ -1,0 +1,260 @@
+# The question {#sec-question}
+
+## Primes in a residue class
+
+Fix a modulus $q$ and an integer $a$ with $\gcd(a,q)=1$. Dirichlet's theorem says that the arithmetic progression
+$$
+a,\quad a+q,\quad a+2q,\quad a+3q,\quad \ldots
+$$
+contains infinitely many primes, and the prime number theorem for progressions says that in the long run each of the $\varphi(q)$ reduced classes gets its fair share, $1/\varphi(q)$ of all primes. The paper is about the *beginning* of the progression. Where is the first prime? How far apart are the first few?
+
+The paper indexes the progression by the **lift index** $m$: the number $a+mq$ is the $m$-th *lift* of the residue $a$. @fig-lifts shows the first lifts of one residue class for a small modulus, with the primes marked.
+
+```{python}
+#| label: fig-lifts
+#| fig-cap: "The lifts $a+mq$ of the residue $a=7$ modulo $q=30$, for $m=0,\\ldots,20$ (top) and $m=21,\\ldots,40$ (bottom). Filled dots are primes. Twenty-six of the forty-one lifts are prime, and the gaps between them are irregular: the asymptotic law concerns the corresponding empirical distributions as the modulus grows."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import sieve, SLATE, RUST, GREY
+q, a, M = 30, 7, 40
+isp = sieve(a + M*q)
+m = np.arange(M + 1); vals = a + m*q; pr = isp[vals]
+assert len(m) == 41 and int(pr.sum()) == 26, "Update the caption if this example changes"
+fig, axes = plt.subplots(2, 1, figsize=(7.4, 2.8))
+fig.subplots_adjust(left=0.045, right=0.975, top=0.94, bottom=0.13, hspace=0.85)
+for ax, (start, stop) in zip(axes, [(0, 20), (21, 40)]):
+    mask = (m >= start) & (m <= stop)
+    mm, vv, pp = m[mask], vals[mask], pr[mask]
+    ax.hlines(0, start, stop, color="#d9dde0", lw=0.8, zorder=1)
+    ax.scatter(mm[~pp], np.zeros((~pp).sum()), s=30, facecolors="white", edgecolors=GREY, linewidths=1.2, zorder=3)
+    ax.scatter(mm[pp], np.zeros(pp.sum()), s=64, color=RUST, zorder=4)
+    for x, value in zip(mm[pp], vv[pp]):
+        ax.annotate(str(value), (x, 0), textcoords="offset points", xytext=(0, 11), ha="center", va="bottom", fontsize=8, color=SLATE)
+    # Equal horizontal scale; show only multiples of five on each axis.
+    ax.set_xlim(start - 0.8, start + 20.8)
+    ax.set_ylim(-0.42, 0.6)
+    ax.set_yticks([]); ax.grid(False)
+    ax.spines["left"].set_visible(False)
+    ax.spines["bottom"].set_position(("data", -0.24))
+    ax.spines["bottom"].set_bounds(start, stop)
+    ax.spines["bottom"].set_color(GREY)
+    ax.spines["bottom"].set_linewidth(0.7)
+    ax.set_xticks(np.arange(5 * ((start + 4) // 5), stop + 1, 5))
+    ax.tick_params(axis="x", labelsize=8, length=3, pad=4, width=0.6, colors=SLATE)
+    ax.set_xlabel("lift index $m$", fontsize=9, labelpad=8, color=SLATE)
+```
+
+## The natural scale
+
+How far along the lift index $m$ should we expect to go before reaching the first prime? A random integer of size $x$ is prime with "probability" $1/\log x$. But the lifts $a+mq$ are not random integers: they are already known to be coprime to $q$, which rules out every prime factor of $q$. The proportion of integers coprime to $q$ is $\varphi(q)/q$, so conditioning on coprimality boosts the chance of being prime by the factor $q/\varphi(q)$. For $1\le m\le(\log q)^B$, with $B$ fixed, one has $\log(a+mq)=\log q+O_B(\log\log q)$ uniformly for $0<a\le q$. This includes the lift range used in the paper, and suggests
+$$
+\Pr\{a+mq \text{ is prime}\}\;\approx\;\frac{q}{\varphi(q)}\cdot\frac{1}{\log q}.
+$$
+A sequence of rare events with this probability per step produces, on average, one success every
+$$
+\ell_q:=\frac{\varphi(q)}{q}\log q
+$$
+steps. This is the natural unit for the lift index. In terms of the primes themselves, the first prime should be around $a+\ell_q q\approx\varphi(q)\log q$, which is the classical heuristic for the least prime in a progression.
+
+The paper measures lift indices in units of $\ell_q$. For each reduced residue $a$ it forms the **point process**
+$$
+\Xi_{q,a}=\sum_{m\ge1}\mathbf 1_{\{a+mq\ \text{prime}\}}\;\delta_{m/\ell_q},
+$$
+a collection of points on the half-line $[0,\infty)$, one point at $m/\ell_q$ for each prime lift. Only positive lifts $m\ge1$ are included; the residue $a$ itself, which may or may not be prime, is treated separately in @sec-consequences.
+
+For this point process, we measure distances along the rescaled lift axis. The **distance to the first prime** is the distance from $0$ to the first point; the **gap to the next prime** is the distance between the first two points.
+
+For a concrete example, keep $a=7$ and $q=30$ from @fig-lifts. Here $\varphi(30)=8$, so $\ell_{30}=\frac{8}{30}\log30\approx0.907$. The first positive prime lifts are $37,67,97,127,157,277,\ldots$, at indices $m=1,2,3,4,5,9,\ldots$. Dividing these indices by $\ell_{30}$ gives points at approximately $1.10,2.21,3.31,4.41,5.51,9.92,\ldots$. Thus
+$$
+\Xi_{30,7}
+=\delta_{1/\ell_{30}}+\delta_{2/\ell_{30}}+\delta_{3/\ell_{30}}
+ +\delta_{4/\ell_{30}}+\delta_{5/\ell_{30}}+\delta_{9/\ell_{30}}+\cdots.
+$$
+The symbol $\delta_x$ places one point at $x$, and $\Xi_{30,7}(I)$ counts the points in an interval $I$. For example, $\Xi_{30,7}([0,5])=4$, as the shaded region in @fig-lift-process shows, while $\Xi_{30,7}((5,10])=2$. The prime $7$ itself has index $m=0$ and contributes no point.
+
+```{python}
+#| label: fig-lift-process
+#| fig-cap: "The beginning of $\\Xi_{30,7}$: each prime lift with $1\\le m\\le20$ contributes a point at $m/\\ell_{30}$, where $\\ell_{30}\\approx0.907$. The first six coordinates are labelled, rounded to two decimal places. The shaded interval $[0,5]$ contains four points."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import sieve, lift_scale, SLATE, RUST, BLUE, GREY
+q, a = 30, 7
+ell = lift_scale(q)
+m = np.arange(1, 21)
+isp = sieve(a + q*int(m[-1]))
+prime_indices = m[isp[a + q*m]]
+positions = prime_indices / ell
+assert len(positions) == 15
+assert int(np.count_nonzero(positions <= 5)) == 4
+assert int(np.count_nonzero((positions > 5) & (positions <= 10))) == 2
+fig, ax = plt.subplots(figsize=(7.4, 1.45))
+fig.subplots_adjust(left=0.045, right=0.975, top=0.94, bottom=0.20)
+ax.axvspan(0, 5, color=BLUE, alpha=0.08, zorder=0)
+ax.scatter(positions, np.zeros(len(positions)), s=55, color=RUST, zorder=3)
+for x in positions[:6]:
+    ax.annotate(f"{x:.2f}", (x, 0), textcoords="offset points", xytext=(0, 11), ha="center", va="bottom", fontsize=8, color=SLATE)
+ax.set_xlim(-0.25, 23); ax.set_ylim(-0.14, 0.22)
+ax.set_yticks([]); ax.grid(False)
+ax.spines["left"].set_visible(False)
+ax.spines["bottom"].set_position(("data", 0))
+ax.spines["bottom"].set_bounds(0, 23)
+ax.spines["bottom"].set_color(GREY)
+ax.spines["bottom"].set_linewidth(0.7)
+ax.set_xticks(np.arange(0, 21, 5))
+ax.tick_params(axis="x", labelsize=8, length=3, pad=5, width=0.6, colors=SLATE)
+ax.set_xlabel("rescaled lift index $m/\\ell_{30}$", fontsize=9, labelpad=8, color=SLATE);
+```
+
+
+For a larger scale, keep $a=7$ and take the prime modulus $q=10007$. Since $\varphi(10007)=10006$, we have
+$$
+\ell_{10007}=\frac{10006}{10007}\log10007\approx9.210.
+$$
+One unit on the rescaled axis now covers about nine lift steps; a single step in $m$ has rescaled length $1/\ell_{10007}\approx0.109$.
+
+The first positive prime lifts are $20\,021,120\,091,260\,189,480\,343,620\,441,780\,553,\ldots$, at indices $m=2,12,26,48,62,78,\ldots$. For instance, $20\,021=7+2\cdot10007$, so this prime contributes a point at $2/\ell_{10007}\approx0.22$. Dividing the other indices by the same scale gives the locations $1.30,2.82,5.21,6.73,8.47,\ldots$. Thus
+$$
+\Xi_{10007,7}
+=\delta_{2/\ell_{10007}}+\delta_{12/\ell_{10007}}
+ +\delta_{26/\ell_{10007}}+\delta_{48/\ell_{10007}}+\cdots.
+$$
+To count the points in $[0,5]$, we look at indices $m\le5\ell_{10007}\approx46.05$. Only $m=2,12,26$ give primes in this range, so $\Xi_{10007,7}([0,5])=3$. The next interval, $(5,10]$, corresponds to $46.05<m\le92.10$ and contains the five points from $m=48,62,78,86,92$. @fig-lift-process-large shows both intervals.
+
+```{python}
+#| label: fig-lift-process-large
+#| fig-cap: "The points of $\\Xi_{10007,7}$ in $[0,10]$, obtained by dividing the prime lift indices by $\\ell_{10007}\\approx9.210$. Coordinates are labelled to two decimal places. The shaded interval $[0,5]$ contains three points, and $(5,10]$ contains five."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import sieve, lift_scale, SLATE, RUST, BLUE, GREY
+q, a = 10007, 7
+ell = lift_scale(q)
+m = np.arange(1, int(np.floor(10*ell)) + 1)
+isp = sieve(a + q*int(m[-1]))
+prime_indices = m[isp[a + q*m]]
+positions = prime_indices / ell
+assert prime_indices.tolist() == [2, 12, 26, 48, 62, 78, 86, 92]
+assert int(np.count_nonzero(positions <= 5)) == 3
+assert int(np.count_nonzero((positions > 5) & (positions <= 10))) == 5
+fig, ax = plt.subplots(figsize=(7.4, 1.45))
+fig.subplots_adjust(left=0.045, right=0.975, top=0.94, bottom=0.20)
+ax.axvspan(0, 5, ymin=0.2, color=BLUE, alpha=0.08, zorder=0)
+ax.scatter(positions, np.zeros(len(positions)), s=55, color=RUST, zorder=3)
+for x in positions:
+    ax.annotate(f"{x:.2f}", (x, 0), textcoords="offset points", xytext=(0, 11), ha="center", va="bottom", fontsize=8, color=SLATE)
+ax.set_xlim(-0.25, 10.4); ax.set_ylim(-0.14, 0.22)
+ax.set_yticks([]); ax.grid(False)
+ax.spines["left"].set_visible(False)
+ax.spines["bottom"].set_position(("data", 0))
+ax.spines["bottom"].set_bounds(0, 10)
+ax.spines["bottom"].set_color(GREY)
+ax.spines["bottom"].set_linewidth(0.7)
+ax.set_xticks([0, 5, 10])
+ax.tick_params(axis="x", labelsize=8, length=3, pad=5, width=0.6, colors=SLATE)
+ax.set_xlabel("rescaled lift index $m/\\ell_{10007}$", fontsize=9, labelpad=8, color=SLATE);
+```
+
+In short, the point process records where the prime lifts occur on the rescaled axis. For any interval $I$, $\Xi_{q,a}(I)$ counts the prime lifts whose rescaled indices $m/\ell_q$ lie in $I$.
+
+## The Poisson heuristic
+
+If the events "$a+mq$ is prime" behaved like independent coin flips with success probability $1/\ell_q$, then, as $\ell_q\to\infty$, the points on the scale $m/\ell_q$ would converge in law to a **Poisson process of unit rate**: the number of points in an interval of length $t$ would be Poisson with mean $t$, counts in disjoint intervals would be independent, and the gaps between consecutive points would be independent exponential random variables with mean $1$. In particular the position of the first point would have the law $\Pr\{\text{first point}>t\}=e^{-t}$.
+
+Of course the events are not independent. For example, when $3\nmid q$, exactly one lift index in every three makes $a+mq$ divisible by $3$. When $3\mid q$ and $(a,q)=1$, none does. The small primes impose rigid local correlations, and Hardy and Littlewood showed how to account for them. Take a pattern such as “$a+q$ and $a+3q$ both prime”. The independence model multiplies the individual probabilities that each number is prime. Each small prime then adjusts this product: it rules out the residues $a$ for which it divides one of the numbers and renormalises the rest. The product of these adjustments is an explicit factor, computed in @sec-singular, and the **Hardy–Littlewood prediction** for the number of residues $a$ in a stretch for which the whole pattern is prime is the independence count multiplied by this factor. The content of the paper is that this prediction is correct for almost all moduli, and that the corrections then average out in exactly the way that lets the Poisson picture survive. The Poisson law describes the limiting distribution over residue classes as the modulus grows; at a fixed modulus, the observed distribution is an approximation to this limit.
+
+::: {.callout-note}
+## What "randomness" means here
+There is nothing random about the primes. The randomness enters through the choice of the residue $a$: we pick $a$ uniformly among the $\varphi(q)$ reduced residues and ask for the distribution of the resulting point configuration $\Xi_{q,a}$. This distribution is the **empirical law**
+$$
+\operatorname{Law}_q=\frac{1}{\varphi(q)}\sum_{\substack{0<a\le q\\ \gcd(a,q)=1}}\delta_{\Xi_{q,a}},
+$$
+a probability measure on point configurations. The question is whether $\operatorname{Law}_q$ is close to the law $\Pi$ of the unit-rate Poisson process.
+:::
+
+::: {#configurations-and-laws .callout-note collapse="true"}
+## Configurations, laws, and convergence
+
+A **point measure** records one configuration as $\xi=\sum_i\delta_{x_i}$: $\xi(I)$ counts its points in $I$, including any multiplicities. It is **locally finite** if every bounded interval contains finitely many points. There may still be infinitely many points altogether. The paper denotes the space of these configurations on $E=[0,\infty)$ by $\mathcal N(E)$.
+
+The **vague topology** specifies when configurations are close. We test them using continuous weights $f$ that vanish outside a bounded region. Vague convergence $\xi_n\to\xi$ means
+$$
+\int f\,d\xi_n\longrightarrow\int f\,d\xi
+\quad\text{for every such }f.
+$$
+Each integral adds the weights of the points present. These tests look within bounded regions and change continuously as points move. Unlike a sharp interval count, they do not jump when a point crosses an interval endpoint.
+
+A **law** is a probability distribution over configurations. Here $\operatorname{Law}_q$ is obtained by fixing $q$ and sampling $a$. **Weak convergence of laws** means that the expectation of every bounded continuous function of the configuration converges to its expectation under the limiting law; continuity here uses the vague topology. Thus we compare distributions of configurations. The metric $d_{\mathrm w}$ used later measures closeness in this sense. @sec-poisson establishes the convergence by testing weighted counts.
+:::
+
+@fig-first-prime shows the simplest consequence for a specific modulus. For $q=10007$, a prime, we find the index $M_1(q,a)$ of the first prime lift in every reduced class and plot the histogram of the distance $M_1/\ell_q$ against the exponential density $e^{-t}$. No fitting is involved.
+
+```{python}
+#| label: fig-first-prime
+#| fig-cap: "For $q=10007$, the histogram over all $\\varphi(q)=10006$ reduced residues of the distance to the first prime, $M_1(q,a)/\\ell_q$, where $\\ell_q\\approx 9.21$, compared with the exponential density $e^{-t}$ predicted by the Poisson heuristic."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import sieve, lift_scale, reduced_residues, BLUE, RUST
+q = 10007; ell = lift_scale(q); Mmax = int(12*ell)+5
+isp = sieve(q*(Mmax+1)+q)
+A = reduced_residues(q); m = np.arange(1, Mmax+1)
+first = np.array([m[isp[a + m*q]][0] if isp[a + m*q].any() else np.nan for a in A], dtype=float)
+assert np.isfinite(first).all(), "Increase Mmax until every residue has a first prime lift"
+t = first/ell
+fig, ax = plt.subplots()
+bin_width = 0.25
+bins = np.arange(0, max(8.0, float(t.max())) + 2*bin_width, bin_width)
+ax.hist(t, bins=bins, weights=np.full(len(t), 1/(len(t)*bin_width)), color=BLUE, alpha=0.75, label="distance to first prime, $M_1/\\ell_q$")
+ax.set_xlim(0, 8)
+x = np.linspace(0, 8, 300); ax.plot(x, np.exp(-x), color=RUST, lw=2, label="$e^{-t}$")
+ax.set_xlabel("$t$ (lift index in units of $\\ell_q$)"); ax.set_ylabel("density"); ax.legend(frameon=False)
+plt.tight_layout()
+```
+
+## Quenched versus annealed
+
+The word *quenched* is borrowed from statistical physics. In a disordered system one can either fix a sample of the disorder and study its behaviour, or average over the disorder first. The first viewpoint is quenched, the second annealed.
+
+Here the modulus $q$ plays the role of the disorder. An **annealed** statement would average the empirical laws over all moduli $q$ in a range and show that the average is close to Poisson. A **quenched** statement fixes one modulus and shows that its own empirical law $\operatorname{Law}_q$ is close to Poisson. Quenched is stronger: an annealed average could be Poisson even if individual moduli behaved wildly, as long as their deviations cancelled.
+
+Theorem 1.3, the **Poisson limit theorem for prime lifts**, establishes a quenched Poisson point-process limit for almost all moduli, uniformly over the permitted windows of starting residues.
+
+::: {.callout-important}
+## The two main results, in words
+**Theorem 1.1, in words.** For all but a vanishing proportion of moduli $q$, the number of times a prime pattern, such as “$a+q$ and $a+3q$ both prime”, occurs as $a$ ranges over a long stretch of residues agrees with the **Hardy–Littlewood prediction**, up to a small relative error. The same exceptional set works simultaneously for every pattern of a fixed size with offsets in a prescribed growing range, and every sufficiently long stretch of residues.
+
+**Theorem 1.3, in words.** For all but a vanishing proportion of moduli $q$, choose a reduced residue uniformly at random from any long stretch. The rescaled prime lifts above it are distributed, to within any tolerance fixed in advance, like a Poisson process of unit rate.
+
+In Theorem 1.1, “vanishing proportion” and “small error” can both be taken as small as any fixed power of $1/\log q$. In Theorem 1.3 the tolerance may be any fixed number, but the theorem gives no rate at which it can shrink. The precise statements, including the permitted pattern ranges and window lengths, are @thm-main in @sec-main-theorem and @thm-poisson in @sec-poisson.
+:::
+
+## Roadmap
+
+@fig-roadmap shows the route to these theorems. @sec-engine introduces a quantitative theorem on prime values of linear forms in the form stated by Kravitz, Woo and Xu [-@KWX2025, Theorem 3.1]. This Analytic Input provides the averaged estimates needed to control prime-tuple counts, by summing over both moduli and residue variables. @sec-second-moment explains the second-moment mechanism of Ford, Green, Konyagin and Tao for prime moduli [-@FGKT2016]. For integer moduli, it identifies the varying arithmetic centre and the mixed moment needed for concentration. @sec-divisor evaluates that mixed moment through a divisor expansion, the key arithmetic step in this proof, and establishes concentration around the varying centre. @sec-one-set combines the resulting estimates over all permitted patterns and windows into one exceptional set and retains the exact logarithmic integral in the main term; this gives Theorem 1.1.
+
+@sec-poisson feeds the counts into Gallagher's factorial-moment method [-@Gallagher1976], using a singular-series average due to Leung [-@Leung2025], to obtain the Poisson limit theorem for prime lifts (Theorem 1.3). @sec-consequences then draws the consequences for counts, gaps and the least prime. The paper's contribution is to obtain this control simultaneously across the permitted patterns and residue windows, and then use it to prove the unconditional Poisson law for almost all moduli.
+
+```{python}
+#| label: fig-roadmap
+#| fig-cap: "The architecture of the paper. Each box names a step and the chapter of this companion where it is explained."
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+from helpers import SLATE, BLUE, RUST, GREEN
+steps = [("Quantitative linear equations\nin primes (Analytic Input)", "Ch. 4", BLUE),
+         ("Second moment over moduli;\nvarying centre $S(q\\mathbf{h})$", "Ch. 5", BLUE),
+         ("Divisor expansion; mixed moment\nmatches the Euler product", "Ch. 6", BLUE),
+         ("One exceptional set for all shapes\nand windows; exact integral", "Ch. 7", BLUE),
+         ("Factorial moments $\\to$\nPoisson law (Theorem 1.3)", "Ch. 8", RUST),
+         ("Density-one set, counts, gaps,\nleast prime", "Ch. 9", GREEN)]
+fig, ax = plt.subplots(figsize=(7, 4.2)); ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off")
+pos = [(2.3, 8.6), (2.3, 6.0), (2.3, 3.4), (2.3, 0.8), (7.3, 6.0), (7.3, 2.1)]
+for (txt, ch, col), (x, y) in zip(steps, pos):
+    ax.add_patch(FancyBboxPatch((x-2.1, y-0.75), 4.2, 1.5, boxstyle="round,pad=0.05", fc="white", ec=col, lw=1.8))
+    ax.text(x, y+0.12, txt, ha="center", va="center", fontsize=8.3, color=SLATE)
+    ax.text(x, y-0.52, ch, ha="center", va="center", fontsize=8, color=col, style="italic")
+def arrow(p, r):
+    ax.add_patch(FancyArrowPatch(p, r, arrowstyle="-|>", mutation_scale=14, color=SLATE, lw=1.3))
+arrow((2.3, 7.85), (2.3, 6.75)); arrow((2.3, 5.25), (2.3, 4.15)); arrow((2.3, 2.65), (2.3, 1.55))
+arrow((4.4, 1.2), (5.2, 5.5)); arrow((7.3, 5.25), (7.3, 2.85))
+ax.text(5.45, 3.95, "Theorem 1.1", fontsize=8.5, color=RUST, ha="left", va="center")
+plt.tight_layout()
+```
+
+::: {.callout-tip}
+## Where this is in the paper
+Section 1 of the paper states Theorems 1.1 and 1.3 and Corollaries 1.2 and 1.4. The scale $\ell_q$ and the process $\Xi_{q,a}$ are defined in display (6). Section 1.3 compares the results with earlier work.
+:::

@@ -1,0 +1,547 @@
+# The second-moment method and the prime trick {#sec-second-moment}
+
+@sec-singular explained how the singular series $\mathfrak S(q\mathbf h)$ records the divisibility restrictions for each modulus. @sec-main-theorem combined this arithmetic correction with the exact logarithmic integral and stated the prime-tuple theorem. @sec-engine introduced @thm-input, the counting theorem of Kravitz, Woo and Xu that gives precise estimates for sums of products of von Mangoldt weights.
+
+Our task is now to turn those averaged estimates into accurate predictions for individual moduli outside a small exceptional set. Ultimately, one exceptional set must work for every permitted shape and residue window. These estimates will later supply the prime-counting ingredient for the Poisson limit.
+
+This chapter sets up that step through the **average squared error**: if it is small, only a small proportion of moduli can have a large error. Expanding the square produces a term involving two copies of the pattern with the same modulus, which the Analytic Input can evaluate. We first examine the prime-modulus argument of Ford, Green, Konyagin and Tao, then show why general integer moduli require the prediction to follow the varying factor $\mathfrak S(q\mathbf h)$.
+
+The distinction between these cases is the thread of the chapter. **With a constant prediction, the squared-error calculation needs the first and second moments of the count. With a varying prediction, it also needs the average of the count multiplied by its prediction at the same modulus.** This additional calculation is the **mixed moment**. @sec-divisor evaluates it and completes the mean-square estimate.
+
+## Accuracy from a mean-square bound {#concentration-from-a-variance-bound}
+
+Fix an **admissible** shape $\mathbf h$ of distinct positive lift indices and a fraction $\theta\in[0,1]$, and consider the **prefix sum**
+$$
+C_{\mathbf h}(q;\theta)=\sum_{0<a\le\theta q}\prod_{j=1}^k\Lambda(a+h_jq),
+$$
+the weighted count over starting points in the first $\theta$-fraction of $(0,q]$. Thus $\theta=1$ uses the whole interval, while $\theta=1/2$ uses its first half. Admissibility gives $\mathfrak S(\mathbf h)>0$, which permits the further normalisation used below; @sec-one-set later handles shapes that become admissible only after dilation.
+
+The prediction is
+$$
+C_{\mathbf h}(q;\theta)\approx\theta q\,\mathfrak S(q\mathbf h).
+$$
+We will write $C(q)=C_{\mathbf h}(q;\theta)$ and $S=\mathfrak S(\mathbf h)$, which is constant for the fixed shape. Dividing the count by $q$ removes the basic growth coming from the number of available starting points. Define
+$$
+X(q):=\frac{C(q)}q,
+\qquad
+e(q):=X(q)-\theta\mathfrak S(q\mathbf h).
+$$
+Each modulus is compared with its own predicted value, which can vary with $q$.
+
+The signs of the errors can cancel. If half the moduli have error $+1$ and half have error $-1$, their average error is zero, although every modulus has an error of size $1$. Squaring makes both errors contribute $1$. This is why we study the **mean-square error**. Let
+$$
+\mathcal Q=\{q\in\mathbb Z:Q<q\le2Q\},
+$$
+and write $\mathbb E_q$ for the uniform average over this set. Suppose we can prove
+$$
+\mathbb E_q e(q)^2
+=\frac1{|\mathcal Q|}\sum_{q\in\mathcal Q}e(q)^2
+\le\eta.
+$$
+
+Choose an acceptable error tolerance $\lambda>0$. Call a modulus **bad** if $|e(q)|>\lambda$, and denote the set of bad moduli by $\mathcal B_\lambda$. Every bad modulus contributes more than $\lambda^2$ to the sum of squared errors. Therefore
+$$
+|\mathcal B_\lambda|\,\lambda^2
+\le\sum_{q\in\mathcal Q}e(q)^2
+\le|\mathcal Q|\,\eta,
+$$
+which gives
+$$
+\frac{|\mathcal B_\lambda|}{|\mathcal Q|}
+\le\frac{\eta}{\lambda^2}.
+$$
+This is Markov's inequality applied to $e(q)^2$, often called a Chebyshev bound. Its meaning is simple: **if many moduli had large errors, the average squared error could not be small**. The argument allows the prediction to vary with $q$ throughout.
+
+For a hypothetical numerical illustration of this bound, suppose we examine **10,000 moduli** and establish a mean-square bound of $\eta=0.0001$. The total squared error is then at most
+$$
+\sum_{q\in\mathcal Q}e(q)^2
+\le10{,}000\times0.0001=1.
+$$
+If an error greater than $0.1$ is unacceptable, each bad modulus contributes more than $(0.1)^2=0.01$ to that total. There can therefore be at most $1/0.01=100$ bad moduli. **At least $99\%$ of the moduli have error at most $0.1$.** This is an absolute tolerance for the normalised count $C_{\mathbf h}(q;\theta)/q$. For $\theta>0$, dividing the tolerance by $\theta\mathfrak S(q\mathbf h)$ gives the corresponding tolerance for the relative error at that modulus.
+
+The two parameters have different roles: $\lambda$ specifies the accuracy we require, while $\eta/\lambda^2$ bounds the proportion of moduli that can fail that requirement. For the same permitted proportion of bad moduli, a smaller tolerance requires a correspondingly smaller mean-square bound. The later moment calculations use the error estimates from @sec-engine to obtain this control. Here the shape and $\theta$ are fixed; @sec-one-set will assemble a single exceptional set for all the permitted shapes and windows.
+
+It remains to estimate the mean-square error. Expanding it involves the squared count. Multiplying the two copies of the sum introduces starting points $a$ and $b$ sharing the same $q$, so
+$$
+\sum_{q\in\mathcal Q}C_{\mathbf h}(q;\theta)^2
+=\sum_{\substack{q\in\mathcal Q\\0<a,b\le\theta q}}
+\prod_{j=1}^k\Lambda(a+h_jq)\Lambda(b+h_jq).
+$$
+The right-hand side is a sum over three integer variables $(q,a,b)$ involving $2k$ linear forms. The underlying region is a convex body, a truncated pyramid. At each fixed $q$, the allowed $(a,b)$ form a square of area $\theta^2q^2$, so its volume is
+$$
+\int_Q^{2Q}\theta^2q^2\,dq=\theta^2\frac73Q^3.
+$$
+No two coefficient vectors of the forms $a+h_jq$ and $b+h_jq$, in the variables $(q,a,b)$, are proportional: the lift indices are distinct, and the two copies use different starting-point variables. The Analytic Input therefore evaluates this sum as the volume times $\prod_p B_p$, with a controlled error, where $B_p$ is the local factor of the **two-block system**. Completing the mean-square estimate also requires terms involving the predicted centre; the mixed term is evaluated in @sec-divisor.
+
+For the integer-modulus argument, the paper uses the weighted average
+$$
+\mathbb E_w F=\frac1{D_Q}\sum_{q\in\mathcal Q}q^2F(q),
+\qquad D_Q=\sum_{q\in\mathcal Q}q^2.
+$$
+Thus $\mathbb E_q$ gives every integer modulus equal weight, while $\mathbb E_w$ gives it weight proportional to $q^2$. On $(Q,2Q]$, these weights differ by at most a factor of $4$, so a small weighted mean-square error still implies accuracy for most moduli under the uniform average.
+
+::: {.callout-note collapse="true"}
+## Why the paper weights $q$ by $q^2$
+The $q^2$ weights cancel the denominator introduced by squaring the normalised count. With $C(q)$ and $S$ as defined above,
+$$
+\mathbb E_w\left|\frac{C(q)}{qS}\right|^2
+=\frac1{D_QS^2}\sum_{q\in\mathcal Q}C(q)^2.
+$$
+The weighted average is therefore exactly the lattice-point sum above divided by $D_QS^2$. The varying factor $\mathfrak S(q\mathbf h)$ remains in the predicted centre and must be handled separately.
+
+Since $Q<q\le2Q$, the weights $q^2$ differ by at most a factor of $4$. Weighted and uniform averages of a nonnegative quantity are comparable within that factor. This is why the choice of weights preserves the conclusion about the proportion of moduli with large errors.
+:::
+
+## The prime trick of Ford, Green, Konyagin and Tao
+
+The preceding section explained why a small mean-square error gives an accurate prediction for most moduli. We first study prime moduli as a simpler comparison case: their local factors show how the cancellation works before integer moduli introduce a varying centre. The paper derives its prime-modulus corollary from the stronger integer theorem; the calculation here explains the mechanism and its historical precedent. Ford, Green, Konyagin and Tao used this mechanism to obtain prime-pattern estimates for most prime steps in their work on large gaps between primes [-@FGKT2016, Lemma 2.1(i) and Section 6]. Throughout this argument, the admissible shape $\mathbf h$ and the fraction $\theta$ are fixed, while $Q$ grows.
+
+Recall that $X(q)=C(q)/q$ and $S=\mathfrak S(\mathbf h)$. For prime moduli, the exact arithmetic prediction $\theta\mathfrak S(q\mathbf h)$ approaches the constant $\theta S$: the only prime divisor of $q$ is $q$ itself, and its relative correction tends to $1$. The detailed calculation appears below. This makes the squared-error expansion especially useful: since $\theta S$ is constant, the average of $X(q)\theta S$ is simply $\theta S$ times the first moment of $X$. Thus the first and second moments suffice.
+
+The arithmetic step is to show that **the correction for two copies of the pattern is the square of the correction for one copy**. That matching form will make the leading terms in the squared error cancel.
+
+Consider our pair $\mathbf h=(1,3)$. Squaring the count introduces
+$$
+\underbrace{a+q,\ a+3q}_{\text{first copy}},
+\qquad
+\underbrace{b+q,\ b+3q}_{\text{second copy}}.
+$$
+The two starting points can vary separately, but the copies share the same modulus $q$. The prime divisors of $q$ can therefore affect the divisibility restrictions for both copies at once.
+
+The following is an exact calculation of residue classes modulo $3$. Let us check whether $a+q$ and $a+3q$ are divisible by $3$. A residue of $a$ modulo $3$ **passes the test** if neither number is divisible by $3$. Since $3q$ is a multiple of $3$, the residue of $a+3q$ is simply the residue of $a$. The residue of $a+q$ also depends on $q\bmod3$. For each possible $q\bmod3$, the table lists the residues of $a$ that pass and the fraction they represent among the three possibilities $0,1,2$:
+
+| $q\bmod3$ | $(a+q,a+3q)\bmod3$ | Residues of $a\bmod3$ for which both numbers pass | Fraction of the three $a\bmod3$ residues that pass |
+|:---:|:---:|:---:|:---:|
+| $1$ | $(a+1,a)$ | $\{1\}$ | $1/3$ |
+| $2$ | $(a+2,a)$ | $\{2\}$ | $1/3$ |
+| $0$ | $(a,a)$ | $\{1,2\}$ | $2/3$ |
+
+For a fixed $q$, the same restrictions apply independently to the residue of $b$. When $3\nmid q$, only $1$ of the $9$ pairs $(a,b)\bmod3$ makes all four numbers pass; when $3\mid q$, $4$ pairs pass. The shared modulus determines which case applies to both copies.
+
+The **prime trick** incorporates the requirement that $q$ itself be prime into the system: adjoin $q$ as an additional linear form. For our pair, the five forms are
+$$
+q,\qquad a+q,\ a+3q,\qquad b+q,\ b+3q.
+$$
+In the weighted sum, this means inserting $\Lambda(q)$:
+$$
+\Lambda(q)\Lambda(a+q)\Lambda(a+3q)
+          \Lambda(b+q)\Lambda(b+3q).
+$$
+The enlarged system still has finite complexity, so the Analytic Input applies. The extra weight selects prime and prime-power values of $q$; the contribution from proper prime powers of $q$ is negligible and is removed afterwards.
+
+In the local calculation, all five forms must be nonzero modulo $3$. The added form $q$ excludes $q\equiv0\pmod3$. Among the $27$ triples $(q,a,b)\bmod3$, exactly two pass: $(1,1,1)$ and $(2,2,2)$. Their fraction is
+$$
+\frac23\times\frac13\times\frac13=\frac{2}{27}.
+$$
+The factors express the passing fraction for $q$ and, after fixing a passing $q$-residue, the independent passing fractions for $a$ and $b$.
+
+The independence prediction for five forms assigns each form a passing probability of $2/3$, giving $(2/3)^5$. Comparing the actual fraction $2/27$ with that prediction gives
+$$
+\beta_3
+=\frac{(2/3)(1/3)^2}{(2/3)^5}
+=\frac9{16}
+=\left(\frac34\right)^2
+=S_3(\mathbf h)^2.
+$$
+The two-copy correction is exactly the square of the familiar one-copy correction $3/4$.
+
+The prime trick has excluded precisely the case $q\equiv0\pmod3$, in which each copy had two passing residues instead of one. For both remaining residues of $q$, each copy has the same passing fraction $1/3$. The shared modulus therefore no longer switches the two copies together between passing fractions $1/3$ and $2/3$, and the local correction factorises into two identical factors.
+
+::: {.callout-note collapse="true"}
+## Checking the passing residues and the two copies modulo $3$
+When $3\nmid q$, we must exclude two different residues of $a$: $a\equiv0\pmod3$ would make $a+3q$ divisible by $3$, while $a\equiv-q\pmod3$ would make $a+q$ divisible by $3$. Only one of the three residues remains available.
+
+When $3\mid q$, both numbers are divisible by $3$ precisely when $a\equiv0\pmod3$. Avoiding this single residue protects both numbers, leaving two allowed choices: $a\equiv1$ or $2\pmod3$. This explains the increase from $1/3$ to $2/3$ in the last column.
+
+Now consider $b+q$ and $b+3q$. They use the same $q$, so exactly the same restrictions apply to $b$. For a fixed $q$ with $3\nmid q$, there is one allowed residue for $a$ and one for $b$: only $1$ of the $9$ residue pairs $(a,b)$ makes all four numbers avoid divisibility by $3$. When $3\mid q$, there are two choices for each, giving $4$ allowed residue pairs out of $9$. **The shared modulus determines the allowed choices for both starting points together.** Averaging over integer moduli includes both cases.
+
+The local-factor calculation modulo $3$ considers all $3^3=27$ equally likely triples of residues $(q,a,b)$. We now require **all five forms**, including $q$, to be nonzero modulo $3$. If $q\equiv0\pmod3$, the added form fails the test whatever residues we choose for $a$ and $b$. This removes all nine triples with $q\equiv0\pmod3$.
+
+For instance, when $q\equiv1$, the numbers $a+q$ and $a+3q$ pass only when $a\equiv1$; the numbers $b+q$ and $b+3q$ pass only when $b\equiv1$. Thus $(a,b)\equiv(1,1)$ is the only passing choice among the nine residue pairs. When $q\equiv2$, the same reasoning leaves only $(a,b)\equiv(2,2)$. All these congruences are modulo $3$.
+
+Exactly two of the $27$ triples therefore pass: $(q,a,b)\equiv(1,1,1)$ and $(2,2,2)$. We can obtain the same fraction by choosing the residues in stages. Two of the three choices for $q$ pass. After fixing either of those choices, one of the three choices for $a$ passes, and one of the three choices for $b$ passes. Multiplying gives
+$$
+\frac23\times\frac13\times\frac13=\frac{2}{27}.
+$$
+Here the choices of $a$ and $b$ are independent **once the residue of $q$ is fixed**: the test on $a+q,a+3q$ involves only $a$, and the test on $b+q,b+3q$ involves only $b$. Choosing a passing residue for $a$ leaves all three residues of $b$ available to test, of which exactly one passes. These probabilities describe the uniform choices of residues modulo $3$.
+
+The resulting list of passing residue pairs is:
+
+| $q\bmod3$ | Does the added form $q$ pass? | Residue pairs $(a,b)\bmod3$ for which all five forms pass |
+|:---:|:---:|:---:|
+| $1$ | Yes | $(1,1)$ |
+| $2$ | Yes | $(2,2)$ |
+| $0$ | No | None |
+
+:::
+
+The same reasoning works at every prime $p$. Once $q\not\equiv0\pmod p$, multiplication by $q$ preserves the number of distinct shift residues, and the two starting-point residues can be tested independently. The local factors are $S_p(\mathbf h)$ for one copy and $S_p(\mathbf h)^2$ for two. Multiplying over primes gives
+$$
+\begin{aligned}
+\text{one copy:}\quad &\prod_p S_p(\mathbf h)=S,\\
+\text{two copies:}\quad &\prod_p S_p(\mathbf h)^2=S^2.
+\end{aligned}
+$$
+These are the arithmetic factors entering the first and second moments.
+
+::: {.callout-note collapse="true"}
+## The local calculation at a general prime
+For a general shape with $k$ lift indices, the local calculation at a prime $p$ begins by requiring the added form $q$ to pass: $q\not\equiv0\pmod p$. This leaves a fraction $1-1/p$ of the possible residues of $q$. Multiplication by such a $q$ rearranges the residues modulo $p$ without merging any of them. For example, modulo $5$, multiplication by $q\equiv2$ sends the shift residues $\{1,3\}$ to $\{2,1\}$; there are still two distinct residues.
+
+The number of distinct dilated shift residues is therefore still $\nu_{\mathbf h}(p)$. Each forbids one residue of $a$: namely, the residue $-qh_j$ that makes $a+qh_j$ divisible by $p$. Hence the fraction of $a$-residues for which all $k$ numbers pass is $1-\nu_{\mathbf h}(p)/p$. After fixing $q$, the same fraction applies independently to $b$.
+
+The fraction of residue triples for which every form passes is thus $(1-1/p)(1-\nu_{\mathbf h}(p)/p)^2$. There are $2k+1$ forms in all: $k$ involving $a$, $k$ involving $b$, and the added form $q$, which appears once. Dividing by their independence prediction gives
+$$
+\begin{aligned}
+\beta_p
+&=\frac{(1-1/p)(1-\nu_{\mathbf h}(p)/p)^2}
+        {(1-1/p)^{2k+1}}\\
+&=\left[\frac{1-\nu_{\mathbf h}(p)/p}{(1-1/p)^k}\right]^2
+ =S_p(\mathbf h)^2.
+\end{aligned}
+$$
+
+With only one copy of the pattern, the same calculation gives $S_p(\mathbf h)$. The product identity $\prod_p S_p(\mathbf h)^2=(\prod_p S_p(\mathbf h))^2$ then gives the square $S^2$.
+:::
+
+We now apply the Analytic Input to the one-copy and two-copy sums. Let $\mathbb E_{\mathrm{pr}}$ denote the average over prime $q\in(Q,2Q]$, with weights $q^2\log q$ normalised to sum to $1$:
+$$
+\mathbb E_{\mathrm{pr}}F
+=\frac{\displaystyle\sum_{\substack{Q<q\le2Q\\q\text{ prime}}}q^2\log q\,F(q)}
+       {\displaystyle\sum_{\substack{Q<q\le2Q\\q\text{ prime}}}q^2\log q}.
+$$
+The **first moment** is this average of $X(q)$; the **second moment** is the same average of $X(q)^2$. Combining the arithmetic factors $S$ and $S^2$ with the respective geometric volumes gives
+$$
+\mathbb E_{\mathrm{pr}}X=\theta S+o(1),
+\qquad
+\mathbb E_{\mathrm{pr}}X^2=\theta^2S^2+o(1).
+$$
+The callout below derives these estimates, including the choice of weights and the common normalising denominator.
+
+We can now see why the average squared error is small. Expanding the square gives
+$$
+\begin{aligned}
+\mathbb E_{\mathrm{pr}}(X-\theta S)^2
+&=\mathbb E_{\mathrm{pr}}X^2
+  -2\theta S\,\mathbb E_{\mathrm{pr}}X+\theta^2S^2\\
+&=\theta^2S^2-2\theta^2S^2+\theta^2S^2+o(1)\\
+&=o(1).
+\end{aligned}
+$$
+The three leading terms cancel exactly. What remains comes from the small errors in the two moment estimates; since $\theta$ and $S$ are fixed, multiplying those errors by the coefficients in the expansion still leaves a quantity tending to zero. **The local calculation supplies the matching main terms; the analytic estimates make the remaining mean-square error small.**
+
+The weights $q^2\log q$ differ by a bounded factor on $(Q,2Q]$, so the bound also holds for the uniform mean-square error over prime moduli. Section 5.1 now applies: for each fixed tolerance $\lambda>0$, the proportion of prime moduli with $|X(q)-\theta S|>\lambda$ tends to zero.
+
+::: {.callout-note collapse="true"}
+## Deriving the weighted first and second moments
+To compare these moments, we use the same weights and the same normalisation in both. Let
+$$
+D_{\mathrm{pr}}
+:=\sum_{\substack{Q<q\le2Q\\q\text{ prime}}}q^2\log q
+$$
+be the total weight, and define
+$$
+\mathbb E_{\mathrm{pr}}F
+:=\frac1{D_{\mathrm{pr}}}
+  \sum_{\substack{Q<q\le2Q\\q\text{ prime}}}q^2\log q\,F(q).
+$$
+Thus a weighted average multiplies each value by $q^2\log q$, adds the results, and divides by the sum of the weights. The factor $q^2$ is chosen to cancel the denominator in $X(q)^2$. The factor $\log q$ equals $\Lambda(q)$ on primes, allowing the Analytic Input to treat the prime condition on $q$ as one of the linear forms.
+
+Substituting $X(q)=C(q)/q$ makes the cancellations explicit:
+$$
+\begin{aligned}
+\mathbb E_{\mathrm{pr}}X
+&=\frac1{D_{\mathrm{pr}}}
+  \sum_{\substack{Q<q\le2Q\\q\text{ prime}}}q\log q\,C(q),\\
+\mathbb E_{\mathrm{pr}}X^2
+&=\frac1{D_{\mathrm{pr}}}
+  \sum_{\substack{Q<q\le2Q\\q\text{ prime}}}\log q\,C(q)^2.
+\end{aligned}
+$$
+In the first line, $q^2$ times $C(q)/q$ leaves $qC(q)$. In the second, $q^2$ times $C(q)^2/q^2$ leaves $C(q)^2$. **The two numerators have different powers of $q$, but both averages have the same denominator $D_{\mathrm{pr}}$.**
+
+The prime number theorem tells us the size of that denominator. The logarithmic weights compensate for the sparseness of the primes, giving
+$$
+D_{\mathrm{pr}}\sim\int_Q^{2Q}t^2\,dt
+=:V_Q=\frac73Q^3.
+$$
+This is the scale against which we will compare both moment sums.
+
+The geometric factors in those sums have equally concrete meanings. In the squared count, each fixed $q$ allows $0<a,b\le\theta q$, a square of area $\theta^2q^2$. Its volume as $q$ ranges over $(Q,2Q]$ is
+$$
+\int_Q^{2Q}\theta^2q^2\,dq=\theta^2V_Q.
+$$
+In the first moment, there is one starting-point interval of length $\theta q$, together with the remaining weight $q$. That weight can be represented by an extra integer variable $u$ with $0<u\le q$, on which we impose no prime condition. The cross-section now has area $\theta q\cdot q=\theta q^2$, so the corresponding volume is $\theta V_Q$.
+
+The Analytic Input combines these volumes with the arithmetic factors $S$ and $S^2$. It evaluates the following sums over integer moduli:
+$$
+\begin{aligned}
+\sum_{Q<q\le2Q}q\Lambda(q)C(q)
+&=\theta V_QS+o(Q^3),\\
+\sum_{Q<q\le2Q}\Lambda(q)C(q)^2
+&=\theta^2V_QS^2+o(Q^3).
+\end{aligned}
+$$
+On prime moduli, $\Lambda(q)=\log q$, so these are the numerators we need. The sums also include proper prime-power values of $q$. Those moduli are sufficiently sparse that their contribution is $o(Q^3)$; removing them changes only the error terms.
+
+Now divide both estimates by $D_{\mathrm{pr}}=V_Q+o(Q^3)$:
+$$
+\begin{aligned}
+\mathbb E_{\mathrm{pr}}X
+&=\frac{\theta V_QS+o(Q^3)}{V_Q+o(Q^3)}
+ =\theta S+o(1),\\
+\mathbb E_{\mathrm{pr}}X^2
+&=\frac{\theta^2V_QS^2+o(Q^3)}{V_Q+o(Q^3)}
+ =\theta^2S^2+o(1).
+\end{aligned}
+$$
+An error of size $o(Q^3)$ becomes $o(1)$ after division by a quantity of size $Q^3$. Thus the first moment approaches the predicted value $\theta S$, and the second moment approaches its square.
+
+The weighted bound also controls the proportion of prime moduli with large errors. On $(Q,2Q]$, the largest weight $q^2\log q$ is at most $4\log(2Q)/\log Q$ times the smallest, a bounded factor. A small weighted mean-square error therefore also gives a small uniform mean-square error over the prime moduli. The argument from the preceding section applies: for any fixed tolerance $\lambda>0$, the proportion of prime moduli with $|X(q)-\theta S|>\lambda$ tends to zero as $Q$ grows.
+:::
+
+::: {.callout-note collapse="true"}
+## Why the prime-modulus prediction approaches a constant
+The exact prediction remains $\theta\mathfrak S(q\mathbf h)$, which approaches the constant $\theta S$ along prime moduli. To see this, take a prime modulus $q$. Every local factor at a prime $p\ne q$ stays unchanged, because multiplication by $q$ permutes residues modulo $p$. Only the factor at $p=q$ changes.
+
+For sufficiently large $q$, we have $q>k$ and the fixed lift indices are distinct modulo $q$. The original shape then forbids $k$ starting-point residues modulo $q$. In the dilated shape, all $qh_j$ are zero modulo $q$, so avoiding divisibility by $q$ excludes only the starting-point residue $0$. The common normalising factors cancel, leaving the ratio of the two surviving fractions:
+$$
+\begin{aligned}
+\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}
+&=\frac{1-1/q}{1-k/q}
+ =\frac{q-1}{q-k}\\
+&=1+\frac{k-1}{q-k}\longrightarrow1.
+\end{aligned}
+$$
+Changing from $k$ excluded residues to one has a small relative effect when there are $q$ residues and $q$ is large. For our pair at the prime modulus $q=101$, the multiplier is $100/99\approx1.0101$; it approaches $1$ as $q$ grows. Thus $\theta S$ becomes an accurate substitute for the exact centre along prime moduli.
+:::
+
+A large integer modulus, however, can still be divisible by $3$. For our pair, that small prime divisor doubles the local factor at $3$, regardless of how large the modulus becomes. Such effects make the arithmetic correction vary with the prime divisors of $q$. The next section therefore retains $\mathfrak S(q\mathbf h)$ as the prediction's arithmetic factor for each individual modulus.
+
+## Why integer moduli are harder
+
+For prime moduli, the preceding section could use the nearly constant prediction $\theta\mathfrak S(\mathbf h)$: the only prime divisor of $q$ is $q$ itself, and its correction tends to $1$. Integer moduli can have small prime divisors even when $q$ is very large. Those divisors change the predicted count by amounts that need not become small. **We must therefore distinguish variation in the prediction from error in the prediction.**
+
+Return to $\mathbf h=(1,3)$ and the divisibility test modulo $3$. If $3\nmid q$, one of the three residues of $a$ keeps both $a+q$ and $a+3q$ away from $0$. If $3\mid q$, two residues do. Dividing these fractions by the independence prediction $(2/3)^2$ gives the familiar local corrections $3/4$ and $3/2$.
+
+When we average over integer moduli, both cases occur. In the local calculation, $q$ is uniform over its three residues modulo $3$:
+
+| Condition on $q$ | Fraction of the three $q$-residues | One-copy correction | Two-copy correction |
+|:--|:--:|:--:|:--:|
+| $3\nmid q$ | $2/3$ | $3/4$ | $(3/4)^2=9/16$ |
+| $3\mid q$ | $1/3$ | $3/2$ | $(3/2)^2=9/4$ |
+
+The two-copy column is a square because, **once the residue of $q$ is fixed**, we choose the residues of $a$ and $b$ independently. But both copies use the same $q$, so they always belong to the same row. Whenever $3\mid q$, both receive the larger correction.
+
+The average one-copy correction is
+$$
+A_3=\frac23\cdot\frac34+\frac13\cdot\frac32=1.
+$$
+The average two-copy correction is
+$$
+B_3=\frac23\cdot\left(\frac34\right)^2
+   +\frac13\cdot\left(\frac32\right)^2
+   =\frac98.
+$$
+Thus $B_3\ne A_3^2$: **averaging the squares gives a different result from squaring the average.** The difference $B_3-A_3^2=1/8$ is the variance of this local correction at $3$. It records how the correction changes between the two rows. The variance of the full count also involves all the other primes.
+
+For prime moduli larger than $3$, only the first row occurs, and the two-copy correction is exactly the square of the one-copy correction. For integer moduli, approximately one third of the $q$ in $(Q,2Q]$ are divisible by $3$, however large $Q$ becomes. The distinction between the rows persists.
+
+The same calculation works at every prime $p$. Write
+$$
+S_p=S_p(\mathbf h),\qquad
+ t_p=(1-1/p)^{1-k},\qquad
+ c_p=\frac{t_p}{S_p}-1,
+$$
+as in @sec-singular. The local correction is $S_p$ when $p\nmid q$ and $t_p$ when $p\mid q$. These cases occupy fractions $1-1/p$ and $1/p$ of the residues of $q$ modulo $p$. Their average gives the one-copy factor
+$$
+\begin{aligned}
+A_p&=\left(1-\frac1p\right)S_p+\frac{t_p}{p}\\
+   &=S_p\left(1+\frac{c_p}{p}\right).
+\end{aligned}
+$$
+Averaging their squares gives the two-copy factor
+$$
+\begin{aligned}
+B_p&=\left(1-\frac1p\right)S_p^2+\frac{t_p^2}{p}\\
+   &=S_p^2\left(1+\frac{2c_p+c_p^2}{p}\right).
+\end{aligned}
+$$
+The difference is again a local variance:
+$$
+B_p-A_p^2
+=\frac{p-1}{p^2}(t_p-S_p)^2
+=S_p^2c_p^2\frac{p-1}{p^2}.
+$$
+It is positive whenever $c_p>0$. The two copies are **positively correlated through the shared modulus**: a prime divisor of $q$ increases the correction for both at once, even though the starting-point residues are independent for each fixed $q$-residue.
+
+To collect these changes across all primes, recall the dilation ratio
+$$
+f(q)=f_{\mathbf h}(q)
+=\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}
+=\prod_{p\mid q}(1+c_p).
+$$
+Each distinct prime divisor of $q$ contributes once. This function records how the arithmetic prediction changes with the modulus. For our pair, divisibility by $3$ contributes a multiplier of $2$, regardless of how large $q$ is.
+
+The same local factors describe the limiting moments of $f$. We write $G$ for the limiting average of the squared arithmetic multiplier $f(q)^2$. With the $q^2$-weighted average $\mathbb E_w$ from Section 5.1,
+$$
+\mathbb E_w f(q)
+=\prod_p\left(1+\frac{c_p}{p}\right)+o(1),
+$$
+and
+$$
+\mathbb E_w f(q)^2
+=\prod_p\left(1+\frac{2c_p+c_p^2}{p}\right)+o(1)
+=:G+o(1).
+$$
+These limits also hold for the uniform average over integer moduli in $(Q,2Q]$. The first product describes the average arithmetic multiplier; the second describes its average square. Their difference, after squaring the first product, measures the variation in that multiplier.
+
+For the same normalised count $X(q)=C(q)/q$ and fixed constant $S$ introduced in Section 5.1, the Analytic Input gives corresponding estimates for the count:
+$$
+\begin{aligned}
+\mathbb E_w X&=\theta S\,\mathbb E_w f+o(1),\\
+\mathbb E_w X^2&=\theta^2S^2\,\mathbb E_w f^2+o(1).
+\end{aligned}
+$$
+Consequently,
+$$
+\operatorname{Var}_w X
+=\theta^2S^2\operatorname{Var}_w f+o(1).
+$$
+For a fixed admissible shape with $k\ge2$ and $\theta>0$, the limiting variance is positive. Even the best constant prediction, the average of $X$, therefore leaves a mean-square error that does not tend to zero. (For $k=1$, $f\equiv1$ and this arithmetic variation disappears.)
+
+This is where the distinction between **arithmetic variation** and **prediction error** matters. Imagine that the prediction were exact for every modulus:
+$$
+X(q)=\theta S f(q)=\theta\mathfrak S(q\mathbf h).
+$$
+The counts would still vary with $q$, and their variance would still be positive. Yet each count would equal its own prediction, so every prediction error would be zero. Our aim is therefore to make
+$$
+\mathbb E_w\left|X(q)-\theta S f(q)\right|^2
+$$
+small. The changing centre follows the arithmetic variation caused by the prime divisors of $q$.
+
+@tbl-variance illustrates that variation for $\mathbf h=(1,3)$. The empirical column is computed by evaluating the arithmetic multiplier $f(q)$ for each integer modulus in the stated interval and averaging its values and squares. These computations measure how much the arithmetic prediction changes across moduli.
+
+```{python}
+#| label: tbl-variance
+#| tbl-cap: "For $\\mathbf h=(1,3)$: finite-prime approximations to the limiting Euler-product moments of the dilation ratio $f_{\\mathbf h}(q)$, and empirical values over $q\\in(10^5,2\\cdot10^5]$. The positive variance describes arithmetic variation in the prediction."
+import numpy as np
+from IPython.display import Markdown
+from helpers import PRIMES, c_p, dilation_ratio
+h = (1,3)
+Ef = np.prod([1 + c_p(h,int(p))/p for p in PRIMES]); Ef2 = np.prod([1 + (2*c_p(h,int(p)) + c_p(h,int(p))**2)/p for p in PRIMES])
+qs = np.arange(100001, 200001); f = np.array([dilation_ratio(h, int(q)) for q in qs])
+Markdown(f"""
+| quantity | product through $p\\le20000$ | empirical, $q\\in(10^5,2\\cdot10^5]$ |
+|:--|:--:|:--:|
+| $\\mathbb{{E}} f_{{\\mathbf{{h}}}}(q)$ | {Ef:.4f} | {f.mean():.4f} |
+| second moment (limit $G$) | {Ef2:.4f} | {(f**2).mean():.4f} |
+| $\\mathrm{{Var}} f_{{\\mathbf{{h}}}}(q)$ | {Ef2-Ef**2:.4f} | {f.var():.4f} |
+""")
+```
+
+Matching the separate first and second moments of the count and its prediction is not yet enough to show that they are close at the same modulus. We also need the average of their product, the **mixed moment**. The next section shows where it enters the squared error; Chapter 6 evaluates it.
+
+## Why the mixed moment is needed {#the-repair-in-one-line}
+
+The prediction changes with the prime divisors of $q$. We want to show that the count follows those changes at the same modulus. To simplify the formulas, divide both $X(q)$ and its prediction $\theta S f(q)$ by the fixed positive constant $S=\mathfrak S(\mathbf h)$. Write
+$$
+U_\theta(q)=\frac{X(q)}{S}=\frac{C(q)}{qS},
+\qquad
+f(q)=\frac{\mathfrak S(q\mathbf h)}{\mathfrak S(\mathbf h)}.
+$$
+The predicted value of $U_\theta(q)$ is $\theta f(q)$. Their difference is the prediction error, so the quantity to make small is $\mathbb E_w|U_\theta-\theta f|^2$. Here $\mathbb E_w$ is the same average over $Q<q\le2Q$, with weights proportional to $q^2$, used throughout the integer-modulus argument.
+
+For each modulus, expanding the square gives
+$$
+\bigl(U_\theta(q)-\theta f(q)\bigr)^2
+=U_\theta(q)^2-2\theta U_\theta(q)f(q)+\theta^2f(q)^2.
+$$
+Averaging gives the exact identity
+$$
+\boxed{
+\mathbb E_w|U_\theta-\theta f|^2
+=\mathbb E_wU_\theta^2
+ -2\theta\,\mathbb E_w(U_\theta f)
+ +\theta^2\mathbb E_wf^2.
+}
+$$
+**The mixed moment is the middle term in the squared prediction error.** It multiplies each normalised count by the prediction's arithmetic multiplier for that same modulus, then averages. The separate moments of $U_\theta$ and $f$ describe their sizes across moduli; the mixed moment records how they vary together. In the prime-modulus calculation, the target was the constant $\theta S$, so the corresponding term used only the first moment of $X$. Here $f(q)$ remains inside the average: we must evaluate $\mathbb E_w(U_\theta f)$ separately. Knowing the first and last terms leaves the prediction error undetermined until this mixed moment is known.
+
+Recall that $G$ is the leading term of the average $f(q)^2$. The preceding calculations give
+$$
+\mathbb E_wU_\theta^2\approx\theta^2G,
+\qquad
+\mathbb E_wf^2\approx G.
+$$
+If the count follows its prediction, then $U_\theta(q)f(q)$ should be close to $\theta f(q)^2$. This identifies the mixed-moment estimate we need:
+$$
+\mathbb E_w(U_\theta f)\approx\theta G.
+$$
+It is a target for a separate calculation. Chapter 6 proves it without assuming that the count is already close to its prediction.
+
+The arithmetic modulo $3$ illustrates why the same factor should appear in all three moments. For our pair $\mathbf h=(1,3)$, the one-copy local correction is $3/4$ when $3\nmid q$ and $3/2$ when $3\mid q$. Since $U_\theta$ divides out $\mathfrak S(\mathbf h)$, its normalisation divides these local corrections by $S_3(\mathbf h)=3/4$, giving $1$ and $2$. The factor contributed by $3$ to $f(q)$, which we denote here by $f_3(q)$, takes those same values:
+
+| Condition on $q$ | Fraction of the three $q$-residues | One-copy correction divided by $S_3$ | $f_3(q)$ |
+|:--|:--:|:--:|:--:|
+| $3\nmid q$ | $2/3$ | $1$ | $1$ |
+| $3\mid q$ | $1/3$ | $2$ | $2$ |
+
+These entries describe the divisibility calculation modulo $3$, after averaging over the starting-point residue. They are local correction factors. The full prime count also involves all other primes and the analytic error estimates.
+
+For the mixed local factor, multiply the correction and the multiplier within each row, then average over the residues of $q$:
+$$
+\frac23\cdot(1\cdot1)+\frac13\cdot(2\cdot2)=2.
+$$
+This agrees both with the average of $f_3(q)^2$ and with the normalised two-copy factor
+$$
+\frac{B_3}{S_3^2}
+=\frac{9/8}{(3/4)^2}=2.
+$$
+Averaging the two columns separately and then multiplying would give $(4/3)^2=16/9$. The mixed calculation gives $2$ because the two larger entries occur for the same $q$-residues. This is the arithmetic dependence that the mixed moment must retain. The local calculation checks the matching factor at $3$; Chapter 6 justifies the full mixed-moment estimate and controls its error.
+
+With that estimate, the three leading terms cancel:
+$$
+\begin{aligned}
+\mathbb E_w|U_\theta-\theta f|^2
+&\approx\theta^2G-2\theta(\theta G)+\theta^2G\\
+&=\theta^2G-2\theta^2G+\theta^2G\\
+&=0.
+\end{aligned}
+$$
+**Cancellation removes the leading terms; the error bounds determine how small the result is.**
+
+::: {.callout-note collapse="true"}
+## Keeping track of the three error terms
+Write the three moment estimates with their error terms:
+$$
+\begin{aligned}
+\mathbb E_wU_\theta^2&=\theta^2G+\varepsilon_1,\\
+\mathbb E_w(U_\theta f)&=\theta G+\varepsilon_2,\\
+\mathbb E_wf^2&=G+\varepsilon_3.
+\end{aligned}
+$$
+Substituting into the exact identity leaves
+$$
+\mathbb E_w|U_\theta-\theta f|^2
+=\varepsilon_1-2\theta\varepsilon_2+\theta^2\varepsilon_3.
+$$
+The individual errors can have either sign, but the mean-square error is nonnegative and satisfies
+$$
+0\le\mathbb E_w|U_\theta-\theta f|^2
+\le |\varepsilon_1|+2\theta|\varepsilon_2|+\theta^2|\varepsilon_3|.
+$$
+:::
+
+Thus sufficiently small errors in the three moment estimates give a small mean-square prediction error. The argument from Section 5.1 then shows that only a small proportion of moduli can have large prediction errors. The paper controls the remainder by any prescribed power $(\log Q)^{-R}$, which is the quantitative bound needed later for a common exceptional set.
+
+Chapter 6 supplies the missing mixed-moment estimate. The weight $f(q)$ depends on the prime divisors of $q$, so the Analytic Input does not apply to it directly. The divisor expansion
+$$
+f(q)=\sum_{d\mid q}c(d)
+$$
+turns the mixed moment into a weighted sum of averages over multiples of $d$. Writing $q=dn$ gives the linear forms $a+(dh_j)n$. Small divisors stay within the Analytic Input's coefficient range; a separate estimate controls the remaining divisors. Together, these steps yield $\theta G$ with the required error bound.
+
+::: {.callout-tip}
+## Where this is in the paper
+The weighted average $\mathbb E_w$ is defined after display (11). The prime-step calculation is Section 2.1. The local factors $A_p$ and $B_p$ are displays (18) and (19) in Section 3.2. Proposition 3.2 establishes the mean-square bound; its proof combines the second moments (21)–(22) and the mixed moment (29), then divides by $f\ge1$.
+:::

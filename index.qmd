@@ -1,0 +1,27 @@
+# Preface {.unnumbered}
+
+This companion explains the paper *Simultaneous prime-tuple asymptotics and quenched Poisson laws for almost all moduli* [@Zambrano2026] to a reader who is not a specialist in analytic number theory. The research paper is written in the compressed style that journals require. Here the same ideas are unpacked slowly, with pictures, worked examples, and small computations that you can check.
+
+The paper answers a natural question. Take a large modulus $q$ and one of its $\varphi(q)$ reduced residue classes $a \bmod q$. Where is the first prime in that class? Where are the next few? The heuristic answer is that, on the right scale, the primes in a class look like a Poisson process. The paper rigorously proves that this is true for every modulus outside a very small exceptional set, and that it is true in a strong "quenched" sense: the modulus is fixed and only the residue class is random.
+
+The paper makes two contributions. First, it proves the Hardy–Littlewood prediction for the number of prime patterns in a progression, outside a single small exceptional set of moduli. This holds simultaneously for every pattern in a growing family and every long enough stretch of residue classes. Second, it uses those counts to prove the Poisson law for almost all moduli. Earlier work had the counts one pattern at a time [@MTW2026] and the Poisson law only under a conjecture [@Leung2025]; @sec-main-theorem and @sec-poisson make these comparisons precise.
+
+## How to read this companion {.unnumbered}
+
+Chapters 1 to 3 introduce the problem and the two main results, with a detailed statement of the prime-tuple theorem. Chapters 4 to 7 explain the arithmetic proof: what the deep input from additive combinatorics says, why the naive second-moment argument fails for composite moduli, and how a short divisor expansion repairs it. Chapters 8 and 9 explain the Poisson limit theorem for prime lifts and its consequences. Chapter 10 records what the paper does not claim. @sec-synthesis brings the results and proof ideas together and explains their significance.
+
+Some familiarity with congruences, expectation and variance, the Poisson distribution, elementary calculus, and big-O notation will help. The point-process language is introduced here. The Analytic Input in @sec-engine is a theorem we use without proving; no background in higher-order Fourier analysis is required.
+
+**On a first reading**, follow the main text and worked examples, leaving the collapsible derivation boxes closed. **On a second reading**, open the boxes for steps you want to check in detail. In the PDF all boxes are expanded; their titles identify the same optional derivations.
+
+For a paired reading, consult Section 1 of the paper after Chapters 1 to 3, then turn to each corresponding proof section after its companion chapter. Each chapter ends with a box titled **Where this is in the paper**. Appendix A is a glossary of notation, and Appendix B maps the chapters to the paper.
+
+The empirical prime data are computed from sieves when the book is rendered; they are not simulated from a random-prime model. Other figures are schematic diagrams or finite Euler-product computations, identified as such in their captions. The numerical examples illustrate finite-size behaviour; they do not certify the asymptotic theorem for the displayed moduli.
+
+## AI disclosure {.unnumbered}
+
+This companion was prepared in October 2026 with the assistance of Anthropic's Claude Code with Fable 5 and OpenAI's Codex with GPT-6 Astra. Under my direction, Claude Code drafted the exposition, wrote the code for the computations and figures, and built the website; it later refined the exposition for readability. Codex revised technical explanations, captions, and references. Both Claude Code and Codex rebuilt and checked the HTML and PDF outputs.
+
+I specified the structure and pedagogical aims, directed the revisions, and reviewed the material against the paper. I retain responsibility for the final content.
+
+— Eduardo Zambrano

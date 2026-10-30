@@ -1,0 +1,62 @@
+# Putting it all together {#sec-synthesis}
+
+We began with a simple question: how far along an arithmetic progression must we go to find its first primes? The paper first counts how often specified lifts are prime together, then uses those counts to describe the distribution of prime locations across residue classes.
+
+## What the paper establishes
+
+The first result concerns **prime patterns**. For example, how many starting points $a$ in a given interval make both $a+q$ and $a+3q$ prime? Hardy and Littlewood's prediction [-@HardyLittlewood1923] combines the prime densities at the sizes of these numbers with a correction for divisibility by small primes. The exact integral retains the changing densities across the starting interval, and the singular series supplies the arithmetic correction.
+
+@thm-main proves that this prediction is accurate for almost all large moduli. Its distinctive feature is **simultaneity**: one small exceptional set serves every permitted pattern of a fixed size and every sufficiently long starting interval. The family of patterns can grow with $q$. For a modulus outside that set, we can compare many patterns and windows without encountering a new exceptional set for each choice. The relative error and the exceptional proportion can each be bounded by any prescribed negative power of $\log q$, once the parameters are fixed and the scale is sufficiently large.
+
+The second result concerns the **whole configuration of prime lifts**. Fix a modulus $q$, choose a reduced residue $a$ uniformly, and mark the indices $m$ for which $a+mq$ is prime. Measure those indices in units of
+$$
+\ell_q=\frac{\varphi(q)}q\log q.
+$$
+The Poisson limit theorem for prime lifts (@thm-poisson) gives convergence of these empirical laws to the unit-rate Poisson law as $q\to\infty$ through the common set $\mathcal G$ constructed in @sec-consequences. In that limit, an interval of rescaled length $t$ contains a Poisson number of points with mean $t$, and disjoint intervals have independent counts.
+
+The modulus stays fixed while the residue is sampled: this is the meaning of **quenched**. The conclusion also holds uniformly when the sample is restricted to any allowed window of starting residues. Such a window chooses which progressions we sample; intervals on the rescaled lift axis specify where we count their primes.
+
+## How the argument works
+
+The **Analytic Input** of @sec-engine is a quantitative form of the Green--Tao theorem, stated in the preprint of Kravitz, Woo and Xu [-@KWX2025, Theorem 3.1] using Leng's work [-@Leng2024]. It evaluates averages in which both the starting point $a$ and the modulus $q$ vary. Allowing both variables to move makes the relevant linear forms accessible to that theorem.
+
+Extending the prime-dilation strategy of Ford, Green, Konyagin and Tao [-@FGKT2016], the proof turns this averaged information into statements about individual moduli. It estimates the **average squared error** between the count and its prediction. Squaring makes every contribution nonnegative, so a small average forces the number of moduli with large errors to be small. When the square of the count is expanded, a second starting point $b$ appears alongside $a$, sharing the same modulus $q$. This produces another system of linear forms to which the Analytic Input applies (@sec-second-moment).
+
+The difficult part is that the predicted count itself changes with the prime divisors of $q$. We must compare each count with its prediction at the same modulus. Expanding the mean-square error introduces a **mixed moment**: the average of the count times its prediction at that same modulus. This term records how the two vary together.
+
+For an admissible shape, the extra arithmetic correction caused by dilation can be written as a weighted sum over divisors $d$ of $q$. Each divisibility condition can be handled by writing $q=dn$, which again gives linear forms. The proof keeps the terms with small $d$ and bounds the discarded part in mean square. This **divisor expansion** evaluates the mixed moment. Its leading arithmetic factor matches those from the squared count and the squared prediction, so the leading terms in the squared error cancel. The remaining errors are small (@sec-divisor).
+
+The estimates are uniform over the permitted shapes and strong enough to handle the whole growing family. The proof combines their exceptional sets and controls interval endpoints through a finite grid. These steps produce the single exceptional set in the prime-tuple theorem. Removing the logarithmic weights used by the Analytic Input supplies the exact integral in the final prediction (@sec-one-set).
+
+To reach the Poisson law, the argument follows the factorial-moment method used by Gallagher [-@Gallagher1976] for primes in short intervals. If $X$ is the number of prime lifts in an interval, then $X(X-1)$ counts the ordered pairs of distinct prime lifts there. Averaging this quantity over residues is therefore the same as adding up suitable prime-pair counts. Higher factorial moments count larger tuples, and mixed moments make the same connection for several intervals. This is where simultaneity becomes essential: the prime-tuple theorem evaluates all the required patterns for the same modulus and starting window.
+
+```{=latex}
+\Needspace{6\baselineskip}
+```
+
+A theorem of Leung [-@Leung2025, Proposition 3.1] then evaluates the average of the singular series over these patterns. With the scale $\ell_q$ and the reduced-residue normalisation, the resulting moments converge to those of the unit-rate Poisson process. Standard probability arguments turn these moment limits into convergence of the point-process laws, using the criterion in Kallenberg [-@Kallenberg2017, Theorem 4.11] (@sec-poisson). Independence of the limiting counts is obtained through this calculation.
+
+The finite-test argument in @sec-poisson makes this usable at a fixed accuracy: only finitely many moment estimates are needed, so their exceptional sets can be combined into one small set. @sec-consequences then assembles these guarantees into the common set $\mathcal G$, along which every fixed accuracy and permitted window exponent is eventually covered.
+
+## Why it matters
+
+The results give a detailed answer to the question about the first primes. As $q$ grows through $\mathcal G$, the proportion of reduced classes whose least prime is at most $t\varphi(q)\log q$ approaches
+$$
+1-e^{-t}.
+$$
+At $t=1$ this is about $63\%$ of the classes; at $t=2$ it is about $86\%$. The same process law describes later prime locations and the gaps between them. These are several consequences of one description of the prime configuration (@sec-consequences). They also hold for almost all prime moduli: the integer exceptional set remains small compared with the number of primes.
+
+The two contributions reinforce each other. The counting theorem gives a simultaneous counterpart to the fixed-pattern dilation estimates of Matthiesen, Teräväinen and Wang [-@MTW2026, Theorem 1.3] while retaining the modulus-dependent arithmetic correction and controlling starting windows; @sec-main-theorem explains the comparison. That uniformity supplies the collection of estimates needed to prove the Poisson law. The resulting probabilistic conclusion is unconditional for almost all moduli, replacing the Hardy--Littlewood hypothesis used in Leung's earlier work [-@Leung2025] by proved estimates in this setting.
+
+```{=latex}
+\Needspace{12\baselineskip}
+```
+
+The proof also explains how the arithmetic and probabilistic descriptions fit together. Divisibility affects the frequency of each individual pattern, so it remains visible in the counting theorem. When the patterns contributing to a point-process statistic are summed, their corrections combine with the natural scale to give the Poisson moments. The random law emerges from a calculation that keeps track of those arithmetic restrictions.
+
+The paper thus links a concrete count of prime patterns to a common statistical description of the first primes across residue classes. Its central achievement is to make that link work uniformly within almost every modulus, even when the starting residues are confined to a sufficiently long window.
+
+::: {.callout-tip}
+## Where this is in the paper
+Section 1 states the two main theorems and places them in context. Sections 2--4 establish the simultaneous prime-tuple estimates; Section 5 turns them into the Poisson law; Section 6 develops the consequences for counts, gaps and least primes.
+:::

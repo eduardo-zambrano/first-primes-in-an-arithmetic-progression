@@ -1,0 +1,472 @@
+# One exceptional set for everything {#sec-one-set}
+
+The divisor expansion gives, for each admissible shape $\mathbf h$ and each fraction $\theta$ separately, a mean-square bound over $q$, with a bound uniform in those parameters. Theorem 1.1 needs more: a single set of good moduli that works for every shape and window allowed by the theorem, with the exact integral, and for the prime indicator rather than $\Lambda$. This chapter follows the four steps that get there. Each is elementary, but each is necessary.
+
+## From each $(\mathbf h,\theta)$ to all of them at once
+
+**We want to remove the exceptional moduli once, before choosing the shape or interval.** Chapter 6 gives an accurate prediction for most moduli for each individual choice. A modulus that works for one shape or prefix could fail for another, so we must collect the failures and show that their combined size is still small.
+
+Recall that $C_{\mathbf h}(q;\theta)$ is the $\Lambda$-weighted count with starting points $0<a\le\theta q$. Write
+$$
+Z_{\mathbf h}(q;\theta)
+:=\frac{C_{\mathbf h}(q;\theta)}{q\,\mathfrak S(q\mathbf h)}.
+$$
+Its predicted value is $\theta$. We work with integer moduli $Q<q\le2Q$ and write $L=\log Q$. The shapes are admissible, with $k$ distinct lift indices satisfying $1\le h_j\le L^B$. We prescribe an error tolerance of order $L^{-F}$ and an exceptional proportion of order $L^{-A}$.
+
+There are at most $L^{Bk}$ ordered shapes: each of the $k$ entries has at most $L^B$ choices. The prefix endpoint $\theta$ can be any real number in $[0,1]$, so we first test a finite set of evenly spaced checkpoints, called a **mesh**:
+$$
+\theta_i=\frac{i}{J},\qquad
+J=\left\lceil L^{F+1}\right\rceil,\qquad 0\le i\le J.
+$$
+The spacing $1/J\le L^{-F-1}$ is smaller than the desired tolerance.
+
+For every shape and checkpoint, list the moduli for which the discrepancy exceeds $L^{-F}$. **Our common exceptional set $\mathcal E_Q$ is the union of all these failure lists.** A modulus enters it if it fails even one test; every modulus outside it passes every test. The **union bound** says that the size of this union is at most the sum of the sizes of the individual lists. Repeated failures may count the same modulus several times, which only makes the upper bound larger. No independence assumption is needed.
+
+The number of tests grows only as a fixed power of $\log Q$. Chapter 6 lets us make the failure proportion for each test smaller than any prescribed inverse power of $\log Q$. Choosing that power large enough therefore gives
+$$
+|\mathcal E_Q|\ll QL^{-A}.
+$$
+This is where the strength of the earlier error estimate is used: it keeps the combined failure set small even after we test every permitted shape at every checkpoint.
+
+::: {.callout-note collapse="true"}
+## Counting the failures with a union bound
+
+Use the uniform average over integer moduli $Q<q\le2Q$. The $q^2$ weights from Chapter 6 are comparable on this range, so its mean-square estimate also gives
+$$
+\mathbb E_q\left|Z_{\mathbf h}(q;\theta)-\theta\right|^2
+\ll L^{-R},
+$$
+with an implied constant independent of the permitted shape and $\theta$. If a modulus fails the tolerance $L^{-F}$, its squared error exceeds $L^{-2F}$. Chebyshev's inequality therefore bounds the failure proportion for any one test by
+$$
+\frac{O(L^{-R})}{L^{-2F}}=O(L^{2F-R}).
+$$
+
+Writing the common set explicitly,
+$$
+\mathcal E_Q=
+\bigcup_{\substack{\mathbf h\ \mathrm{admissible}\\
+                  1\le h_j\le L^B\ \mathrm{distinct}}}
+\ \bigcup_{i=0}^{J}
+\left\{q\in(Q,2Q]\cap\mathbb Z:
+\left|Z_{\mathbf h}(q;\theta_i)-\theta_i\right|>L^{-F}\right\}.
+$$
+There are at most $L^{Bk}$ shapes and $J+1=O(L^{F+1})$ checkpoints. Summing their failure proportions gives
+$$
+\frac{|\mathcal E_Q|}{\#((Q,2Q]\cap\mathbb Z)}
+\ll
+\underbrace{L^{Bk}}_{\text{shapes}}
+\;\times\;
+\underbrace{L^{F+1}}_{\text{checkpoints}}
+\;\times\;
+\underbrace{L^{2F-R}}_{\text{failure per test}}
+=L^{Bk+3F+1-R}.
+$$
+Choosing $R>A+Bk+3F+2$ makes this $O(L^{-A})$. The parameters $k,A,B,F$ are fixed first; we then request the required mean-square exponent $R$ from Chapter 6. The resulting set depends on these parameters and the scale $Q$, and works simultaneously for the whole permitted family.
+:::
+
+**Monotonicity fills the gaps between checkpoints.** As $\theta$ increases, the prefix includes more starting points. All the weights are nonnegative, and the denominator in $Z_{\mathbf h}(q;\theta)$ is positive and independent of $\theta$, so this normalised count cannot decrease. For a modulus outside $\mathcal E_Q$, its values at both neighbouring checkpoints are accurate. Every intermediate value is trapped between them, giving
+$$
+\left|Z_{\mathbf h}(q;\theta)-\theta\right|
+\le L^{-F}+\frac1J
+\le L^{-F}+L^{-F-1}
+\qquad(0\le\theta\le1).
+$$
+The count may jump between checkpoints; the argument only needs it to be nondecreasing. @fig-staircase illustrates this with a log-weighted prime count.
+
+```{python}
+#| label: fig-staircase
+#| fig-cap: "The normalised log-weighted prime prefix $M_{\\mathbf h}(q;\\theta q)/(q\\,\\mathfrak S(q\\mathbf h))$, defined below, for $q=100003$ and $\\mathbf h=(1,3)$. The staircase is nondecreasing, so controlling it on the mesh (vertical lines) controls it everywhere. The singular-series value is computed numerically."
+import numpy as np, matplotlib.pyplot as plt
+from helpers import sieve, singular_series, BLUE, RUST, GREY
+q = 100003; h = (1,3); isp = sieve(4*q+10)
+a = np.arange(1, q+1); ok = np.ones(q, dtype=bool); w = np.ones(q)
+for hj in h:
+    ok &= isp[a+hj*q]; w *= np.log(a+hj*q)
+M = np.cumsum(ok*w)/(q*singular_series(tuple(hj*q for hj in h)))
+th = a/q
+fig, ax = plt.subplots(figsize=(7, 3.2))
+ax.plot(th, M, color=BLUE, lw=1.5, label="normalised prefix"); ax.plot([0,1],[0,1], color=RUST, lw=1, ls="--", label="$\\theta$")
+for i in range(1, 10): ax.axvline(i/10, color=GREY, lw=0.6, alpha=0.6)
+ax.set_xlabel("$\\theta$"); ax.legend(frameon=False, loc="upper left")
+plt.tight_layout()
+```
+
+**Every interval is the difference of two prefixes.** The weighted count with starting points in $(u,v]\subseteq(0,q]$ is
+$$
+C_{\mathbf h}(q;v/q)-C_{\mathbf h}(q;u/q).
+$$
+Both prefixes are already controlled for every endpoint. Subtracting their estimates gives the prediction $(v-u)\mathfrak S(q\mathbf h)$, with at most twice the prefix error. Thus no further union bound over intervals is needed.
+
+::: {.callout-note collapse="true"}
+## Filling the gaps and subtracting prefixes
+
+Fix $q\notin\mathcal E_Q$ and any permitted admissible shape. If $\theta_i\le\theta\le\theta_{i+1}$, monotonicity and the two checkpoint estimates give
+$$
+\theta_i-L^{-F}
+\le Z_{\mathbf h}(q;\theta_i)
+\le Z_{\mathbf h}(q;\theta)
+\le Z_{\mathbf h}(q;\theta_{i+1})
+\le\theta_{i+1}+L^{-F}.
+$$
+Since each neighbouring checkpoint is at most $1/J$ from $\theta$, this implies
+$$
+\left|Z_{\mathbf h}(q;\theta)-\theta\right|
+\le\eta,\qquad \eta:=L^{-F}+\frac1J.
+$$
+The endpoints $0$ and $1$ are included in the mesh, so every prefix is covered. Returning to the original count, write
+$$
+C_{\mathbf h}(q;\theta)
+=\theta q\,\mathfrak S(q\mathbf h)+E_{\mathbf h}(q;\theta),
+\qquad
+|E_{\mathbf h}(q;\theta)|\le\eta q\,\mathfrak S(q\mathbf h).
+$$
+For $0\le u\le v\le q$, subtraction yields
+$$
+\begin{aligned}
+&C_{\mathbf h}(q;v/q)-C_{\mathbf h}(q;u/q)
+ -(v-u)\mathfrak S(q\mathbf h)\\
+&\hspace{2em}=E_{\mathbf h}(q;v/q)-E_{\mathbf h}(q;u/q).
+\end{aligned}
+$$
+The absolute value is at most $2\eta q\,\mathfrak S(q\mathbf h)$. This holds for every interval and every permitted admissible shape for the same $q$, because both endpoint estimates hold on the common good set.
+:::
+
+We have obtained one exceptional set for all admissible shapes in the prescribed box and all intervals at this scale. The bound is an absolute error; relative accuracy for short intervals will use the theorem's minimum-length condition. The remaining steps extend the result to shapes that become admissible after dilation and convert the weighted counts into ordinary prime counts with the exact logarithmic integral.
+
+## Shapes that only dilation makes admissible
+
+The preceding section assumes that the original shape is admissible. That assumption came from the mean-square argument, which divides by $\mathfrak S(\mathbf h)$. We now handle shapes for which $\mathfrak S(\mathbf h)=0$ but $\mathfrak S(q\mathbf h)>0$. **We split their counts into smaller counts with admissible shapes, so that the result already proved applies to each piece.**
+
+Consider $\mathbf h=(1,2,3)$. Without dilation, the entries $a+1,a+2,a+3$ are consecutive: every starting point gives a multiple of $2$ and a multiple of $3$. These unavoidable divisibilities make the shape inadmissible. Dilation by a multiple of $6$ removes both obstructions. For an exact illustration, take $q=30$. The entries are now
+$$
+a+30,\qquad a+60,\qquad a+90.
+$$
+All three have the same residue as $a$ modulo $2$ and modulo $3$, so choosing $a$ coprime to $6$ makes all three pass these two divisibility tests.
+
+Write $30=6\cdot5$. Absorbing the factor $6$ into the lift indices gives the shape $(6,12,18)$ with dilation $5$. There is still a mismatch in the starting-point range: our earlier result uses a prefix of one dilation-length, which is now $5$, whereas the original starting points run from $1$ to $30$. **Splitting this range into six blocks of five puts each piece into the form we already know how to handle.**
+
+Within each block, let $b$ run from $1$ to $5$:
+
+| Starting points $a$ | Write $a$ as | Lift indices with dilation $5$ |
+|:---|:---|:---|
+| $1,\ldots,5$ | $b$ | $(6,12,18)$ |
+| $6,\ldots,10$ | $5+b$ | $(7,13,19)$ |
+| $11,\ldots,15$ | $10+b$ | $(8,14,20)$ |
+| $16,\ldots,20$ | $15+b$ | $(9,15,21)$ |
+| $21,\ldots,25$ | $20+b$ | $(10,16,22)$ |
+| $26,\ldots,30$ | $25+b$ | $(11,17,23)$ |
+
+Moving the starting point up by $5$ can be recorded instead by increasing each lift index by $1$. For example, in the second block,
+$$
+a+30=(5+b)+30=b+7\cdot5.
+$$
+The other two entries become $b+13\cdot5$ and $b+19\cdot5$. At $a=7$, we have $b=2$, and the two descriptions give
+$$
+\begin{aligned}
+(7+30,\;7+60,\;7+90)&=(37,67,97)\\
+&=(2+7\cdot5,\;2+13\cdot5,\;2+19\cdot5).
+\end{aligned}
+$$
+These are exactly the same three primes. Every starting point belongs to one block, so adding the block counts omits nothing and counts nothing twice. The $\Lambda$ weights are also unchanged, since the numbers themselves are unchanged.
+
+**Every new shape in the table is admissible.** Its entries differ by $6$, so they all coincide modulo $2$ and modulo $3$. Each of these primes therefore forbids only one starting-point residue, leaving other choices. A prime $p\ge5$ has at least five residue classes, which three lift indices cannot cover. There is no unavoidable divisibility obstruction.
+
+The general construction is the same. Let $d$ be the product of the primes obstructing the original shape. When $d\mid q$, write $q=dn$ and split $(0,q]$ into $d$ blocks of length $n$. In block $r$, the new lift indices are $dh_j+r$ and the new dilation is $n$. @fig-blocks-decomp shows this arrangement when $d=6$.
+
+```{python}
+#| label: fig-blocks-decomp
+#| fig-cap: "For $q=dn$ with $d=6$, the range $(0,q]$ of starting points splits into six blocks of length $n$. On block $r$, the starting point is $a=rn+b$ and the pattern $a+h_jq$ becomes $b+(6h_j+r)n$: an admissible shape dilated by $n$."
+import matplotlib.pyplot as plt
+from helpers import SLATE, BLUE, RUST
+fig, ax = plt.subplots(figsize=(7, 1.6)); ax.set_xlim(-0.2, 6.4); ax.set_ylim(-0.6, 1.4); ax.axis("off")
+for r in range(6):
+    ax.add_patch(plt.Rectangle((r, 0), 1, 0.7, fc=("white" if r % 2 else "#e9eef2"), ec=SLATE, lw=1.2))
+    ax.text(r+0.5, 0.35, f"$r={r}$", ha="center", va="center", fontsize=9, color=SLATE)
+    ax.text(r+0.5, -0.35, f"$\\mathbf{{g}}^{{({r})}}=6\\mathbf{{h}}+{r}$", ha="center", fontsize=8, color=BLUE)
+ax.annotate("", xy=(6, 1.05), xytext=(0, 1.05), arrowprops=dict(arrowstyle="<->", color=RUST)); ax.text(3, 1.2, "$a\\in(0,q]$, $q=6n$", ha="center", fontsize=9, color=RUST)
+ax.text(0.5, 0.85, "$n$", ha="center", fontsize=8, color=SLATE)
+plt.tight_layout()
+```
+
+::: {.callout-note collapse="true"}
+## Why the new shapes are admissible
+
+A shape with $k$ entries cannot occupy every residue class modulo a prime larger than $k$. Thus all obstructing primes occur in the fixed product
+$$
+W_k=\prod_{p\le k}p.
+$$
+Define
+$$
+d=d_0(\mathbf h)
+:=\prod_{\substack{p\le k\\\nu_{\mathbf h}(p)=p}}p,
+$$
+with $d=1$ if there are no obstructions. If an obstructing prime divides $q$, multiplication by $q$ collapses all the shift residues to $0$, removing that obstruction. If it does not divide $q$, multiplication by $q$ permutes the residues, so the obstruction remains. Primes that did not obstruct the original shape cannot acquire an obstruction under dilation. Hence
+$$
+\mathfrak S(q\mathbf h)>0\quad\Longleftrightarrow\quad d\mid q.
+$$
+
+When $q=dn$, every integer starting point has a unique representation
+$$
+a=rn+b,\qquad 0\le r<d,\quad 1\le b\le n.
+$$
+Put $\mathbf g^{(r)}=d\mathbf h+r$, adding $r$ to every entry. The exact identity
+$$
+a+h_jq=rn+b+h_jdn=b+(dh_j+r)n
+$$
+rewrites the original pattern as the new shape dilated by $n$.
+
+If $p\mid d$, every entry of $\mathbf g^{(r)}$ is congruent to $r$, so the new shape occupies one residue class. If $p\nmid d$, multiplication by $d$ and translation by $r$ preserve the number of occupied classes. That number is $\nu_{\mathbf h}(p)<p$, because every obstructing prime was included in $d$. Thus each $\mathbf g^{(r)}$ is admissible. Its entries remain positive and distinct.
+
+Finally,
+$$
+n\mathbf g^{(r)}=q\mathbf h+rn.
+$$
+Adding the same integer to all shifts preserves the number of residue classes occupied at every prime. The singular series is therefore unchanged:
+$$
+\mathfrak S(n\mathbf g^{(r)})=\mathfrak S(q\mathbf h).
+$$
+:::
+
+We must ensure that the smaller dilation $n$ belongs to a good set. For each possible $d$, first apply the preceding section at the smaller scale $Q/d$, obtaining one good set of $n$ that works for every permitted admissible shape and prefix. Discard an original modulus $q=dn$ if its $n$ is exceptional. For fixed $k$, only finitely many values of $d$ can arise, so the union of these discarded sets is still small. The details, including the slightly larger range needed for the new lift indices, are in the next callout.
+
+**For the remaining moduli, we apply the estimate in each block and add.** All blocks have the same singular-series factor as the original pattern: shifting all entries together changes which starting-point residues pass a divisibility test, but preserves how many pass. Each block's prediction is its included length times this common factor. The included lengths add to the length of the original prefix, so the predictions add correctly. The errors also add, and there are only $d$ blocks, with $dn=q$.
+
+A prefix can stop partway through a block. In the $q=30$ example, stopping at $a=17$ includes the first three full blocks and the first two starting points of the fourth: their lengths are $5+5+5+2=17$. The preceding section already controls every prefix, so it also controls that partial block. Subtracting two prefixes then handles any starting-point interval.
+
+::: {.callout-note collapse="true"}
+## Adding the estimates on one common good set
+
+For each divisor $d\mid W_k$, apply the admissible-shape estimate to
+$$
+n\in(Q/d,2Q/d],
+$$
+with shape exponent $B+1$ and the prescribed parameters $A,F$. Since $d\le W_k$ depends only on fixed $k$, for sufficiently large $Q$ every new entry satisfies
+$$
+1\le dh_j+r\le dL^B+d-1
+\le\bigl(\log(Q/d)\bigr)^{B+1}.
+$$
+The prepared estimate therefore covers all the new shapes. Also $\log(Q/d)\asymp_k L$, so its errors can be written using $L=\log Q$.
+
+Let $\mathcal E_d$ be the exceptional set of these smaller dilations. Remove
+$$
+\bigcup_{d\mid W_k}\{dn:n\in\mathcal E_d\}
+$$
+from the original range $(Q,2Q]$. For each $d$, the map $n\mapsto dn$ is one-to-one, so it does not enlarge the number of exceptions. Consequently the union has size at most
+$$
+\sum_{d\mid W_k}
+O_{k,A,B,F}\!\left(\frac Qd\bigl(\log(Q/d)\bigr)^{-A}\right)
+=O_{k,A,B,F}(QL^{-A}).
+$$
+This set is prepared for all possible $d$ before choosing the original shape. For every remaining $q$ and every shape whose dilation is admissible, the corresponding $n=q/d_0(\mathbf h)$ is therefore good for all its block shapes and prefixes.
+
+For a prefix $0<a\le t\le q$, the part in block $r$ has length
+$$
+t_r=\min\{n,\max\{0,t-rn\}\},
+\qquad \sum_{r=0}^{d-1}t_r=t.
+$$
+Write $S_q=\mathfrak S(q\mathbf h)$. The exact change of variables and the prepared estimate give
+$$
+\begin{aligned}
+C_{\mathbf h}(q;t/q)
+&=\sum_{r=0}^{d-1}C_{\mathbf g^{(r)}}(n;t_r/n)\\
+&=\sum_{r=0}^{d-1}\left(t_rS_q+O_{k,A,B,F}(nS_qL^{-F})\right)\\
+&=tS_q+O_{k,A,B,F}(qS_qL^{-F}).
+\end{aligned}
+$$
+Here the main terms add because $\sum_rt_r=t$, and the error bound follows from $dn=q$. Thus the same uniform prefix estimate now holds for every permitted shape with $\mathfrak S(q\mathbf h)>0$, including shapes with $\mathfrak S(\mathbf h)=0$.
+:::
+
+If $d$ does not divide $q$, an obstruction remains. Some prime $p\le k$ then divides at least one entry $a+h_jq$ for every starting point. Once $q>k$, all these entries exceed $p$, so that divisible entry is composite. The **ordinary prime count is exactly zero**, as asserted in Theorem 1.1. The $\Lambda$-weighted count can still receive contributions from proper prime powers; the next section removes those contributions.
+
+## Removing prime powers
+
+The estimate we have proved uses $\Lambda$, which is positive at primes and also at **proper prime powers** such as $4,8,9$ and $49$. Here "proper" means $p^r$ with $r\ge2$. We must remove patterns containing one of these composite numbers before we have a count of prime tuples.
+
+In the preceding section's example, $q=30$ and $\mathbf h=(1,2,3)$. The starting point $a=19$ gives
+$$
+(a+30,a+60,a+90)=(49,79,109).
+$$
+The $\Lambda$-weighted count includes this triple with weight $\log7\,\log79\,\log109$, because $49=7^2$ and the other two entries are prime. The prime-tuple count must exclude it.
+
+**There are few enough proper prime powers that removing them preserves our error estimate.** A prime square below $X$ has its base below $\sqrt X$; higher powers have still smaller possible bases. For fixed $q$ and a fixed lift index $h_j$, a particular prime power can occur at only one starting point: the equation $a+h_jq=p^r$ fixes $a$. Thus only a small number of starting points can contribute these extra patterns. Their logarithmic weights grow slowly enough that their total contribution remains small.
+
+After removing them, we obtain the **log-weighted prime count**
+$$
+M_{\mathbf h}(q;t)
+=\sum_{0<a\le t}\prod_{j=1}^k
+\bigl(\mathbf 1_{\{a+h_jq\ \text{prime}\}}\log(a+h_jq)\bigr).
+$$
+Only tuples of actual primes contribute to $M$. Each still carries the product of its logarithms; removing those weights is the next step.
+
+The bound for the removed contribution holds for every permitted modulus, shape and prefix. **No further moduli need to be excluded.** On the common good set from the preceding sections, we retain
+$$
+\sup_{0\le t\le q}
+\left|M_{\mathbf h}(q;t)-\mathfrak S(q\mathbf h)\,t\right|
+\ll q\,\mathfrak S(q\mathbf h)L^{-F}.
+$$
+So the prediction remains the prefix length $t$ times the same arithmetic factor, with the same order of error.
+
+::: {.callout-note collapse="true"}
+## Bounding the contribution of proper prime powers
+
+Every entry $a+h_jq$ is at most
+$$
+X=2Q(L^B+1),\qquad L=\log Q.
+$$
+For exponent $r\ge2$, there are at most $X^{1/r}\le\sqrt X$ possible bases, and there are $O(\log X)$ possible exponents. This gives the sufficient upper bound $O(\sqrt X\log X)$ for the number of proper prime powers up to $X$.
+
+For each of the $k$ positions and each such value, there is at most one starting point $a$. Counting a starting point more than once only enlarges the upper bound. Each pattern has $\Lambda$-weight at most $(\log X)^k$. Hence, uniformly in the permitted $q,\mathbf h,t$,
+$$
+\begin{aligned}
+0\le C_{\mathbf h}(q;t/q)-M_{\mathbf h}(q;t)
+&\ll_k \sqrt X(\log X)^{k+1}\\
+&\ll_{k,B}Q^{1/2}L^{B/2+k+1}.
+\end{aligned}
+$$
+On an actual prime tuple, $\Lambda(p)=\log p$, so the two counts have identical weights. Their difference consists precisely of the additional patterns containing a proper prime power.
+
+When $q\mathbf h$ is admissible, Lemma 2.2 of the paper gives $\mathfrak S(q\mathbf h)\ge s_k>0$, uniformly in the shape and modulus. Since $q>Q$, the removed contribution divided by our error scale is at most a constant times
+$$
+\frac{Q^{1/2}L^{B/2+k+1}}
+     {q\,\mathfrak S(q\mathbf h)L^{-F}}
+\ll_{k,B,F}Q^{-1/2}L^{B/2+k+1+F}
+\longrightarrow0.
+$$
+For every fixed $F$, a fixed power of $\log Q$ grows more slowly than $Q^{1/2}$. The correction can therefore be absorbed into the existing $O(q\,\mathfrak S(q\mathbf h)L^{-F})$ error, on the same common good set.
+:::
+
+## Partial summation: the exact integral appears
+
+**We now make each prime tuple count as one.** After the preceding section, only genuine prime tuples contribute, but each still carries the product of its logarithms. For example, at $q=30$, $\mathbf h=(1,2,3)$ and $a=7$, the tuple $(37,67,97)$ contributes $\log37\,\log67\,\log97$ to $M$. Multiplying by its reciprocal gives
+$$
+\frac{1}{\log37\,\log67\,\log97}
+\times\log37\,\log67\,\log97=1.
+$$
+This removes the weight of that tuple exactly.
+
+The reciprocal weight depends on the starting point. For the general shape, define
+$$
+g(t)=\frac1{\prod_{j=1}^k\log(t+h_jq)}.
+$$
+At a starting point $a$ that gives a prime tuple, multiplying its contribution to $M$ by $g(a)$ turns it into $1$. Summing these adjusted contributions over $J=(u,v]$ gives the ordinary prime-tuple count $N_{\mathbf h}(q;J)$.
+
+**Partial summation lets us remove these varying weights using the prefix estimate already proved.** Think of $M(t)$ as a staircase: it jumps at each successful starting point, by the product of the logarithms of that tuple. We know that this cumulative count stays close to the straight line $\mathfrak S(q\mathbf h)t$. Partial summation compares the adjusted staircase with the adjusted line and bounds their difference using that known prefix error.
+
+For the straight line, an interval of length $dt$ contributes $\mathfrak S(q\mathbf h)\,dt$. Applying the reciprocal weight $g(t)$ and adding across the window gives
+$$
+\mathfrak S(q\mathbf h)\int_u^v g(t)\,dt
+=\mathfrak S(q\mathbf h)\,\mathcal I_{\mathbf h}(q;J).
+$$
+This is exactly the prediction from @sec-main-theorem. The logarithms stay inside the integral because each starting point has its own weight. Keeping their actual values retains the accuracy needed for any prescribed inverse power of $\log Q$.
+
+The error is also controlled. The reciprocal weight $g$ decreases as $t$ increases, so its total change across the window is just $g(u)-g(v)$. Partial summation uses this change and the errors at the two endpoints. It therefore avoids adding a separate error for every starting point. Since $g$ has size $L^{-k}$, the resulting estimate is
+$$
+\begin{aligned}
+N_{\mathbf h}(q;J)
+&=\mathfrak S(q\mathbf h)\,\mathcal I_{\mathbf h}(q;J)\\
+&\quad+O_{k,A,B,F}\!\left(q\,\mathfrak S(q\mathbf h)L^{-F-k}\right).
+\end{aligned}
+$$
+This holds simultaneously for every window $J\subseteq(0,q]$ and every permitted shape with positive dilated singular series, on the same common good set. The next section compares this absolute error with the predicted count.
+
+::: {.callout-note collapse="true"}
+## Transferring the prefix error by partial summation
+
+Fix a good modulus and a permitted shape with positive dilated singular series. Abbreviate
+$$
+S=\mathfrak S(q\mathbf h),\qquad
+M(t)=M_{\mathbf h}(q;t),\qquad E(t)=M(t)-St.
+$$
+The preceding section gives $|E(t)|\le\varepsilon qS$ for every $0\le t\le q$, with $\varepsilon\ll_{k,A,B,F}L^{-F}$.
+
+At a prime-tuple starting point $a$, the jump of $M$ is $\prod_j\log(a+h_jq)$; at other starting points there is no jump. Thus the exact count is
+$$
+N_{\mathbf h}(q;J)=\int_{(u,v]}g(t)\,dM(t).
+$$
+This **Stieltjes integral** means: sum $g(a)$ times the jump of $M$ at each $a$ in the window. Each nonzero contribution is $1$. The half-open interval $(u,v]$ excludes a jump at $u$ and includes a jump at $v$, even when either endpoint is an integer.
+
+Substitute $M(t)=St+E(t)$ and integrate by parts. This is the partial-summation identity:
+$$
+\begin{aligned}
+N_{\mathbf h}(q;J)-S\int_u^v g(t)\,dt
+&=g(v)E(v)-g(u)E(u)\\
+&\quad-\int_u^v E(t)g'(t)\,dt.
+\end{aligned}
+$$
+The function $g$ is positive, continuously differentiable and decreasing. Therefore
+$$
+\int_u^v|g'(t)|\,dt=g(u)-g(v).
+$$
+Taking absolute values and using the uniform prefix bound gives
+$$
+\begin{aligned}
+\left|N_{\mathbf h}(q;J)-S\int_u^v g(t)\,dt\right|
+&\le\varepsilon qS\left(g(v)+g(u)+\int_u^v|g'(t)|\,dt\right)\\
+&=2\varepsilon qSg(u)\\
+&\ll_{k,B}\varepsilon qS L^{-k}.
+\end{aligned}
+$$
+Here each $\log(t+h_jq)$ lies between $L$ and a constant multiple of $L$ for the permitted range, so $g(t)\asymp_{k,B}L^{-k}$. The argument uses only the prefix estimate already valid for all shapes and endpoints. It requires no further exceptional set.
+:::
+
+## Putting the parameters together
+
+We now have the ordinary prime count and the exact integral from the theorem. **The final check is that the error is small compared with the predicted count.** This is the difference between an absolute error and a relative error: we divide the error by the prediction to see how much it matters.
+
+Short windows require care. Their predicted counts shrink with their length, while the error estimate from the preceding section is on the scale of the whole starting-point range $q$. The same absolute error can therefore be a larger fraction of the prediction in a shorter window. This is where the theorem's minimum-length condition is used:
+$$
+|J|\ge qL^{-C},\qquad L=\log Q.
+$$
+Since each reciprocal logarithm has size $L^{-1}$, the prediction has size $|J|\mathfrak S(q\mathbf h)L^{-k}$. The absolute error is at most a constant times $q\,\mathfrak S(q\mathbf h)L^{-F-k}$. For positive dilated singular series, their ratio satisfies
+$$
+\frac{\left|N_{\mathbf h}(q;J)-\mathfrak S(q\mathbf h)\mathcal I_{\mathbf h}(q;J)\right|}
+     {\mathfrak S(q\mathbf h)\mathcal I_{\mathbf h}(q;J)}
+\ll \frac q{|J|}L^{-F}
+\le L^{C-F}.
+$$
+Thus allowing windows as short as $q/L^C$ costs at most a factor $L^C$ in the relative error.
+
+The theorem prescribes the desired relative accuracy $O(L^{-D})$. The exponent $F$ is an internal choice: it specifies how much accuracy we request in the earlier prefix estimates. Choose it large enough to cover both the window length and the desired accuracy; for example, take $F=C+D+2$. If the shortest windows have length $q/L^2$ and the desired relative error is $O(L^{-3})$, this choice is $F=7$, giving the sufficient bound $O(L^{-5})$.
+
+The exponent $A$ specifies how small the exceptional set must be. After fixing $F$, we request enough mean-square accuracy to make the union bound in the preceding sections give $O(QL^{-A})$ exceptions. The earlier estimates allow any fixed accuracy required by these choices. **The same remaining moduli then work for every permitted shape and every allowed window**, with
+$$
+N_{\mathbf h}(q;J)
+=\mathfrak S(q\mathbf h)\,\mathcal I_{\mathbf h}(q;J)
+\bigl(1+O(L^{-D})\bigr).
+$$
+Shapes with $\mathfrak S(q\mathbf h)=0$ have exact prime count zero once $Q>k$, by the obstruction argument above. Together, these conclusions prove Theorem 1.1 of the paper, stated as @thm-main in this book.
+
+::: {.callout-note collapse="true"}
+## Comparing the errors and choosing the parameters
+
+Throughout the permitted range, $g(t)\asymp_{k,B}L^{-k}$. Therefore
+$$
+\mathcal I_{\mathbf h}(q;J)=\int_J g(t)\,dt
+\asymp_{k,B}|J|L^{-k}.
+$$
+For a window with $|J|\ge qL^{-C}$ and $S=\mathfrak S(q\mathbf h)>0$, the prediction is consequently at least a constant times $qSL^{-C-k}$. The preceding section bounds the absolute error by $O_{k,A,B,F}(qSL^{-F-k})$. Dividing gives
+$$
+\frac{|N_{\mathbf h}(q;J)-S\mathcal I_{\mathbf h}(q;J)|}
+     {S\mathcal I_{\mathbf h}(q;J)}
+\ll_{k,A,B,F}
+\frac{qSL^{-F-k}}{qSL^{-C-k}}
+=L^{C-F}.
+$$
+
+Fix the theorem's parameters $k,A,B,C,D$ first. A convenient choice is
+$$
+F=C+D+2,
+$$
+which satisfies the paper's requirement $F>C+D+1$. It gives $L^{C-F}=L^{-D-2}$, hence the required $O(L^{-D})$ relative error.
+
+Next choose the mean-square exponent $R$ large enough for every application of the union bound. The block reduction uses the enlarged shape exponent $B+1$, so one sufficient choice is
+$$
+R>A+k(B+1)+3F+2.
+$$
+Chapter 6 supplies the required mean-square bound for this fixed $R$. The mesh and block arguments then give a common exceptional set of size $O_{k,A,B,C,D}(QL^{-A})$. Removing proper prime powers and applying partial summation require no further exclusions. All the estimates are simultaneous over the permitted shapes and windows, so the final relative-error statement has that same uniformity.
+:::
+
+::: {.callout-tip}
+## Where this is in the paper
+Section 4. Proposition 4.1 is the mesh and union bound; Lemma 4.2 is the block decomposition for dilation-admissible shapes, with the exact-zero statement in the paragraph after it; Section 4.3 removes prime powers; Lemma 4.3 is the partial summation; the proof of Theorem 1.1 closes the section.
+:::

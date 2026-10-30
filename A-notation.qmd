@@ -1,0 +1,41 @@
+# Notation {#sec-notation}
+
+| Symbol | Meaning | Introduced |
+|:--|:--|:--:|
+| $q$ | the modulus (dilation), an integer in $(Q,2Q]$ | Ch. 1 |
+| $Q$, $L$ | the dyadic scale and $L=\log Q$ | Ch. 3 |
+| $\varphi(q)$, $\alpha_q$ | Euler's function and $\alpha_q=\varphi(q)/q$ | Ch. 1 |
+| $\ell_q$ | the natural lift scale $\alpha_q\log q$ | Ch. 1 |
+| $a+mq$ | the $m$-th lift of the residue $a$ | Ch. 1 |
+| $\Xi_{q,a}$ | the point process of prime lifts, points at $m/\ell_q$ | Ch. 1 |
+| $\operatorname{Law}_{q,J}$ | the empirical law over reduced residues $a\in J$ | Ch. 1, 8 |
+| $\Pi$ | the law of the unit-rate Poisson process on $[0,\infty)$ | Ch. 1 |
+| $d_{\mathrm w}$ | a metric for weak convergence of laws on configurations | Ch. 8 |
+| $\mathbf h=(h_1,\ldots,h_k)$ | a shape: distinct positive integers | Ch. 2 |
+| $q\mathbf h$ | the dilated shape $(qh_1,\ldots,qh_k)$ | Ch. 2 |
+| $\nu_{\mathbf h}(p)$ | number of residue classes modulo $p$ occupied by $\mathbf h$ | Ch. 2 |
+| $S_p(\mathbf h)$, $\mathfrak S(\mathbf h)$ | local factor at $p$ and singular series | Ch. 2 |
+| $t_p$ | $(1-1/p)^{1-k}$, the local factor of $q\mathbf h$ when $p\mid q$ | Ch. 2 |
+| $c_p$, $c(d)$ | for admissible $\mathbf h$: $t_p/S_p-1=(\nu-1)/(p-\nu)$ and its squarefree multiplicative extension | Ch. 2, 6 |
+| $f_{\mathbf h}(q)$ | for admissible $\mathbf h$, the ratio $\mathfrak S(q\mathbf h)/\mathfrak S(\mathbf h)=\sum_{d\mid q}c(d)$ | Ch. 2 |
+| $d_0(\mathbf h)$ | product of the obstructing primes $p\le k$ with $\nu_{\mathbf h}(p)=p$ | Ch. 2 |
+| $N_{\mathbf h}(q;J)$ | number of $a\in J$ with all $a+h_jq$ prime | Ch. 3 |
+| $\mathcal I_{\mathbf h}(q;J)$ | the exact logarithmic integral $\int_J dt/\prod_j\log(t+h_jq)$ | Ch. 3 |
+| $\Lambda$ | the von Mangoldt function | Ch. 4 |
+| $\beta_p$ | local factor of a system of linear forms | Ch. 4 |
+| $C_{\mathbf h}(q;\theta)$ | the $\Lambda$-weighted prefix sum over $0<a\le\theta q$ | Ch. 5 |
+| $\mathbb E_w$ | the average over $q\in(Q,2Q]$ with weights $q^2$ | Ch. 5 |
+| $A_p$, $B_p$ | one-block and two-block local factors for integer $q$ | Ch. 5 |
+| $G$ | $\prod_p(1+(2c_p+c_p^2)/p)=\prod_pB_p/S_p^2$; $\mathbb E_wf^2=G+O_k(Q^{-1/2})$ | Ch. 5, 6 |
+| $U_\theta$ | $C_{\mathbf h}(q;\theta)/(q\,\mathfrak S(\mathbf h))$ | Ch. 5 |
+| $T$, $f_T$ | divisor truncation level $(\log Q)^M$ and truncated ratio | Ch. 6 |
+| $\mathfrak U_d$ | $\prod_{p\mid d}t_p\prod_{p\nmid d}A_p$, local factors along multiples of $d$ | Ch. 6 |
+| $M_{\mathbf h}(q;t)$ | the log-weighted prime prefix count | Ch. 7 |
+| $\mathcal J_C(q)$ | windows $(u,v]\subseteq(0,q]$ with $v-u\ge q/(\log q)^C$ | Ch. 8 |
+| $R_q(J)$ | number of reduced residues in $J$ | Ch. 8 |
+| $H_{\mathbf I,\mathbf k}$, $c_{\mathbf I,\mathbf k}$ | mixed factorial moment and its Poisson value $\prod|I_i|^{k_i}$ | Ch. 8 |
+| $M_j(q,a)$ | the $j$-th lift index with $a+mq$ prime | Ch. 9 |
+| $p(q,a)$ | the least prime congruent to $a$ modulo $q$ | Ch. 9 |
+| $\mathcal G$ | the density-one set of good moduli | Ch. 9 |
+
+: Notation used in this companion and in the paper. {#tbl-notation tbl-colwidths="[23, 62, 15]"}
