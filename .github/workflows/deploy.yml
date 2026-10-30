@@ -1,0 +1,73 @@
+name: Render and Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python packages for the computed figures
+        run: pip install jupyter numpy matplotlib
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install TeX Gyre fonts for PDF
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-texgyre
+          fc-cache -f
+
+      - name: Render Quarto Book
+        run: quarto render
+
+      # Password protection, as in the earlier Quarto sites. The step runs only
+      # when the repository secret SITE_PASSWORD exists. The full-text search
+      # index is removed in that case because it would expose the book's text.
+      # The downloadable PDF is not encrypted by this step.
+      - name: Encrypt HTML with StatiCrypt (only if SITE_PASSWORD is set)
+        env:
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+        run: |
+          if [ -n "$SITE_PASSWORD" ]; then
+            npx staticrypt@3 _book/*.html -p "$SITE_PASSWORD" --remember 30 -d _book
+            rm -f _book/search.json
+            echo "Site encrypted."
+          else
+            echo "SITE_PASSWORD not set; publishing unprotected."
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _book
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
