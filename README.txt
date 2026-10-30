@@ -20,3 +20,22 @@ House:   no em-dashes, no inline URLs (use pandoc citations), explanations
 Kernel:  Quarto runs the Python cells with the Jupyter python3 kernel
          (anaconda3/envs/GSE_544); matplotlib mathtext limits figure labels to
          \mathbf{...}, \mathbb{...}, \leq, etc. (no \mathfrak, \operatorname, \bmod).
+Repo:    git repository in this directory (the paper above it is not tracked).
+         Remote: https://github.com/eduardo-zambrano/first-primes-in-an-arithmetic-progression
+         Build output (_book, .quarto, *_files, __pycache__) is ignored; only sources are
+         committed. Note that .git lives inside Dropbox: commit from one machine at a time.
+Deploy:  .github/workflows/deploy.yml renders the book on every push to main (Quarto +
+         TinyTeX, Python 3.11 with numpy/matplotlib/jupyter, TeX Gyre fonts) and publishes
+         _book to GitHub Pages at
+         https://eduardo-zambrano.github.io/first-primes-in-an-arithmetic-progression/
+Access:  The site is password-protected with StatiCrypt v3 (as the earlier SET Quarto sites
+         were). The step runs only when the repository secret SITE_PASSWORD exists; set or
+         change it with  gh secret set SITE_PASSWORD --repo eduardo-zambrano/first-primes-in-an-arithmetic-progression
+         and re-run the workflow. Deleting the secret publishes the site open. When
+         protected, search.json is removed (it would expose the text); the PDF download is
+         left reachable by the author's decision (30 October 2026). The --short flag is
+         required: StatiCrypt otherwise prompts for passwords under 14 characters and
+         silently skips encryption on CI. The workflow fails if any page is unencrypted.
+Status:  30 October 2026. All chapters revised; last clean render 30 October (123-page PDF).
+         Literature comparisons (MRSTT, KWX) added to chapter 3; Appendix B corrected.
+         Preprint-provenance notes in chapters 4 and 10 remain commented out.
