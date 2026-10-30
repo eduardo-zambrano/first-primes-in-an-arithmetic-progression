@@ -56,8 +56,15 @@ jobs:
           SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
         run: |
           if [ -n "$SITE_PASSWORD" ]; then
-            npx staticrypt@3 _book/*.html -p "$SITE_PASSWORD" --remember 30 -d _book
+            # --short suppresses the interactive prompt StatiCrypt shows for
+            # passwords under 14 characters; without it the prompt defaults to
+            # "no" on the runner and the files are left in the clear.
+            npx staticrypt@3 _book/*.html -p "$SITE_PASSWORD" --short --remember 30 -d _book
             rm -f _book/search.json
+            # Fail the build if any HTML page is still unencrypted.
+            for f in _book/*.html; do
+              grep -q "staticrypt" "$f" || { echo "NOT ENCRYPTED: $f"; exit 1; }
+            done
             echo "Site encrypted."
           else
             echo "SITE_PASSWORD not set; publishing unprotected."
