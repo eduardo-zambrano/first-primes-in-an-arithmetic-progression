@@ -1,6 +1,6 @@
 # The second-moment method and the prime trick {#sec-second-moment}
 
-@sec-singular explained how the singular series $\mathfrak S(q\mathbf h)$ records the divisibility restrictions for each modulus. @sec-main-theorem combined this arithmetic correction with the exact logarithmic integral and stated the prime-tuple theorem. @sec-engine introduced @thm-input, the counting theorem of Kravitz, Woo and Xu that gives precise estimates for sums of products of von Mangoldt weights.
+@sec-singular explained how the singular series $\mathfrak S(q\mathbf h)$ records the divisibility restrictions for each modulus. @sec-main-theorem combined this arithmetic correction with the exact logarithmic integral and stated the tuple theorem. @sec-engine introduced @thm-input, the counting theorem of Kravitz, Woo and Xu that gives precise estimates for sums of products of von Mangoldt weights.
 
 Our task is now to turn those averaged estimates into accurate predictions for individual moduli outside a small exceptional set. Ultimately, one exceptional set must work for every permitted shape and residue window. These estimates will later supply the prime-counting ingredient for the Poisson limit.
 

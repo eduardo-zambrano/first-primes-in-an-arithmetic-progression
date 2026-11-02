@@ -4,7 +4,7 @@
 |:--|:--|:--|
 | 1 The question | §1, §1.2 | lifts, scale $\ell_q$, process $\Xi_{q,a}$, quenched laws, Theorems 1.1 and 1.3 stated |
 | 2 Singular series | §1.1, §3.1, §4.2 | $S_p$, $\mathfrak S$, admissibility, $t_p$, $c_p$, $f_{\mathbf h}(q)$, criterion $d_0(\mathbf h)\mid q$ |
-| 3 Prime-tuple theorem | §1.1, §1.3 | predicted count and exact integral, varying centre, Theorem 1.1, Corollary 1.2, parameters, prior work, numerical illustration |
+| 3 Prime tuples for almost all moduli | §1.1, §1.3 | predicted count and exact integral, varying centre, Theorem 1.1, Corollary 1.2, parameters, prior work, numerical illustration |
 | 4 Analytic engine | §1.3, §2 | Analytic Input 2.1 from Kravitz–Woo–Xu Theorem 3.1, finite complexity, polylogarithmic coefficients, worked local factor |
 | 5 Second moment | §2.1, §3.2 | prime-step calculation, $A_p$, $B_p$, three-moment expansion |
 | 6 Divisor expansion | §3 | Lemma 3.1 (tail, second moment of $f$), Proposition 3.2 (mixed moment), Euler identity (27) |

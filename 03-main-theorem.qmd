@@ -1,4 +1,4 @@
-# The prime-tuple theorem {#sec-main-theorem}
+# Prime tuples for almost all moduli {#sec-main-theorem}
 
 @sec-singular computed the arithmetic correction $\mathfrak S(q\mathbf h)$. We now combine it with the prime-density heuristic to build a prediction for the number of prime tuples. Once that prediction is clear, we can state the theorem that describes its accuracy.
 
@@ -115,7 +115,7 @@ The count includes the integer starting points in $J$, and the integral gives th
 For the theorem, $Q$ is large, $L=\log Q$, and $q$ ranges over the integers in $(Q,2Q]$.
 
 ::: {#thm-main}
-## The prime-tuple theorem (Theorem 1.1 of the paper)
+## Prime-tuple asymptotics for almost all moduli (Theorem 1.1 of the paper)
 Fix $k\ge1$ and $A,B,C,D>0$. For all large $Q$ there is an exceptional set $\mathcal E(Q)\subseteq(Q,2Q]$ with
 $$
 |\mathcal E(Q)|\ll QL^{-A}
@@ -146,7 +146,7 @@ The four constants play four separate roles, summarised in @tbl-params.
 
 A theorem that says "for each fixed shape, almost all $q$ are good" is weaker than it looks. The exceptional set may depend on the shape. If we then want to use the asymptotic for many shapes at once, say all shapes with entries up to $(\log q)^2$, we must take the union of their exceptional sets, and we can only do that if each one is small enough to survive a union over $(\log q)^{2k}$ shapes. The same applies to windows: a different exceptional set for each window would not be very useful when the window is chosen after $q$.
 
-The essential feature of @thm-main is that, for each fixed $k$ and choice of the constants, and every sufficiently large $Q$, there exists a single exceptional set such that, for every modulus outside it, the asymptotic holds simultaneously for every permitted shape and window. The exceptional set may depend on $k$, the constants and $Q$, but not on the particular shape or window chosen. In the Poisson application of @sec-poisson, the shapes range over all configurations of $K$ lift indices up to a multiple of $\log q$, and the windows range over the permitted family.
+The essential feature of @thm-main, referred to below as the tuple theorem, is that, for each fixed $k$ and choice of the constants, and every sufficiently large $Q$, there exists a single exceptional set such that, for every modulus outside it, the asymptotic holds simultaneously for every permitted shape and window. The exceptional set may depend on $k$, the constants and $Q$, but not on the particular shape or window chosen. In the Poisson application of @sec-poisson, the shapes range over all configurations of $K$ lift indices up to a multiple of $\log q$, and the windows range over the permitted family.
 
 The proof must keep the exceptional set small while covering a growing collection of patterns and windows. The estimates are uniform across the permitted choices and strong enough to keep the total number of exceptions under control. @sec-one-set explains how these estimates produce the single exceptional set.
 

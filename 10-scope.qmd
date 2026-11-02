@@ -4,13 +4,13 @@ The paper establishes simultaneous prime-tuple estimates for a growing family of
 
 ## Which moduli are covered? {#no-statement-about-a-prescribed-modulus}
 
-For each fixed choice of parameters, the paper bounds the number of exceptional moduli in $(Q,2Q]$ by $O(Q/(\log Q)^A)$, with any prescribed $A>0$. In the prime-tuple theorem, one exceptional set serves all the permitted patterns and windows. In the Poisson theorem, one set serves all the permitted windows at the chosen tolerance. There is also a single density-one set along which the laws converge, whose complement has size $O_A(x/(\log x)^A)$ up to $x$ for every fixed $A$.
+For each fixed choice of parameters, the paper bounds the number of exceptional moduli in $(Q,2Q]$ by $O(Q/(\log Q)^A)$, with any prescribed $A>0$. In the tuple theorem, one exceptional set serves all the permitted patterns and windows. In the Poisson theorem, one set serves all the permitted windows at the chosen tolerance. There is also a single density-one set along which the laws converge, whose complement has size $O_A(x/(\log x)^A)$ up to $x$ for every fixed $A$.
 
 These bounds control how many moduli may fail. They do not guarantee that a prescribed $q$, say $q=10^{12}+39$, lies outside the exceptional set, or that the laws converge along an arbitrary prescribed sequence of moduli. The conclusions concern almost all moduli in the precise sense of those bounds.
 
 ## What is quantitative? {#no-rate-for-the-weak-distance}
 
-For any fixed $D,A>0$, the prime-tuple theorem bounds the relative counting error by $O((\log Q)^{-D})$ and the exceptional proportion by $O((\log Q)^{-A})$. The Poisson limit theorem for prime lifts (@thm-poisson) also bounds the exceptional proportion by $O((\log Q)^{-A})$ for any prescribed $A>0$, at each fixed tolerance $\varepsilon$. All implied constants and sufficiently-large thresholds may depend on the fixed parameters.
+For any fixed $D,A>0$, the tuple theorem bounds the relative counting error by $O((\log Q)^{-D})$ and the exceptional proportion by $O((\log Q)^{-A})$. The Poisson limit theorem for prime lifts (@thm-poisson) also bounds the exceptional proportion by $O((\log Q)^{-A})$ for any prescribed $A>0$, at each fixed tolerance $\varepsilon$. All implied constants and sufficiently-large thresholds may depend on the fixed parameters.
 
 ```{=latex}
 \Needspace{3\baselineskip}

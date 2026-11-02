@@ -8,9 +8,9 @@ The paper makes two contributions. First, it proves the Hardy–Littlewood predi
 
 ## How to read this companion {.unnumbered}
 
-Chapters 1 to 3 introduce the problem and the two main results, with a detailed statement of the prime-tuple theorem. Chapters 4 to 7 explain the arithmetic proof: what the deep input from additive combinatorics says, why the naive second-moment argument fails for composite moduli, and how a short divisor expansion repairs it. Chapters 8 and 9 explain the Poisson limit theorem for prime lifts and its consequences. Chapter 10 records what the paper does not claim. @sec-synthesis brings the results and proof ideas together and explains their significance.
+Chapters 1 to 3 introduce the problem and the two main results, with a detailed statement of Theorem 1.1, the prime-tuple asymptotics for almost all moduli. Chapters 4 to 7 explain the arithmetic proof: what the deep input from additive combinatorics says, why the naive second-moment argument fails for composite moduli, and how a short divisor expansion repairs it. Chapters 8 and 9 explain the Poisson limit theorem for prime lifts and its consequences. Chapter 10 records what the paper does not claim. @sec-synthesis brings the results and proof ideas together and explains their significance.
 
-Some familiarity with congruences, expectation and variance, the Poisson distribution, elementary calculus, and big-O notation will help. The point-process language is introduced here. The Analytic Input in @sec-engine is a theorem we use without proving; no background in higher-order Fourier analysis is required.
+Some familiarity with congruences, expectation and variance, the Poisson distribution, elementary calculus, and big-O notation will help. The point-process language is introduced here. No background in higher-order Fourier analysis is required.
 
 **On a first reading**, follow the main text and worked examples, leaving the collapsible derivation boxes closed. **On a second reading**, open the boxes for steps you want to check in detail. In the PDF all boxes are expanded; their titles identify the same optional derivations.
 
