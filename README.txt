@@ -16,7 +16,10 @@ Style:   custom.scss (slate/parchment palette), Palatino body text, MathJax 3.
          self-hosting MathJax (resources + html-math-method url) would fix this.
 House:   no em-dashes, no inline URLs (use pandoc citations), explanations
          before theorem statements, "Hardy-Littlewood prediction" for what the
-         paper proves and "conjecture" only for unproved hypotheses.
+         paper proves and "conjecture" only for unproved hypotheses. Theorem 1.1 is
+         "Prime-tuple asymptotics for almost all moduli" (chapter 3 title: "Prime tuples
+         for almost all moduli"); running text calls it "the tuple theorem", an alias
+         introduced in chapter 3. The Analytic Input is the only other "counting theorem".
 Kernel:  Quarto runs the Python cells with the Jupyter python3 kernel
          (anaconda3/envs/GSE_544); matplotlib mathtext limits figure labels to
          \mathbf{...}, \mathbb{...}, \leq, etc. (no \mathfrak, \operatorname, \bmod).
@@ -36,6 +39,10 @@ Access:  The site is password-protected with StatiCrypt v3 (as the earlier SET Q
          left reachable by the author's decision (30 October 2026). The --short flag is
          required: StatiCrypt otherwise prompts for passwords under 14 characters and
          silently skips encryption on CI. The workflow fails if any page is unencrypted.
-Status:  30 October 2026. All chapters revised; last clean render 30 October (123-page PDF).
+Status:  3 November 2026. Theorem 1.1 renamed on 1 November to match the paper (see House);
+         preface wording tightened on 1 and 3 November; section 1.3 says Hardy and Littlewood
+         "proposed" how to account for local correlations. Last clean render 3 November.
          Literature comparisons (MRSTT, KWX) added to chapter 3; Appendix B corrected.
          Preprint-provenance notes in chapters 4 and 10 remain commented out.
+         No analytics or visitor tracking on the site, by the author's decision (3 November);
+         GitHub Insights > Traffic counts visits to the repository page only, not the site.
