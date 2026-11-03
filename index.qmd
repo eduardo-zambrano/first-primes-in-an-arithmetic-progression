@@ -1,6 +1,6 @@
 # Preface {.unnumbered}
 
-This companion explains the paper *Simultaneous prime-tuple asymptotics and quenched Poisson laws for almost all moduli* [@Zambrano2026] to a reader who is not a specialist in analytic number theory. The research paper is written in the compressed style that journals require. Here the same ideas are unpacked slowly, with pictures, worked examples, and small computations that you can check.
+This companion fills in the details of the paper *Simultaneous prime-tuple asymptotics and quenched Poisson laws for almost all moduli* [@Zambrano2026]. It assumes no specialist background in analytic number theory. The research paper is written in the compressed style that journals require. Here the same ideas are unpacked slowly, with pictures, worked examples, and small computations that you can check.
 
 The paper answers a natural question. Take a large modulus $q$ and one of its $\varphi(q)$ reduced residue classes $a \bmod q$. Where is the first prime in that class? Where are the next few? The heuristic answer is that, on the right scale, the primes in a class look like a Poisson process. The paper rigorously proves that this is true for every modulus outside a very small exceptional set, and that it is true in a strong "quenched" sense: the modulus is fixed and only the residue class is random.
 
